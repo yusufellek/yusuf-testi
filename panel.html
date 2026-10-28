@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Yusuf Testi Paneli</title>
+<meta name="robots" content="noindex">
+<script src="config.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Poppins:wght@400;500;600&display=swap">
+<style>
+:root{--paper:#EEECE3;--paper-2:#E5E2D6;--ink:#1A1A1A;--red:#E04E3E;--muted:#6B675C;--ok:#2F7A4A;
+  --display:'Lilita One','Arial Rounded MT Bold',sans-serif;--body:'Poppins','Segoe UI',system-ui,sans-serif;color-scheme:light}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px}
+.app{max-width:720px;margin:0 auto;padding:24px max(16px,env(safe-area-inset-right,0px)) 40px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:16px}
+h1{font-family:var(--display);font-weight:400;color:var(--red);font-size:44px;line-height:1;margin:0;text-transform:uppercase}
+.sub{color:var(--muted);margin:0;font-size:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+input{flex:1;min-width:0;font:inherit;border:2px solid var(--ink);border-radius:12px;padding:11px 12px;background:var(--paper);color:var(--ink)}
+.btn{font:inherit;font-weight:500;border:2px solid var(--ink);border-radius:12px;padding:11px 16px;background:var(--ink);color:var(--paper);box-shadow:3px 3px 0 var(--red);cursor:pointer}
+.btn.ghost{background:var(--paper);color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+.btn:focus-visible,input:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.err{color:var(--red);font-size:13px;margin:0;min-height:1em}
+.card{border:2px solid var(--ink);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--paper)}
+.head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+.date{font-size:13px;color:var(--muted)}
+.unvan{font-family:var(--display);color:var(--red);font-size:24px}
+.nums{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.nums div{background:var(--paper-2);border-radius:12px;padding:10px 12px}
+.nums span{display:block;font-size:12px;color:var(--muted)}
+.nums strong{font-family:var(--display);font-weight:400;font-size:28px;font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:460px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px dashed var(--ink);vertical-align:top}
+th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.ok{color:var(--ok);font-weight:600}.no{color:var(--red);font-weight:600}
+dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 14px;margin:0;font-size:14px}
+dt{color:var(--muted)}dd{margin:0;overflow-wrap:anywhere}
+.empty{border:2px dashed var(--ink);border-radius:16px;padding:20px;text-align:center;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>Gelen cevaplar</h1>
+  <p class="sub">Sadece şifreyi bilen görebilir. Şifre Apps Script içindeki PANEL_KEY.</p>
+  <form class="row" id="f">
+    <input id="key" type="password" placeholder="Panel şifresi" autocomplete="current-password">
+    <button class="btn" type="submit">Göster</button>
+    <button class="btn ghost" type="button" id="refresh" hidden>Yenile</button>
+  </form>
+  <p class="err" id="err"></p>
+  <div id="out"></div>
+</div>
+<script>
+// Yusuf'un onun hakkındaki tahminleri (oyundaki soru etiketlerine göre)
+const GUESS = {'Çay mı kahve mi':'Kahve','Sabah mı gece mi':'Sabah','Kahve nasıl':'Sade','Kahvaltı':'Kahvaltı yapmam','Cumartesi akşamı':'Arkadaşlarla olurum','Düzenli mi dağınık mı':'Düzenli','Planlı mı spontane mi':'Planlı','Gizli korku':'Örümcek','Sabırlı mı sabırsız mı':'Sabırlı','Mantık mı kalp mi':'Mantıkla','Duvar kağıdı':'Doğa manzarası','Alarm':'Hemen kapatırım','Mesajlar':'Sonra','Yaz mı kış mı':'Kış'};
+const LABELS = {kitap:'Okuduğu kitap',sarki:'Bugün dinlediği',sarkiTahmin:'Senin dinlediğin (tahmini)',yusufSuAn:'Sence şu an',harf:'Harf oyunu',dil:'Dil sorusu',balonSure:'Balonlar (sn)',sabahGorevi:'Sabah görevi',kadikoyGorevi:'Kadıköy görevi',kadikoyGoreviYapildi:'Kadıköy görevi yapıldı mı',minikAktivite:'Minik aktivite',yusufaGorev:'Sana verdiği görev',foto:'Fotoğraf'};
+const $ = s => document.querySelector(s);
+const el = (t, cls, txt) => { const e = document.createElement(t); if(cls) e.className = cls; if(txt!==undefined) e.textContent = txt; return e; };
+let key = ''; try{ key = localStorage.getItem('panelKey') || ''; }catch(e){}
+$('#key').value = key;
+
+async function load(){
+  $('#err').textContent = '';
+  if(!window.SCRIPT_URL){ $('#err').textContent = 'config.js içinde SCRIPT_URL boş. Önce Apps Script adresini ekle.'; return; }
+  if(!key){ $('#err').textContent = 'Şifreyi yaz.'; return; }
+  $('#out').textContent = 'Yükleniyor...';
+  try{
+    const r = await fetch(window.SCRIPT_URL + '?key=' + encodeURIComponent(key));
+    const d = await r.json();
+    if(d.error){ $('#out').textContent = ''; $('#err').textContent = 'Şifre yanlış.'; return; }
+    try{ localStorage.setItem('panelKey', key); }catch(e){}
+    $('#refresh').hidden = false;
+    render(d.rows || []);
+  }catch(e){ $('#out').textContent = ''; $('#err').textContent = 'Cevaplar okunamadı. İnternet bağlantını ve Apps Script dağıtımını kontrol et.'; }
+}
+
+function render(rows){
+  const out = $('#out'); out.textContent = '';
+  if(!rows.length){ out.appendChild(el('div','empty','Henüz gelen cevap yok. Oyunu bitirdiğinde burada görünecek.')); return; }
+  rows.forEach(x => {
+    const c = el('div','card');
+    const h = el('div','head');
+    h.appendChild(el('span','unvan', x.unvan || ''));
+    h.appendChild(el('span','date', new Date(x.at).toLocaleString('tr-TR')));
+    c.appendChild(h);
+    const n = el('div','nums');
+    const a = el('div'); a.appendChild(el('span',null,'Seni ne kadar tanıyor')); a.appendChild(el('strong',null,(x.tanima??'-')+'/14'));
+    const b = el('div'); b.appendChild(el('span',null,'Sen onu ne kadar tanıyorsun')); b.appendChild(el('strong',null,(x.yusufBildi??'-')+'/14'));
+    n.append(a,b); c.appendChild(n);
+    if(x.kisisel && x.kisisel.length){
+      const tw = el('div','tw'); const t = el('table');
+      const hr = el('tr'); ['Soru','Onun cevabı','Senin tahminin','"Yusuf bilir" dedi mi','Senin için tahmini'].forEach(s=>hr.appendChild(el('th',null,s)));
+      t.appendChild(hr);
+      x.kisisel.forEach(k => {
+        const tr = el('tr');
+        const g = GUESS[k.soru]; const hit = g && g === k.kendiCevabi;
+        tr.appendChild(el('td',null,k.soru));
+        tr.appendChild(el('td',null,k.kendiCevabi));
+        const tg = el('td', hit?'ok':'no', (g||'-') + (hit?' ✓':' ✗')); tr.appendChild(tg);
+        tr.appendChild(el('td',null,k.yusufBilirMi));
+        tr.appendChild(el('td',null,k.yusufIcinTahmin));
+        t.appendChild(tr);
+      });
+      tw.appendChild(t); c.appendChild(tw);
+    }
+    const dl = el('dl');
+    Object.keys(LABELS).forEach(k => {
+      const v = x.diger && x.diger[k]; if(v===undefined || v==='') return;
+      dl.appendChild(el('dt',null,LABELS[k])); dl.appendChild(el('dd',null, v===true?'Evet':v===false?'Hayır':String(v)));
+    });
+    c.appendChild(dl);
+    out.appendChild(c);
+  });
+}
+$('#f').onsubmit = e => { e.preventDefault(); key = $('#key').value.trim(); load(); };
+$('#refresh').onclick = load;
+if(key) load();
+</script>
+</body>
+</html>
