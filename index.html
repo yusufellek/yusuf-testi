@@ -301,21 +301,23 @@ const doodle = k => `<svg class="doodle wob" viewBox="0 0 240 150" aria-hidden="
 /* ---------- veriler ---------- */
 // Yusuf hakkında kişisel sorular. y = Yusuf'un cevabı, g = Yusuf'un onun hakkındaki tahmini
 const P = {
-  cay:{d:'tea', yq:'Sence ben çay mı severim, kahve mi?', sq:'Peki sen? Çay mı, kahve mi?', o:['Çay','Kahve'], so:['Çay','Kahve'], y:'Çay', g:'Kahve', label:'Çay mı kahve mi'},
-  gece:{d:'sunmoon', yq:'Ben sabah insanı mıyım, gece insanı mı?', sq:'Peki sen?', o:['Sabah','Gece'], so:['Sabah','Gece'], y:'Gece', g:'Sabah', label:'Sabah mı gece mi'},
-  kahve:{noY:true, aq:'Kahveyi nasıl içersin?', d:'coffee', yq:'Yusuf kahve içse nasıl içer?', sq:'Peki sen kahveyi nasıl içersin?', o:['Sade','Sütlü','Şekerli','Hiç içmez'], so:['Sade','Sütlü','Şekerli','Hiç içmem'], y:'Sade', g:'Sade', label:'Kahve nasıl'},
-  kahvalti:{d:'croissant', yq:'Kahvaltıda vazgeçemediğim şey ne sence?', sq:'Peki senin vazgeçemediğin?', o:['Peynir','Yumurta','Kruvasan','Kahvaltı yapmaz'], so:['Peynir','Yumurta','Kruvasan','Kahvaltı yapmam'], y:'Kruvasan', g:'Kahvaltı yapmam', label:'Kahvaltı'},
-  cumartesi:{noY:true, aq:'Cumartesi akşamı genelde ne yaparsın?', d:'house', yq:'Yusuf cumartesi akşamı genelde ne yapar?', sq:'Peki sen cumartesi akşamı genelde?', o:['Dışarı çıkar','Evde olur','Arkadaşlarla olur'], so:['Dışarı çıkarım','Evde olurum','Arkadaşlarla olurum'], y:'Evde olur', g:'Arkadaşlarla olurum', label:'Cumartesi akşamı'},
-  duzen:{noY:true, aq:'Düzenli misin, dağınık mı?', d:'boxes', yq:'Yusuf düzenli mi, dağınık mı?', sq:'Peki sen?', o:['Düzenli','Dağınık'], so:['Düzenli','Dağınık'], y:'Düzenli', g:'Düzenli', label:'Düzenli mi dağınık mı'},
-  plan:{noY:true, aq:'Planlı mısın, spontane mi?', d:'calendar', yq:'Yusuf planlı mı, spontane mi?', sq:'Peki sen?', o:['Planlı','Spontane'], so:['Planlı','Spontane'], y:'Spontane', g:'Planlı', label:'Planlı mı spontane mi'},
-  korku:{d:'spider', yq:'Sence ben gizlice neyden korkarım?', sq:'Peki sen gizlice neyden korkarsın?', o:['Örümcek','Yükseklik','Karanlık','Derin deniz'], so:['Örümcek','Yükseklik','Karanlık','Derin deniz'], y:'Yükseklik', g:'Örümcek', label:'Gizli korku'},
-  sabir:{noY:true, aq:'Sabırlı mısın, sabırsız mı?', d:'hourglass', yq:'Yusuf sabırlı mı, sabırsız mı?', sq:'Peki sen?', o:['Sabırlı','Sabırsız'], so:['Sabırlı','Sabırsız'], y:'Sabırlı', g:'Sabırlı', label:'Sabırlı mı sabırsız mı'},
-  karar:{noY:true, aq:'Mantıkla mı karar verirsin, kalple mi?', d:'scale', yq:'Yusuf mantıkla mı karar verir, kalple mi?', sq:'Peki sen?', o:['Mantıkla','Kalple'], so:['Mantıkla','Kalple'], y:'Kalple', g:'Mantıkla', label:'Mantık mı kalp mi'},
-  duvar:{d:'phone', yq:'Telefonumun duvar kağıdında ne var sence?', sq:'Peki seninkinde ne var?', o:['Doğa manzarası','Bir hayvan','Düz renk','Göz işareti'], so:['Doğa manzarası','Bir hayvan','Düz renk','Bir fotoğraf','Başka bir şey'], y:'Göz işareti', g:'Doğa manzarası', label:'Duvar kağıdı'},
-  alarm:{noY:true, aq:'Alarm çalınca ne yaparsın?', d:'alarm', yq:'Yusuf alarm çalınca ne yapar?', sq:'Peki sen?', o:['Hemen kapatır','Erteler'], so:['Hemen kapatırım','Ertelerim'], y:'Erteler', g:'Hemen kapatırım', label:'Alarm'},
-  mesaj:{noY:true, aq:'Mesajlara hemen mi dönersin, sonra mı?', d:'envelope', yq:'Yusuf mesajlara hemen mi döner, sonra mı?', sq:'Peki sen?', o:['Hemen','Sonra'], so:['Hemen','Sonra'], y:'Hemen', g:'Sonra', label:'Mesajlar'},
-  isAn:{noY:true, aq:'İşte günün en sevdiğin anı hangisi?', so:['Sabah ilk kahve ya da çay','Öğle arası','Mesainin bittiği an','Bir işi güzelce bitirdiğim an'], g:'Mesainin bittiği an', label:'İşte en sevdiği an'},
-  mevsim:{noY:true, aq:'Yazı mı seversin, kışı mı?', d:'season', yq:'Yusuf yazı mı sever, kışı mı?', sq:'Peki sen?', o:['Yaz','Kış'], so:['Yaz','Kış'], y:'Yaz', g:'Kış', label:'Yaz mı kış mı'},
+  cay:{yq:'Sence ben çay mı severim, kahve mi?', sq:'Peki sen? Çay mı, kahve mi?', o:['Çay','Kahve'], so:['Çay','Kahve'], y:'Çay', g:'Kahve', label:'Çay mı kahve mi'},
+  gece:{yq:'Ben sabah insanı mıyım, gece insanı mı?', sq:'Peki sen?', o:['Sabah','Gece'], so:['Sabah','Gece'], y:'Gece', g:'Sabah', label:'Sabah mı gece mi'},
+  kahve:{yq:'Ben kahveyi nasıl içerim sence?', sq:'Peki sen kahveyi nasıl içersin?', o:['Sade','Sütlü','Şekerli','Hiç içmez'], so:['Sade','Sütlü','Şekerli','Hiç içmem'], y:'Sade', g:'Sade', label:'Kahve nasıl'},
+  kahvalti:{yq:'Kahvaltıda vazgeçemediğim şey ne sence?', sq:'Peki senin vazgeçemediğin?', o:['Peynir','Yumurta','Kruvasan','Kahvaltı yapmaz'], so:['Peynir','Yumurta','Kruvasan','Kahvaltı yapmam'], y:'Kruvasan', g:'Kahvaltı yapmam', label:'Kahvaltı'},
+  cumartesi:{yq:'Cumartesi akşamları genelde ne yaparım sence?', sq:'Peki sen cumartesi akşamı genelde ne yaparsın?', o:['Dışarı çıkar','Evde olur','Arkadaşlarla olur'], so:['Dışarı çıkarım','Evde olurum','Arkadaşlarla olurum'], y:'Evde olur', g:'Arkadaşlarla olurum', label:'Cumartesi akşamı'},
+  isAn:{yq:'Günümde en sevdiğim an sence hangisi?', sq:'Peki senin işte günün en sevdiğin anı?', o:['Sabah ilk kahve ya da çay','Öğle arası','İşin bittiği an','Bir işi güzelce bitirdiğim an'], so:['Sabah ilk kahve ya da çay','Öğle arası','Mesainin bittiği an','Bir işi güzelce bitirdiğim an'], y:'Bir işi güzelce bitirdiğim an', g:'Mesainin bittiği an', label:'İşte en sevdiği an'},
+  duzen:{yq:'Sence ben düzenli miyim, dağınık mı?', sq:'Peki sen?', o:['Düzenli','Dağınık'], so:['Düzenli','Dağınık'], y:'Düzenli', g:'Düzenli', label:'Düzenli mi dağınık mı'},
+  plan:{yq:'Ben planlı mıyım, spontane mi?', sq:'Peki sen?', o:['Planlı','Spontane'], so:['Planlı','Spontane'], y:'Spontane', g:'Planlı', label:'Planlı mı spontane mi'},
+  korku:{yq:'Sence ben gizlice neyden korkarım?', sq:'Peki sen gizlice neyden korkarsın?', o:['Örümcek','Yükseklik','Karanlık','Derin deniz'], so:['Örümcek','Yükseklik','Karanlık','Derin deniz'], y:'Yükseklik', g:'Örümcek', label:'Gizli korku'},
+  sabir:{yq:'Sence ben sabırlı mıyım, sabırsız mı?', sq:'Peki sen?', o:['Sabırlı','Sabırsız'], so:['Sabırlı','Sabırsız'], y:'Sabırlı', g:'Sabırlı', label:'Sabırlı mı sabırsız mı'},
+  karar:{yq:'Ben mantıkla mı karar veririm, kalple mi?', sq:'Peki sen?', o:['Mantıkla','Kalple'], so:['Mantıkla','Kalple'], y:'Kalple', g:'Mantıkla', label:'Mantık mı kalp mi'},
+  duvar:{yq:'Telefonumun duvar kağıdında ne var sence?', sq:'Peki seninkinde ne var?', o:['Doğa manzarası','Bir hayvan','Düz renk','Göz işareti'], so:['Doğa manzarası','Bir hayvan','Düz renk','Bir fotoğraf','Başka bir şey'], y:'Göz işareti', g:'Doğa manzarası', label:'Duvar kağıdı'},
+  haftasonu:{yq:'Benim ideal hafta sonu sabahım nasıl geçer sence?', sq:'Peki seninki nasıl geçer?', o:['Geç uyanmak','Kahvaltıya çıkmak','Sahilde yürümek','Evde dinlenmek'], so:['Geç uyanmak','Kahvaltıya çıkmak','Sahilde yürümek','Evde dinlenmek'], y:'Geç uyanmak', g:'Evde dinlenmek', label:'İdeal hafta sonu sabahı'},
+  alarm:{yq:'Alarm çalınca ben ne yaparım sence?', sq:'Peki sen?', o:['Hemen kapatır','Erteler'], so:['Hemen kapatırım','Ertelerim'], y:'Erteler', g:'Hemen kapatırım', label:'Alarm'},
+  mesaj:{yq:'Ben mesajlara hemen mi dönerim, sonra mı?', sq:'Peki sen?', o:['Hemen','Sonra'], so:['Hemen','Sonra'], y:'Hemen', g:'Sonra', label:'Mesajlar'},
+  mevsim:{yq:'Ben yazı mı severim, kışı mı?', sq:'Peki sen?', o:['Yaz','Kış'], so:['Yaz','Kış'], y:'Yaz', g:'Kış', label:'Yaz mı kış mı'},
+  enerji:{yq:'Bana en çok ne enerji verir sence?', sq:'Peki sana ne enerji verir?', o:['Müzik','İnsanlarla olmak','Yalnız kalmak','Hareket etmek'], so:['Müzik','İnsanlarla olmak','Yalnız kalmak','Hareket etmek'], y:'Hareket etmek', g:'Yalnız kalmak', label:'Enerji veren'},
 };
 const PKEYS = Object.keys(P);
 const YKEYS = PKEYS.filter(k=>!P[k].noY);
@@ -350,13 +352,13 @@ const STEPS = [
   {t:'p',k:'karar'},
   {t:'p',k:'duvar'},
   {t:'pick',k:'minikAktivite',d:'checklist',eyebrow:'Bugün için',q:'Aşırı küçük yeni bir aktivite seç',o:['Eve gidince kendime bir çay yapacağım','Otobüste 5 dakika camdan dışarı bakacağım','Yatmadan bir sayfa kitap okuyacağım','Bugün kendime sevdiğim bir atıştırmalık alacağım']},
-  {t:'pick',k:'haftasonu',d:'sunrise',eyebrow:'Senin hakkında',q:'İdeal bir hafta sonu sabahı nasıl geçer?',o:['Geç uyanmak','Kahvaltıya çıkmak','Sahilde yürümek','Evde dinlenmek']},
+  {t:'p',k:'haftasonu'},
   {t:'p',k:'alarm'},
   {t:'p',k:'mesaj'},
   {t:'text',k:'ogrenmek',d:'book',eyebrow:'Senin hakkında',q:'Bu ay öğrenmek istediğin bir şey var mı?',ph:'Bir dil, bir tarif, bir beceri...',skip:'Şu an aklımda bir şey yok'},
   {t:'pick',k:'yusufaGorev',d:'task',eyebrow:'Yusuf\'a görev',q:'Sıra sende. Bana bugün zorunlu bir aktivite ver.',o:['10 dakika yürüyüşe çık','Bana güzel bir fotoğraf çek ve at','Odanı topla']},
   {t:'p',k:'mevsim'},
-  {t:'pick',k:'enerji',d:'alarm',eyebrow:'Senin hakkında',q:'Sana en çok ne enerji verir?',o:['Müzik','İnsanlarla olmak','Yalnız kalmak','Hareket etmek']},
+  {t:'p',k:'enerji'},
   {t:'photo'},
 ];
 
@@ -443,7 +445,7 @@ function intro(){
     <div class="eyebrow"><span>${STEPS.length} adım</span><span>yaklaşık 7 dakika</span></div>
     <h1>Ne kadar tanıyoruz?</h1>
     <p class="q">Selam! Sana birkaç soru soracağım, birkaç da görev vereceğim. Hazır mısın?</p>
-    <p class="sub">Biraz tahmin, biraz oyun, birkaç minik görev. Çoğu soru senin hakkında. Doğru ya da yanlış cevap yok, sadece Yusuf hakkındaki birkaç soruda puan var.</p>
+    <p class="sub">Biraz tahmin, biraz oyun, birkaç minik görev. Her soruda önce sen beni tahmin ediyorsun, sonra ben seni. Bakalım hangimiz diğerini daha iyi tanıyor.</p>
     <div class="note">Cevapların oyun bitince Yusuf'a ulaşır.</div>
     <button class="btn primary" id="go">Hazırım</button>
   `, c => {
