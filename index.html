@@ -6,7 +6,7 @@
 <title>Yusuf Testi</title>
 <meta name="robots" content="noindex">
 <script src="config.js"></script>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Poppins:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=VT323&display=swap">
 <style>
 /* Layout: tek ekranlık kart; krem kağıt, kırmızı tombul başlık, titreyen el çizimi çizgiler */
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
@@ -119,6 +119,90 @@ input::placeholder,textarea::placeholder{color:#9A9585}
   .wob{filter:none}
   .balloon{animation:none}
 }
+
+/* ===== piksel sahne teması ===== */
+:root{--page:#241d2b;--panel:#2f2838;--paper:#f6efdc;--paper-2:#e9dfc6;--ink:#16120f;--red:#e23b4a;--red-ink:#ff8a94;--muted:#b9b1c8;--ok:#3f9a52;--gold:#f3c94b;--reply:#cfe1f7;--sky:#9fc2ff;
+  --display:'Pixelify Sans','Courier New',monospace;--body:'VT323','Courier New',monospace;color-scheme:dark}
+body{background:var(--page);color:#f2ead7;font-family:var(--body);font-size:21px}
+.app{gap:12px;padding-block:12px 28px}
+.doodle{display:none}
+.wob{filter:none}
+.card{animation:cardIn .35s steps(5) both}
+.card.out{animation:cardOut .2s steps(3) both}
+h1,h2{font-family:var(--display);font-weight:700;color:var(--gold);text-shadow:3px 3px 0 var(--ink),-2px -2px 0 var(--ink),2px -2px 0 var(--ink),-2px 2px 0 var(--ink);letter-spacing:.02em}
+h1{font-size:clamp(34px,10vw,46px);line-height:1}
+h2{font-size:30px}
+.eyebrow{font-family:var(--display);color:var(--sky);font-size:13px;letter-spacing:.08em}
+.q{position:relative;background:var(--paper);color:var(--ink);border:3px solid var(--ink);box-shadow:4px 4px 0 rgba(0,0,0,.45);padding:24px 14px 12px;font-size:24px;line-height:1.05;font-weight:400;margin-top:12px}
+.q::before{content:'YUSUF';position:absolute;left:12px;top:5px;font-family:var(--display);font-size:11px;letter-spacing:.1em;color:#6b4bd1}
+.q::after{content:'';position:absolute;top:-15px;right:52px;width:16px;height:14px;background:var(--paper);border:3px solid var(--ink);border-bottom:0;clip-path:polygon(0 100%,100% 100%,100% 0)}
+.sub{color:var(--muted);font-size:20px;line-height:1.15}
+.sub strong{color:#f2ead7;font-weight:400}
+.opts{position:relative;padding-top:18px}
+.opts::before{content:'SEN';position:absolute;left:2px;top:0;font-family:var(--display);font-size:11px;letter-spacing:.1em;color:var(--sky)}
+.btn{font-family:var(--body);font-size:23px;line-height:1;font-weight:400;color:var(--ink);background:var(--reply);border:3px solid var(--ink);border-radius:0;box-shadow:4px 4px 0 rgba(0,0,0,.5);padding:10px 12px;animation:pop .3s steps(3) both}
+.opts .btn{text-align:left}
+.opts.two .btn{text-align:center}
+.btn:hover{background:var(--gold);box-shadow:4px 4px 0 rgba(0,0,0,.5);transform:none}
+.btn:active,.btn.on{background:var(--gold);color:var(--ink);transform:translate(3px,3px);box-shadow:1px 1px 0 rgba(0,0,0,.5)}
+.btn.right{background:var(--ok);color:#fff}
+.btn.primary{font-family:var(--display);font-weight:600;font-size:20px;background:var(--gold);color:var(--ink);box-shadow:4px 4px 0 rgba(0,0,0,.5)}
+.btn.primary:hover{background:#ffd966;box-shadow:4px 4px 0 rgba(0,0,0,.5)}
+.btn:focus-visible,.link:focus-visible,.tile:focus-visible,input:focus-visible,.back:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.link{font-family:var(--body);font-size:20px;color:var(--muted)}
+input[type=text],textarea{font-family:var(--body);font-size:23px;color:var(--ink);background:var(--reply);border:3px solid var(--ink);border-radius:0;box-shadow:4px 4px 0 rgba(0,0,0,.5)}
+input::placeholder{color:#5c6b80}
+.err{color:var(--red-ink);font-size:19px}
+.note{background:var(--panel);color:#f2ead7;border:3px solid var(--ink);box-shadow:inset 0 0 0 2px #4b4258;border-radius:0;font-size:20px;line-height:1.15}
+.note strong{color:var(--gold);font-weight:400}
+.tag{font-family:var(--display);font-size:11px;background:var(--gold);color:var(--ink);border-radius:0}
+.stamp{font-family:var(--display);font-weight:700;background:var(--panel);border-radius:0;font-size:24px}
+.stamp.good{color:#7cd36b}.stamp.bad{color:var(--red-ink)}
+.top{gap:10px}
+.back{border-radius:0;border:3px solid var(--ink);background:var(--reply);box-shadow:3px 3px 0 rgba(0,0,0,.5)}
+.bar{height:14px;border:3px solid var(--ink);border-radius:0;background:#1a1620}
+.bar i{background:repeating-linear-gradient(90deg,#7cd36b 0 6px,#5fb350 6px 12px);transition:width .4s steps(6)}
+.count{font-family:var(--display);font-size:13px;color:#f2ead7}
+.field{border:3px solid var(--ink);border-radius:0;background:var(--paper-2);height:min(46vh,340px)}
+.score{font-size:20px}
+.burst b{font-family:var(--display)}
+.word{border-bottom:3px solid #f2ead7}
+.word span{font-family:var(--display);color:var(--gold);font-size:32px;text-shadow:2px 2px 0 var(--ink)}
+.tile{font-family:var(--display);font-weight:700;font-size:24px;background:var(--paper);color:var(--ink);border:3px solid var(--ink);border-radius:0;box-shadow:3px 3px 0 rgba(0,0,0,.5)}
+.meter div{background:var(--panel);border:3px solid var(--ink);border-radius:0}
+.meter span{color:var(--muted);font-size:17px}
+.meter strong{font-family:var(--display);color:var(--gold);font-size:32px}
+.list{border-top:3px solid #f2ead7}
+.li{border-bottom:2px dashed #5a5266;font-size:20px}
+.li .v{color:var(--muted);font-size:18px}
+.li .verdict{font-family:var(--display);font-size:10px;border-radius:0;border:2px solid #f2ead7;color:#f2ead7}
+.verdict.y{background:#f2ead7;color:var(--ink)}
+.verdict.n{background:var(--red);border-color:var(--red);color:#fff}
+.saved{color:var(--muted);font-size:18px}
+.confetti i{border-radius:0!important;border-width:0}
+/* sahne */
+.scene{position:relative;height:210px;flex:none;overflow:hidden;border:3px solid var(--ink);box-shadow:4px 4px 0 rgba(0,0,0,.45);
+  background:repeating-linear-gradient(0deg,transparent 0 18px,#b8a37f 18px 20px),repeating-linear-gradient(90deg,transparent 0 38px,#b8a37f 38px 40px),#cdb994}
+.scene .win{position:absolute;left:8%;top:16px;width:64px;height:78px;background:linear-gradient(#6f9fd8,#b7d6f0 70%,#e8d9a8);border:4px solid #3a2a1c;box-shadow:inset 0 0 0 2px #5b4430}
+.scene .win::after{content:'';position:absolute;left:28px;top:0;bottom:0;width:4px;background:#3a2a1c}
+.scene .frame{position:absolute;right:9%;top:22px;width:40px;height:30px;background:#e23b4a;border:4px solid #3a2a1c;box-shadow:inset 0 0 0 3px #f6efdc}
+.scene .plant{position:absolute;left:50%;transform:translateX(-50%);bottom:40px;width:22px;height:20px;background:#a0522d;border:3px solid var(--ink)}
+.scene .plant i{position:absolute;left:-10px;bottom:16px;width:36px;height:30px;background:#3f9a52;border:3px solid var(--ink);clip-path:polygon(50% 0,100% 60%,80% 100%,20% 100%,0 60%)}
+.scene .floorband{position:absolute;left:0;right:0;bottom:0;height:46px;background:repeating-linear-gradient(90deg,#7a5537 0 34px,#6c4a2f 34px 68px);border-top:4px solid #3a2a1c}
+.scene .rug{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:62%;height:20px;background:#6b2f35;border:3px solid var(--ink);border-radius:50%;box-shadow:inset 0 0 0 4px #84404a}
+.hero{position:absolute;bottom:4px;display:flex;flex-direction:column;align-items:center}
+.hero img{display:block;image-rendering:pixelated;filter:drop-shadow(2px 0 0 var(--ink)) drop-shadow(-2px 0 0 var(--ink)) drop-shadow(0 2px 0 var(--ink)) drop-shadow(0 -2px 0 var(--ink));animation:idle 1.4s steps(2) infinite}
+.hero.hs{left:14%}.hero.hy{right:14%}
+.hero.hs img{height:172px}.hero.hy img{height:188px}
+.hero.hy img{animation-delay:.7s}
+.hero span{position:absolute;bottom:-2px;font-family:var(--display);font-size:10px;letter-spacing:.08em;background:var(--ink);color:#f2ead7;padding:1px 5px}
+.hero.hop img{animation:hop .5s steps(3)}
+@keyframes idle{50%{transform:translateY(-2px)}}
+@keyframes hop{40%{transform:translateY(-14px)}}
+.lovepop{position:absolute;left:50%;bottom:120px;width:20px;height:18px;background:var(--red);clip-path:polygon(0 25%,25% 0,50% 25%,75% 0,100% 25%,100% 55%,50% 100%,0 55%);animation:love 1.6s steps(8) forwards}
+@keyframes love{to{transform:translate(-50%,-70px);opacity:0}}
+@media (max-width:380px){.scene{height:190px}.hero.hs img{height:156px}.hero.hy img{height:170px}}
+@media (prefers-reduced-motion:reduce){.hero img{animation:none}}
 </style>
 </head>
 <body>
@@ -129,6 +213,12 @@ input::placeholder,textarea::placeholder{color:#9A9585}
     <button class="back" id="backBtn" type="button" aria-label="Geri" hidden><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
     <div class="count" id="count"></div>
+  </div>
+  <div class="scene" id="scene" aria-hidden="true">
+    <div class="win"></div><div class="frame"></div><div class="plant"><i></i></div>
+    <div class="floorband"></div><div class="rug"></div>
+    <div class="hero hs" id="heroSen"><img src="sen.png" alt=""><span>SEN</span></div>
+    <div class="hero hy" id="heroYusuf"><img src="yusuf.png" alt=""><span>YUSUF</span></div>
   </div>
   <main id="stage" aria-live="polite"></main>
 </div>
@@ -176,17 +266,17 @@ const doodle = k => `<svg class="doodle wob" viewBox="0 0 240 150" aria-hidden="
 /* ---------- veriler ---------- */
 // Yusuf hakkında kişisel sorular. y = Yusuf'un cevabı, g = Yusuf'un onun hakkındaki tahmini
 const P = {
-  cay:{d:'tea', yq:'Yusuf çay mı sever, kahve mi?', sq:'Peki sen? Çay mı, kahve mi?', o:['Çay','Kahve'], so:['Çay','Kahve'], y:'Çay', g:'Kahve', label:'Çay mı kahve mi'},
-  gece:{d:'sunmoon', yq:'Yusuf sabah insanı mı, gece insanı mı?', sq:'Peki sen?', o:['Sabah','Gece'], so:['Sabah','Gece'], y:'Gece', g:'Sabah', label:'Sabah mı gece mi'},
+  cay:{d:'tea', yq:'Sence ben çay mı severim, kahve mi?', sq:'Peki sen? Çay mı, kahve mi?', o:['Çay','Kahve'], so:['Çay','Kahve'], y:'Çay', g:'Kahve', label:'Çay mı kahve mi'},
+  gece:{d:'sunmoon', yq:'Ben sabah insanı mıyım, gece insanı mı?', sq:'Peki sen?', o:['Sabah','Gece'], so:['Sabah','Gece'], y:'Gece', g:'Sabah', label:'Sabah mı gece mi'},
   kahve:{noY:true, aq:'Kahveyi nasıl içersin?', d:'coffee', yq:'Yusuf kahve içse nasıl içer?', sq:'Peki sen kahveyi nasıl içersin?', o:['Sade','Sütlü','Şekerli','Hiç içmez'], so:['Sade','Sütlü','Şekerli','Hiç içmem'], y:'Sade', g:'Sade', label:'Kahve nasıl'},
-  kahvalti:{d:'croissant', yq:'Yusuf\'un kahvaltıda vazgeçemediği şey?', sq:'Peki senin vazgeçemediğin?', o:['Peynir','Yumurta','Kruvasan','Kahvaltı yapmaz'], so:['Peynir','Yumurta','Kruvasan','Kahvaltı yapmam'], y:'Kruvasan', g:'Kahvaltı yapmam', label:'Kahvaltı'},
+  kahvalti:{d:'croissant', yq:'Kahvaltıda vazgeçemediğim şey ne sence?', sq:'Peki senin vazgeçemediğin?', o:['Peynir','Yumurta','Kruvasan','Kahvaltı yapmaz'], so:['Peynir','Yumurta','Kruvasan','Kahvaltı yapmam'], y:'Kruvasan', g:'Kahvaltı yapmam', label:'Kahvaltı'},
   cumartesi:{noY:true, aq:'Cumartesi akşamı genelde ne yaparsın?', d:'house', yq:'Yusuf cumartesi akşamı genelde ne yapar?', sq:'Peki sen cumartesi akşamı genelde?', o:['Dışarı çıkar','Evde olur','Arkadaşlarla olur'], so:['Dışarı çıkarım','Evde olurum','Arkadaşlarla olurum'], y:'Evde olur', g:'Arkadaşlarla olurum', label:'Cumartesi akşamı'},
   duzen:{noY:true, aq:'Düzenli misin, dağınık mı?', d:'boxes', yq:'Yusuf düzenli mi, dağınık mı?', sq:'Peki sen?', o:['Düzenli','Dağınık'], so:['Düzenli','Dağınık'], y:'Düzenli', g:'Düzenli', label:'Düzenli mi dağınık mı'},
   plan:{noY:true, aq:'Planlı mısın, spontane mi?', d:'calendar', yq:'Yusuf planlı mı, spontane mi?', sq:'Peki sen?', o:['Planlı','Spontane'], so:['Planlı','Spontane'], y:'Spontane', g:'Planlı', label:'Planlı mı spontane mi'},
-  korku:{d:'spider', yq:'Yusuf gizlice neyden korkar?', sq:'Peki sen gizlice neyden korkarsın?', o:['Örümcek','Yükseklik','Karanlık','Derin deniz'], so:['Örümcek','Yükseklik','Karanlık','Derin deniz'], y:'Yükseklik', g:'Örümcek', label:'Gizli korku'},
+  korku:{d:'spider', yq:'Sence ben gizlice neyden korkarım?', sq:'Peki sen gizlice neyden korkarsın?', o:['Örümcek','Yükseklik','Karanlık','Derin deniz'], so:['Örümcek','Yükseklik','Karanlık','Derin deniz'], y:'Yükseklik', g:'Örümcek', label:'Gizli korku'},
   sabir:{noY:true, aq:'Sabırlı mısın, sabırsız mı?', d:'hourglass', yq:'Yusuf sabırlı mı, sabırsız mı?', sq:'Peki sen?', o:['Sabırlı','Sabırsız'], so:['Sabırlı','Sabırsız'], y:'Sabırlı', g:'Sabırlı', label:'Sabırlı mı sabırsız mı'},
   karar:{noY:true, aq:'Mantıkla mı karar verirsin, kalple mi?', d:'scale', yq:'Yusuf mantıkla mı karar verir, kalple mi?', sq:'Peki sen?', o:['Mantıkla','Kalple'], so:['Mantıkla','Kalple'], y:'Kalple', g:'Mantıkla', label:'Mantık mı kalp mi'},
-  duvar:{d:'phone', yq:'Yusuf\'un telefonunun duvar kağıdında ne var?', sq:'Peki seninkinde ne var?', o:['Doğa manzarası','Bir hayvan','Düz renk','Göz işareti'], so:['Doğa manzarası','Bir hayvan','Düz renk','Bir fotoğraf','Başka bir şey'], y:'Göz işareti', g:'Doğa manzarası', label:'Duvar kağıdı'},
+  duvar:{d:'phone', yq:'Telefonumun duvar kağıdında ne var sence?', sq:'Peki seninkinde ne var?', o:['Doğa manzarası','Bir hayvan','Düz renk','Göz işareti'], so:['Doğa manzarası','Bir hayvan','Düz renk','Bir fotoğraf','Başka bir şey'], y:'Göz işareti', g:'Doğa manzarası', label:'Duvar kağıdı'},
   alarm:{noY:true, aq:'Alarm çalınca ne yaparsın?', d:'alarm', yq:'Yusuf alarm çalınca ne yapar?', sq:'Peki sen?', o:['Hemen kapatır','Erteler'], so:['Hemen kapatırım','Ertelerim'], y:'Erteler', g:'Hemen kapatırım', label:'Alarm'},
   mesaj:{noY:true, aq:'Mesajlara hemen mi dönersin, sonra mı?', d:'envelope', yq:'Yusuf mesajlara hemen mi döner, sonra mı?', sq:'Peki sen?', o:['Hemen','Sonra'], so:['Hemen','Sonra'], y:'Hemen', g:'Sonra', label:'Mesajlar'},
   mevsim:{noY:true, aq:'Yazı mı seversin, kışı mı?', d:'season', yq:'Yusuf yazı mı sever, kışı mı?', sq:'Peki sen?', o:['Yaz','Kış'], so:['Yaz','Kış'], y:'Yaz', g:'Kış', label:'Yaz mı kış mı'},
@@ -208,7 +298,7 @@ const STEPS = [
   {t:'p',k:'kahve'},
   {t:'letters'},
   {t:'p',k:'kahvalti'},
-  {t:'text',k:'sarkiTahmin',d:'vinyl',eyebrow:'Tahmin',q:'Yusuf bugün hangi parçayı dinlemiştir?',ph:'Şarkı ya da şarkıcı',after:'Bunu teyit etmek için Yusuf\'a sorman lazım.'},
+  {t:'text',k:'sarkiTahmin',d:'vinyl',eyebrow:'Tahmin',q:'Sence ben bugün hangi parçayı dinledim?',ph:'Şarkı ya da şarkıcı',after:'Doğru mu, bilmek için bana sorman lazım.'},
   {t:'text',k:'sarki',d:'vinyl',eyebrow:'Senin günün',q:'Peki sen bugün hangi şarkıyı dinledin?',ph:'Şarkı ve şarkıcı',skip:'Bugün hiç müzik dinlemedim'},
   {t:'p',k:'cumartesi'},
   {t:'pick',k:'isAn',d:'calendar',eyebrow:'Senin hakkında',q:'İşte günün en sevdiğin anı hangisi?',o:['Sabah ilk kahve ya da çay','Öğle arası','Mesainin bittiği an','Bir işi güzelce bitirdiğim an']},
@@ -218,9 +308,9 @@ const STEPS = [
   {t:'text',k:'guldugu',d:'qmark',eyebrow:'Senin hakkında',q:'Son zamanlarda seni en çok güldüren şey ne oldu?',ph:'Bir olay, bir video, bir cümle...'},
   {t:'p',k:'plan'},
   {t:'p',k:'korku'},
-  {t:'text',k:'yusufSuAn',d:'qmark',eyebrow:'Tahmin',q:'Yusuf şu an ne yapıyordur?',ph:'Bence şu an...'},
+  {t:'text',k:'yusufSuAn',d:'qmark',eyebrow:'Tahmin',q:'Sence ben şu an ne yapıyorumdur?',ph:'Bence şu an...'},
   {t:'p',k:'sabir'},
-  {t:'pick',k:'kadikoyGorevi',d:'ferry',eyebrow:'Kadıköy görevi',q:'Ofisten çıkarken bir görev seç',o:['Altından boğa heykelini gören bir fotoğraf çek','İskelede martılara selam ver','Dönüşte otobüste cam kenarına otur','Eve giderken bir sokak kedisini sev'],done:'Yaptım'},
+  {t:'pick',k:'kadikoyGorevi',d:'ferry',eyebrow:'Kadıköy görevi',q:'Sana bir görevim var. Ofisten çıkarken birini seç.',o:['Altından boğa heykelini gören bir fotoğraf çek','İskelede martılara selam ver','Dönüşte otobüste cam kenarına otur','Eve giderken bir sokak kedisini sev'],done:'Yaptım'},
   {t:'text',k:'kadikoyYer',d:'ferry',eyebrow:'Senin hakkında',q:'Kadıköy\'de en sevdiğin yer neresi?',ph:'Bir kafe, bir sokak, bir köşe'},
   {t:'p',k:'karar'},
   {t:'p',k:'duvar'},
@@ -229,7 +319,7 @@ const STEPS = [
   {t:'p',k:'alarm'},
   {t:'p',k:'mesaj'},
   {t:'text',k:'ogrenmek',d:'book',eyebrow:'Senin hakkında',q:'Bu ay öğrenmek istediğin bir şey var mı?',ph:'Bir dil, bir tarif, bir beceri...',skip:'Şu an aklımda bir şey yok'},
-  {t:'pick',k:'yusufaGorev',d:'task',eyebrow:'Yusuf\'a görev',q:'Yusuf\'a bugün zorunlu bir aktivite ver',o:['10 dakika yürüyüşe çıksın','Bir bardak su içsin','Bir şarkıyı baştan sona dinlesin','Odasını toplasın','Erken yatsın']},
+  {t:'pick',k:'yusufaGorev',d:'task',eyebrow:'Yusuf\'a görev',q:'Sıra sende. Bana bugün zorunlu bir aktivite ver.',o:['10 dakika yürüyüşe çık','Bir bardak su iç','Bir şarkıyı baştan sona dinle','Odanı topla','Erken yat']},
   {t:'p',k:'mevsim'},
   {t:'pick',k:'enerji',d:'alarm',eyebrow:'Senin hakkında',q:'Sana en çok ne enerji verir?',o:['Müzik','İnsanlarla olmak','Yalnız kalmak','Hareket etmek']},
   {t:'photo'},
@@ -252,12 +342,22 @@ function show(html, after){
   const put = () => {
     stage.innerHTML = `<div class="card">${html}</div>`;
     setProgress();
+    hop('heroYusuf');
+    const qEl = stage.querySelector('.q');
+    if(qEl && !qEl.children.length && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+      const full = qEl.textContent; qEl.style.minHeight = qEl.offsetHeight+'px'; qEl.textContent = ''; let k = 0; const v = viewId;
+      const tick = () => { if(v !== viewId) return; qEl.textContent = full.slice(0, ++k); if(k < full.length) setTimeout(tick, 18); };
+      tick();
+    }
     window.scrollTo({top:0,behavior:'smooth'});
     after && after(stage.firstElementChild);
   };
   if(old){ old.classList.add('out'); setTimeout(put, 260); } else put();
 }
 
+function hop(id){ const h = document.getElementById(id); if(!h) return; h.classList.remove('hop'); void h.offsetWidth; h.classList.add('hop'); }
+function heart(){ const sc = document.getElementById('scene'); const h = document.createElement('i'); h.className = 'lovepop'; sc.appendChild(h); setTimeout(()=>h.remove(), 1700); }
+document.getElementById('stage').addEventListener('click', e => { if(e.target.closest('.opts .btn, .tile, #ok, #sent, #did')) hop('heroSen'); });
 const hist = [];
 let viewId = 0;
 const later = (fn, ms) => { const v = viewId; setTimeout(() => { if(v === viewId) fn(); }, ms); };
@@ -289,10 +389,10 @@ function intro(){
   show(`
     <div class="eyebrow"><span>${STEPS.length} adım</span><span>yaklaşık 7 dakika</span></div>
     <h1>Yusuf'u ne kadar tanıyorsun?</h1>
-    ${doodle('balloons')}
+    <p class="q">Selam! Sana birkaç soru soracağım, birkaç da görev vereceğim. Hazır mısın?</p>
     <p class="sub">Biraz tahmin, biraz oyun, birkaç minik görev. Çoğu soru senin hakkında. Doğru ya da yanlış cevap yok, sadece Yusuf hakkındaki birkaç soruda puan var.</p>
     <div class="note">Cevapların oyun bitince Yusuf'a ulaşır.</div>
-    <button class="btn primary" id="go">Başla</button>
+    <button class="btn primary" id="go">Hazırım</button>
   `, c => {
     $('#go',c).onclick = next;
   });
@@ -315,6 +415,7 @@ function personal(s){
         if(ans.guess) return;
         ans.guess = b.dataset.v;
         const ok = ans.guess === q.y;
+        if(ok) heart();
         b.classList.add(ok ? 'right' : 'on');
         if(!ok) c.querySelectorAll('.btn').forEach(x => { if(x.dataset.v === q.y) x.classList.add('right'); });
         $('#fb',c).innerHTML = `<div class="stamp ${ok?'good':'bad'}">${ok?'Bildin':'Bilemedin'}</div>`;
@@ -335,7 +436,7 @@ function personal(s){
   } else {
     show(`
       <div class="eyebrow"><span>Senin hakkında</span><span>${esc(q.label)}</span></div>
-      <p class="q">Sence Yusuf bunu biliyor mu?</p>
+      <p class="q">Sence ben bunu biliyor muyum?</p>
       <p class="sub">Senin cevabın: <strong>${esc(ans.self)}</strong></p>
       <div class="opts two"><button class="btn" data-v="Bilir">Bilir</button><button class="btn" data-v="Bilmez">Bilmez</button></div>
       <p class="sub">Doğrusunu oyunun sonunda göreceksin.</p>
@@ -398,7 +499,7 @@ function photo(){
   show(`
     <div class="eyebrow"><span>Son görev</span><span></span></div>
     ${doodle('camera')}
-    <p class="q">Galerinden son iki günde çektiğin bir fotoğrafı Yusuf'a gönder.</p>
+    <p class="q">Son görev: galerinden son iki günde çektiğin bir fotoğrafı bana gönder.</p>
     <p class="sub">Ne olursa: yemek, gökyüzü, ofis masası, bir kedi.</p>
     <button class="btn primary" id="sent">Paylaştım</button>
     <button class="link" id="nope">Şimdilik geç</button>
