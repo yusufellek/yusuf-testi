@@ -6,7 +6,7 @@
 <title>Yusuf Testi</title>
 <meta name="robots" content="noindex">
 <script src="config.js"></script>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Poppins:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Poppins:wght@400;500;600&display=swap">
 <style>
 /* Layout: tek ekranlık kart; krem kağıt, kırmızı tombul başlık, titreyen el çizimi çizgiler */
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
@@ -17,7 +17,7 @@
   --red-ink:#B23526;
   --muted:#6B675C;
   --ok:#2F7A4A;
-  --display:'Lilita One','Arial Rounded MT Bold','Trebuchet MS',sans-serif;
+  --display:'Baloo 2','Arial Rounded MT Bold','Trebuchet MS',sans-serif;
   --body:'Poppins','Segoe UI',system-ui,sans-serif;
   color-scheme:light;
 }
@@ -39,8 +39,8 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);f
 @keyframes cardIn{from{opacity:0;transform:translateX(40px) rotate(2deg)}to{opacity:1;transform:none}}
 @keyframes cardOut{to{opacity:0;transform:translateX(-40px) rotate(-2deg)}}
 .eyebrow{display:flex;justify-content:space-between;color:var(--red);font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase}
-h1{font-family:var(--display);font-weight:400;color:var(--red);font-size:clamp(40px,12vw,58px);line-height:.95;margin:0;text-transform:uppercase;text-wrap:balance;letter-spacing:.01em}
-h2{font-family:var(--display);font-weight:400;color:var(--red);font-size:30px;line-height:1;margin:0;text-transform:uppercase;letter-spacing:.02em}
+h1{font-family:var(--display);font-weight:800;color:var(--red);font-size:clamp(40px,12vw,58px);line-height:.95;margin:0;text-transform:uppercase;text-wrap:balance;letter-spacing:.01em}
+h2{font-family:var(--display);font-weight:800;color:var(--red);font-size:30px;line-height:1;margin:0;text-transform:uppercase;letter-spacing:.02em}
 .q{font-size:20px;font-weight:500;line-height:1.35;margin:0;text-wrap:balance}
 .sub{font-size:14px;color:var(--muted);margin:0;line-height:1.55}
 .doodle{display:block;width:100%;max-width:100%;height:150px}
@@ -62,7 +62,7 @@ h2{font-family:var(--display);font-weight:400;color:var(--red);font-size:30px;li
 input[type=text],textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:14px;padding:13px 14px;width:100%;box-sizing:border-box;resize:none}
 input::placeholder,textarea::placeholder{color:#9A9585}
 .err{color:var(--red-ink);font-size:13px;margin:-4px 0 0;min-height:1em}
-.stamp{display:inline-block;align-self:center;font-family:var(--display);font-size:26px;padding:6px 18px;border:3px solid currentColor;border-radius:10px;transform:rotate(-6deg);animation:stamp .45s cubic-bezier(.3,1.8,.5,1) both;text-transform:uppercase}
+.stamp{font-weight:800;display:inline-block;align-self:center;font-family:var(--display);font-size:26px;padding:6px 18px;border:3px solid currentColor;border-radius:10px;transform:rotate(-6deg);animation:stamp .45s cubic-bezier(.3,1.8,.5,1) both;text-transform:uppercase}
 .stamp.good{color:var(--ok)}.stamp.bad{color:var(--red)}
 @keyframes stamp{from{opacity:0;transform:scale(2.2) rotate(-14deg)}to{opacity:1;transform:rotate(-6deg)}}
 .note{border:2px dashed var(--ink);border-radius:14px;padding:12px 14px;font-size:14px;line-height:1.55;background:var(--paper-2)}
@@ -76,25 +76,30 @@ input::placeholder,textarea::placeholder{color:#9A9585}
 @keyframes sway{from{transform:rotate(-6deg)}to{transform:rotate(6deg)}}
 .burst{position:absolute;pointer-events:none;width:0;height:0}
 .burst i{position:absolute;width:8px;height:3px;background:var(--ink);border-radius:2px;left:-4px;top:-1px;animation:shard .5s ease-out forwards}
-.burst b{position:absolute;left:-20px;top:-12px;font-family:var(--display);color:var(--red);font-size:18px;font-weight:400;animation:popword .6s ease-out forwards}
+.burst b{font-weight:800!important;position:absolute;left:-20px;top:-12px;font-family:var(--display);color:var(--red);font-size:18px;font-weight:400;animation:popword .6s ease-out forwards}
 @keyframes shard{to{transform:rotate(var(--r)) translateX(34px);opacity:0}}
 @keyframes popword{from{transform:scale(.4)}to{transform:translateY(-26px) scale(1.2);opacity:0}}
 .score{display:flex;justify-content:space-between;font-size:13px;font-weight:500}
 /* harf oyunu */
 .word{min-height:58px;border-bottom:3px solid var(--ink);display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end;padding-bottom:8px}
-.word span{font-family:var(--display);font-size:30px;color:var(--red);animation:pop .3s both}
+.word span{font-weight:800;line-height:1;font-family:var(--display);font-size:30px;color:var(--red);animation:pop .3s both}
 .tiles{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-.tile{appearance:none;width:48px;height:52px;font-family:var(--display);font-size:24px;color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:10px;box-shadow:3px 3px 0 var(--ink);cursor:pointer;transition:transform .12s,opacity .2s;animation:pop .45s cubic-bezier(.3,1.6,.5,1) both}
+.tile{font-weight:800;line-height:1;padding:0;appearance:none;width:48px;height:52px;font-family:var(--display);font-size:24px;color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:10px;box-shadow:3px 3px 0 var(--ink);cursor:pointer;transition:transform .12s,opacity .2s;animation:pop .45s cubic-bezier(.3,1.6,.5,1) both}
 .tile:nth-child(odd){transform:rotate(-3deg)}.tile:nth-child(even){transform:rotate(2deg)}
-.tile.used{opacity:.2;pointer-events:none}
+.tile.used{animation:tileOut .22s ease-in forwards;pointer-events:none}
+@keyframes tileOut{to{transform:scale(0) rotate(12deg);opacity:0;visibility:hidden}}
+.tile.back-in{animation:pop .4s cubic-bezier(.3,1.6,.5,1) both}
+.icon-btn{flex:none!important;width:52px;padding:0;display:grid;place-items:center}
+.word.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 .row{display:flex;gap:10px}.row .btn{flex:1}
 /* sonuç */
-.big{font-family:var(--display);font-size:64px;color:var(--ink);line-height:1;font-variant-numeric:tabular-nums}
+.big{font-weight:800;font-family:var(--display);font-size:64px;color:var(--ink);line-height:1;font-variant-numeric:tabular-nums}
 .big small{font-size:28px;color:var(--muted)}
 .meter{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .meter div{border:2px solid var(--ink);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:4px}
 .meter span{font-size:12px;color:var(--muted);line-height:1.35}
-.meter strong{font-family:var(--display);font-weight:400;font-size:34px;color:var(--red);font-variant-numeric:tabular-nums}
+.meter strong{font-family:var(--display);font-weight:800;font-size:34px;color:var(--red);font-variant-numeric:tabular-nums}
 .list{display:flex;flex-direction:column;gap:0;border-top:2px solid var(--ink)}
 .li{display:grid;grid-template-columns:1fr auto;gap:4px 10px;padding:12px 0;border-bottom:1px dashed var(--ink);font-size:14px;line-height:1.45}
 .li .k{font-weight:500}
@@ -445,6 +450,7 @@ function balloons(){
   });
 }
 
+const WORDS = new Set(["ad", "ada", "adak", "adaklı", "adaklık", "adalar", "adalı", "adaş", "adaşlık", "adlar", "adlı", "adı", "adıl", "ak", "aka", "akak", "akala", "akar", "akdarı", "akkışla", "akla", "aklı", "aklık", "akı", "akıl", "akış", "al", "ala", "alaka", "alarak", "aldı", "alkış", "alık", "alış", "ar", "ara", "arada", "arak", "araka", "araklı", "aral", "aralı", "aralık", "arda", "ardak", "ardı", "ardıl", "ark", "arka", "arkadaş", "arkadaşlık", "arkalı", "arkalık", "arlı", "arı", "arık", "arış", "arş", "aş", "aşar", "aşk", "aşlık", "aşı", "aşık", "da", "dal", "dalak", "dalar", "dalaş", "dalış", "dar", "dara", "daralış", "daraş", "daraşlık", "darlık", "darı", "dılak", "dış", "dışa", "dışrak", "kadar", "kadı", "kak", "kaka", "kakır", "kakış", "kal", "kala", "kalak", "kaldı", "kaldır", "kalk", "kalkar", "kalkış", "kalık", "kalış", "kar", "kara", "karakaş", "karalı", "karalık", "karlı", "karlık", "karı", "karık", "karış", "karşı", "kaş", "kaşar", "kaşarlı", "kaşlar", "kaşlı", "kaşık", "kral", "kıl", "kır", "kırdı", "kırk", "kış", "kışla", "kışlak", "la", "lak", "laka", "ra", "rakı", "ır", "ıra", "ırak", "ırk", "şa", "şad", "şak", "şaka", "şakak", "şakalı", "şakrak", "şakıldak", "şakır", "şal", "şalak", "şar", "şark", "şarklı", "şarkı", "şarıl", "şık", "şıra", "şırak"]);
 function letters(){
   const pool = LETTERS.map((l,i)=>({l,i})).sort(()=>Math.random()-.5);
   let word = [];
@@ -455,14 +461,24 @@ function letters(){
     <div class="word" id="word" aria-live="polite"></div>
     <div class="tiles" id="tiles">${pool.map(p=>`<button class="tile" data-i="${p.i}">${p.l}</button>`).join('')}</div>
     <p class="err" id="err"></p>
-    <div class="row"><button class="btn" id="back">Sil</button><button class="btn primary" id="ok">Bitti</button></div>
+    <div class="row">
+      <button class="btn icon-btn" id="reset" aria-label="Baştan başla"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="btn" id="back">Sil</button>
+      <button class="btn primary" id="ok">Bitti</button>
+    </div>
   `, c => {
-    const draw = () => { $('#word',c).innerHTML = word.map(w=>`<span>${w.l}</span>`).join(''); };
-    c.querySelectorAll('.tile').forEach(t => t.onclick = () => { word.push({l:t.textContent,el:t}); t.classList.add('used'); $('#err',c).textContent=''; draw(); });
-    $('#back',c).onclick = () => { const w = word.pop(); if(w) w.el.classList.remove('used'); draw(); };
+    const err = $('#err',c), wEl = $('#word',c);
+    const draw = () => { wEl.innerHTML = word.map(w=>`<span>${w.l}</span>`).join(''); err.textContent=''; };
+    const restore = t => { t.hidden = false; t.classList.remove('used'); t.classList.remove('back-in'); void t.offsetWidth; t.classList.add('back-in'); };
+    c.querySelectorAll('.tile').forEach(t => t.onclick = () => { word.push({l:t.textContent,el:t}); t.classList.add('used'); draw(); setTimeout(()=>{ if(t.classList.contains('used')) t.hidden = true; }, 220); });
+    $('#back',c).onclick = () => { const w = word.pop(); if(w) restore(w.el); draw(); };
+    $('#reset',c).onclick = () => { word.forEach(w=>restore(w.el)); word = []; draw(); };
     $('#ok',c).onclick = () => {
-      if(word.length < 2){ $('#err',c).textContent = 'En az iki harflik bir kelime kur.'; return; }
-      const w = word.map(x=>x.l).join(''); st.a.harf = w;
+      const fail = m => { err.textContent = m; wEl.classList.remove('shake'); void wEl.offsetWidth; wEl.classList.add('shake'); };
+      if(word.length < 2){ fail('En az iki harflik bir kelime kur.'); return; }
+      const w = word.map(x=>x.l).join('');
+      if(!WORDS.has(w.toLocaleLowerCase('tr-TR'))){ fail('“'+w+'” bir kelime değil gibi. Başka bir tane dene.'); return; }
+      st.a.harf = w;
       const best = w === 'ARKADAŞLIK';
       c.innerHTML = `<div class="eyebrow"><span>Harf oyunu</span><span></span></div>
         <h2>${esc(w)}</h2>
