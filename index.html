@@ -228,6 +228,9 @@ body{background:#20232c}
 .opts.two{flex-direction:column}
 .opts .btn{text-align:right;position:relative}
 .opts.two .btn{text-align:right}
+.btn.dim{opacity:.45}
+.cont{align-self:flex-start;width:auto;padding-inline:22px}
+.q.say{margin-top:8px}
 .opts .btn:last-child::after{content:'';position:absolute;bottom:-15px;right:24px;width:16px;height:14px;background:inherit;border:3px solid var(--ink);border-top:0;clip-path:polygon(0 0,100% 0,100% 100%)}
 input[type=text]{align-self:flex-end;width:min(82%,360px);text-align:right}
 .card > .btn.primary{align-self:stretch}
@@ -323,7 +326,6 @@ const LANGS = [
 const LETTERS = ['A','R','K','A','D','A','Ş','L','I','K'];
 
 const STEPS = [
-  {t:'balloons'},
   {t:'p',k:'cay'},
   {t:'p',k:'gece'},
   {t:'text',k:'kitap',d:'book',eyebrow:'Senin günün',q:'Şu an okuduğun kitap hangisi?',ph:'Kitabın adı',skip:'Şu an bir şey okumuyorum'},
@@ -391,6 +393,21 @@ function hop(id){ const h = document.getElementById(id); if(!h) return; h.classL
 function talk(on){ const h = document.getElementById('heroYusuf'); h && h.classList.toggle('talking', on); }
 function react(id, cls){ const h = document.getElementById(id); if(!h) return; h.classList.remove(cls); void h.offsetWidth; h.classList.add(cls); setTimeout(()=>h.classList.remove(cls), 900); }
 setInterval(() => { if(document.hidden) return; const id = Math.random() < .5 ? 'heroYusuf' : 'heroSen'; react(id, ['fidget','lookl','lookr'][Math.floor(Math.random()*3)]); }, 4200);
+const pickOne = a => a[Math.floor(Math.random()*a.length)];
+function say(c, text, done){
+  const p = document.createElement('p'); p.className = 'q say'; c.appendChild(p);
+  hop('heroYusuf'); talk(true);
+  const v = viewId; let k = 0;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const tick = () => { if(v !== viewId) return; p.textContent = reduce ? text : text.slice(0, ++k); if(!reduce && k < text.length) setTimeout(tick, 24); else { talk(false); done && done(); } };
+  tick();
+  setTimeout(()=>p.scrollIntoView({behavior:'smooth', block:'center'}), 50);
+  return p;
+}
+function cont(c, label){
+  const b = document.createElement('button'); b.className = 'btn primary cont'; b.textContent = label || 'Devam'; c.appendChild(b);
+  b.onclick = next; return b;
+}
 function heart(){ const sc = document.getElementById('scene'); const h = document.createElement('i'); h.className = 'lovepop'; sc.appendChild(h); setTimeout(()=>h.remove(), 1700); }
 document.getElementById('stage').addEventListener('click', e => { if(e.target.closest('.opts .btn, .tile, #ok, #sent, #did')) hop('heroSen'); });
 const hist = [];
@@ -441,44 +458,56 @@ function personal(s){
   if(st.sub === 0){
     show(`
       <div class="eyebrow"><span>Yusuf hakkında</span><span>Tahmin</span></div>
-      ${doodle(q.d)}
       <p class="q">${esc(q.yq)}</p>
       <div class="opts ${many?'':'two'}">${q.o.map(o=>`<button class="btn" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div>
-      <div id="fb"></div>
     `, c => {
-      c.querySelectorAll('.btn').forEach(b => b.onclick = () => {
+      c.querySelectorAll('.opts .btn').forEach(b => b.onclick = () => {
         if(ans.guess) return;
         ans.guess = b.dataset.v;
         const ok = ans.guess === q.y;
-        if(ok){ heart(); hop('heroYusuf'); } else react('heroSen','nope');
-        b.classList.add(ok ? 'right' : 'on');
-        if(!ok) c.querySelectorAll('.btn').forEach(x => { if(x.dataset.v === q.y) x.classList.add('right'); });
-        $('#fb',c).innerHTML = `<div class="stamp ${ok?'good':'bad'}">${ok?'Bildin':'Bilemedin'}</div>`;
-        later(()=>advSub(1), 1300);
+        b.classList.add('on');
+        c.querySelectorAll('.opts .btn').forEach(x => { if(x !== b) x.classList.add('dim'); });
+        later(() => {
+          if(ok){ heart(); } else react('heroSen','nope');
+          const y = q.y;
+          const line = ok
+            ? pickOne([`Bildin! Cevap gerçekten “${y}”.`, `Evet! “${y}”. Beni iyi tanıyorsun.`, `Tam isabet. “${y}”, aynen öyle.`])
+            : pickOne([`Yok yaa, aslında “${y}”.`, `Hmm, değil. Doğrusu “${y}”.`, `Yaklaştın ama cevap “${y}”.`]);
+          say(c, line, () => { const bt = cont(c); bt.onclick = () => advSub(1); });
+        }, 450);
       });
     });
   } else if(st.sub === 1){
     show(`
       <div class="eyebrow"><span>Senin hakkında</span><span>${esc(q.label)}</span></div>
-      <p class="q">${esc(q.noY ? q.aq : q.sq)}</p>${q.noY?doodle(q.d):''}
+      <p class="q">${esc(q.noY ? q.aq : q.sq)}</p>
       <div class="opts ${q.so.length>2?'':'two'}">${q.so.map(o=>`<button class="btn" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div>
     `, c => {
-      c.querySelectorAll('.btn').forEach(b => b.onclick = () => {
+      c.querySelectorAll('.opts .btn').forEach(b => b.onclick = () => {
         ans.self = b.dataset.v; b.classList.add('on');
-        later(()=>advSub(2), 350);
+        later(()=>advSub(2), 400);
       });
     });
   } else {
     show(`
       <div class="eyebrow"><span>Senin hakkında</span><span>${esc(q.label)}</span></div>
-      <p class="q">Sence ben bunu biliyor muyum?</p>
-      <p class="sub">Senin cevabın: <strong>${esc(ans.self)}</strong></p>
-      <div class="opts two"><button class="btn" data-v="Bilir">Bilir</button><button class="btn" data-v="Bilmez">Bilmez</button></div>
-      <p class="sub">Doğrusunu oyunun sonunda göreceksin.</p>
+      <p class="q">“${esc(ans.self)}” dedin. Sence ben bunu biliyor muyum?</p>
+      <div class="opts two"><button class="btn" data-v="Bilir">Bilirsin</button><button class="btn" data-v="Bilmez">Bilmezsin</button></div>
     `, c => {
-      c.querySelectorAll('.btn').forEach(b => b.onclick = () => {
+      c.querySelectorAll('.opts .btn').forEach(b => b.onclick = () => {
+        if(ans.knows) return;
         ans.knows = b.dataset.v; b.classList.add('on');
-        later(next, 350);
+        c.querySelectorAll('.opts .btn').forEach(x => { if(x !== b) x.classList.add('dim'); });
+        const knew = q.g === ans.self, saidYes = ans.knows === 'Bilir', g = q.g;
+        let line;
+        if(saidYes && knew) line = pickOne([`Evet, bildim! Ben de “${g}” demiştim.`, `Bildim tabii. “${g}”. Seni tanıyorum.`]);
+        else if(saidYes && !knew) line = pickOne([`Aaa öyle miydi? Ben “${g}” sanıyordum. Tüh, bilmiyordum.`, `Tüh! “${g}” demiştim. Bilmiyormuşum.`]);
+        else if(!saidYes && knew) line = pickOne([`Aslında biliyordum! Ben de “${g}” demiştim.`, `Beni hafife aldın, biliyordum: “${g}”.`]);
+        else line = pickOne([`Haklısın, bilmiyordum. Ben “${g}” sanıyordum. Not aldım.`, `Doğru, bilmiyordum. “${g}” demiştim. Bir dahakine bilirim.`]);
+        later(() => {
+          if(knew){ heart(); } else react('heroYusuf','nope');
+          say(c, line, () => cont(c));
+        }, 450);
       });
     });
   }
@@ -645,12 +674,14 @@ function lang(){
       c.querySelectorAll('.opts .btn').forEach(x=>{ if(x.dataset.v===pickL[1]) x.classList.add('right'); });
       const fb = $('#fb',c);
       if(ok){
-        fb.innerHTML = `<div class="note" style="margin-top:4px">Bu dili iyi biliyor gibisin. Oyuna ${esc(pickL[0])} devam edelim mi?</div><div class="row" style="margin-top:10px"><button class="btn" id="y">Evet</button><button class="btn" id="n">Hayır</button></div>`;
-        $('#y',c).onclick = () => { fb.innerHTML = `<div class="note">Harika. Yalnız oyunun geri kalanı bu dili bilmiyor, o yüzden Türkçe devam ediyoruz.</div><button class="btn primary" id="go" style="margin-top:10px">Tamam</button>`; $('#go',c).onclick = next; };
-        $('#n',c).onclick = next;
+        say(c, `Vay, bu dili iyi biliyor gibisin. Oyuna ${pickL[0]} devam edelim mi?`, () => {
+          const o = document.createElement('div'); o.className = 'opts two';
+          o.innerHTML = '<button class="btn" id="y">Evet</button><button class="btn" id="n">Hayır</button>'; c.appendChild(o);
+          $('#y',c).onclick = () => { o.querySelectorAll('.btn').forEach(x=>x.classList.add('dim')); say(c, 'Şaka şaka, ben o kadar bilmiyorum. Türkçe devam!', () => cont(c)); };
+          $('#n',c).onclick = next;
+        });
       } else {
-        fb.innerHTML = `<div class="stamp bad">${esc(pickL[1])}</div><button class="btn primary" id="go" style="margin-top:14px">Bir dahakine</button>`;
-        $('#go',c).onclick = next;
+        say(c, `Olmadı, ${pickL[0]}'da “${pickL[1]}” denir. Bir dahakine!`, () => cont(c));
       }
     });
   });
