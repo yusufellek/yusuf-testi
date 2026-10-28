@@ -169,20 +169,21 @@ const doodle = k => `<svg class="doodle wob" viewBox="0 0 240 150" aria-hidden="
 const P = {
   cay:{d:'tea', yq:'Yusuf çay mı sever, kahve mi?', sq:'Peki sen? Çay mı, kahve mi?', o:['Çay','Kahve'], so:['Çay','Kahve'], y:'Çay', g:'Kahve', label:'Çay mı kahve mi'},
   gece:{d:'sunmoon', yq:'Yusuf sabah insanı mı, gece insanı mı?', sq:'Peki sen?', o:['Sabah','Gece'], so:['Sabah','Gece'], y:'Gece', g:'Sabah', label:'Sabah mı gece mi'},
-  kahve:{d:'coffee', yq:'Yusuf kahve içse nasıl içer?', sq:'Peki sen kahveyi nasıl içersin?', o:['Sade','Sütlü','Şekerli','Hiç içmez'], so:['Sade','Sütlü','Şekerli','Hiç içmem'], y:'Sade', g:'Sade', label:'Kahve nasıl'},
+  kahve:{noY:true, aq:'Kahveyi nasıl içersin?', d:'coffee', yq:'Yusuf kahve içse nasıl içer?', sq:'Peki sen kahveyi nasıl içersin?', o:['Sade','Sütlü','Şekerli','Hiç içmez'], so:['Sade','Sütlü','Şekerli','Hiç içmem'], y:'Sade', g:'Sade', label:'Kahve nasıl'},
   kahvalti:{d:'croissant', yq:'Yusuf\'un kahvaltıda vazgeçemediği şey?', sq:'Peki senin vazgeçemediğin?', o:['Peynir','Yumurta','Kruvasan','Kahvaltı yapmaz'], so:['Peynir','Yumurta','Kruvasan','Kahvaltı yapmam'], y:'Kruvasan', g:'Kahvaltı yapmam', label:'Kahvaltı'},
-  cumartesi:{d:'house', yq:'Yusuf cumartesi akşamı genelde ne yapar?', sq:'Peki sen cumartesi akşamı genelde?', o:['Dışarı çıkar','Evde olur','Arkadaşlarla olur'], so:['Dışarı çıkarım','Evde olurum','Arkadaşlarla olurum'], y:'Evde olur', g:'Arkadaşlarla olurum', label:'Cumartesi akşamı'},
-  duzen:{d:'boxes', yq:'Yusuf düzenli mi, dağınık mı?', sq:'Peki sen?', o:['Düzenli','Dağınık'], so:['Düzenli','Dağınık'], y:'Düzenli', g:'Düzenli', label:'Düzenli mi dağınık mı'},
-  plan:{d:'calendar', yq:'Yusuf planlı mı, spontane mi?', sq:'Peki sen?', o:['Planlı','Spontane'], so:['Planlı','Spontane'], y:'Spontane', g:'Planlı', label:'Planlı mı spontane mi'},
+  cumartesi:{noY:true, aq:'Cumartesi akşamı genelde ne yaparsın?', d:'house', yq:'Yusuf cumartesi akşamı genelde ne yapar?', sq:'Peki sen cumartesi akşamı genelde?', o:['Dışarı çıkar','Evde olur','Arkadaşlarla olur'], so:['Dışarı çıkarım','Evde olurum','Arkadaşlarla olurum'], y:'Evde olur', g:'Arkadaşlarla olurum', label:'Cumartesi akşamı'},
+  duzen:{noY:true, aq:'Düzenli misin, dağınık mı?', d:'boxes', yq:'Yusuf düzenli mi, dağınık mı?', sq:'Peki sen?', o:['Düzenli','Dağınık'], so:['Düzenli','Dağınık'], y:'Düzenli', g:'Düzenli', label:'Düzenli mi dağınık mı'},
+  plan:{noY:true, aq:'Planlı mısın, spontane mi?', d:'calendar', yq:'Yusuf planlı mı, spontane mi?', sq:'Peki sen?', o:['Planlı','Spontane'], so:['Planlı','Spontane'], y:'Spontane', g:'Planlı', label:'Planlı mı spontane mi'},
   korku:{d:'spider', yq:'Yusuf gizlice neyden korkar?', sq:'Peki sen gizlice neyden korkarsın?', o:['Örümcek','Yükseklik','Karanlık','Derin deniz'], so:['Örümcek','Yükseklik','Karanlık','Derin deniz'], y:'Yükseklik', g:'Örümcek', label:'Gizli korku'},
-  sabir:{d:'hourglass', yq:'Yusuf sabırlı mı, sabırsız mı?', sq:'Peki sen?', o:['Sabırlı','Sabırsız'], so:['Sabırlı','Sabırsız'], y:'Sabırlı', g:'Sabırlı', label:'Sabırlı mı sabırsız mı'},
-  karar:{d:'scale', yq:'Yusuf mantıkla mı karar verir, kalple mi?', sq:'Peki sen?', o:['Mantıkla','Kalple'], so:['Mantıkla','Kalple'], y:'Kalple', g:'Mantıkla', label:'Mantık mı kalp mi'},
+  sabir:{noY:true, aq:'Sabırlı mısın, sabırsız mı?', d:'hourglass', yq:'Yusuf sabırlı mı, sabırsız mı?', sq:'Peki sen?', o:['Sabırlı','Sabırsız'], so:['Sabırlı','Sabırsız'], y:'Sabırlı', g:'Sabırlı', label:'Sabırlı mı sabırsız mı'},
+  karar:{noY:true, aq:'Mantıkla mı karar verirsin, kalple mi?', d:'scale', yq:'Yusuf mantıkla mı karar verir, kalple mi?', sq:'Peki sen?', o:['Mantıkla','Kalple'], so:['Mantıkla','Kalple'], y:'Kalple', g:'Mantıkla', label:'Mantık mı kalp mi'},
   duvar:{d:'phone', yq:'Yusuf\'un telefonunun duvar kağıdında ne var?', sq:'Peki seninkinde ne var?', o:['Doğa manzarası','Bir hayvan','Düz renk','Göz işareti'], so:['Doğa manzarası','Bir hayvan','Düz renk','Bir fotoğraf','Başka bir şey'], y:'Göz işareti', g:'Doğa manzarası', label:'Duvar kağıdı'},
-  alarm:{d:'alarm', yq:'Yusuf alarm çalınca ne yapar?', sq:'Peki sen?', o:['Hemen kapatır','Erteler'], so:['Hemen kapatırım','Ertelerim'], y:'Erteler', g:'Hemen kapatırım', label:'Alarm'},
-  mesaj:{d:'envelope', yq:'Yusuf mesajlara hemen mi döner, sonra mı?', sq:'Peki sen?', o:['Hemen','Sonra'], so:['Hemen','Sonra'], y:'Hemen', g:'Sonra', label:'Mesajlar'},
-  mevsim:{d:'season', yq:'Yusuf yazı mı sever, kışı mı?', sq:'Peki sen?', o:['Yaz','Kış'], so:['Yaz','Kış'], y:'Yaz', g:'Kış', label:'Yaz mı kış mı'},
+  alarm:{noY:true, aq:'Alarm çalınca ne yaparsın?', d:'alarm', yq:'Yusuf alarm çalınca ne yapar?', sq:'Peki sen?', o:['Hemen kapatır','Erteler'], so:['Hemen kapatırım','Ertelerim'], y:'Erteler', g:'Hemen kapatırım', label:'Alarm'},
+  mesaj:{noY:true, aq:'Mesajlara hemen mi dönersin, sonra mı?', d:'envelope', yq:'Yusuf mesajlara hemen mi döner, sonra mı?', sq:'Peki sen?', o:['Hemen','Sonra'], so:['Hemen','Sonra'], y:'Hemen', g:'Sonra', label:'Mesajlar'},
+  mevsim:{noY:true, aq:'Yazı mı seversin, kışı mı?', d:'season', yq:'Yusuf yazı mı sever, kışı mı?', sq:'Peki sen?', o:['Yaz','Kış'], so:['Yaz','Kış'], y:'Yaz', g:'Kış', label:'Yaz mı kış mı'},
 };
 const PKEYS = Object.keys(P);
+const YKEYS = PKEYS.filter(k=>!P[k].noY);
 
 const LANGS = [
   ['Fince','Moi'],['İspanyolca','Hola'],['İtalyanca','Ciao'],['Japonca','Konnichiwa'],
@@ -201,21 +202,27 @@ const STEPS = [
   {t:'text',k:'sarkiTahmin',d:'vinyl',eyebrow:'Tahmin',q:'Yusuf bugün hangi parçayı dinlemiştir?',ph:'Şarkı ya da şarkıcı',after:'Bunu teyit etmek için Yusuf\'a sorman lazım.'},
   {t:'text',k:'sarki',d:'vinyl',eyebrow:'Senin günün',q:'Peki sen bugün hangi şarkıyı dinledin?',ph:'Şarkı ve şarkıcı',skip:'Bugün hiç müzik dinlemedim'},
   {t:'p',k:'cumartesi'},
+  {t:'pick',k:'isAn',d:'calendar',eyebrow:'Senin hakkında',q:'İşte günün en sevdiğin anı hangisi?',o:['Sabah ilk kahve ya da çay','Öğle arası','Mesainin bittiği an','Bir işi güzelce bitirdiğim an']},
   {t:'lang'},
   {t:'p',k:'duzen'},
   {t:'pick',k:'sabahGorevi',d:'sunrise',eyebrow:'Görev',q:'Yarın 6.45\'te evden çıkarken bir görev seç',o:['Gökyüzüne bak, rengini aklında tut','Yolda ilk gördüğün kediye selam ver','Otobüste en sevdiğin şarkıyı aç','Simitçiden bir simit al']},
+  {t:'text',k:'guldugu',d:'qmark',eyebrow:'Senin hakkında',q:'Son zamanlarda seni en çok güldüren şey ne oldu?',ph:'Bir olay, bir video, bir cümle...'},
   {t:'p',k:'plan'},
   {t:'p',k:'korku'},
   {t:'text',k:'yusufSuAn',d:'qmark',eyebrow:'Tahmin',q:'Yusuf şu an ne yapıyordur?',ph:'Bence şu an...'},
   {t:'p',k:'sabir'},
   {t:'pick',k:'kadikoyGorevi',d:'ferry',eyebrow:'Kadıköy görevi',q:'Ofisten çıkarken bir görev seç',o:['Altından boğa heykelini gören bir fotoğraf çek','İskelede martılara selam ver','Dönüşte otobüste cam kenarına otur','Eve giderken bir sokak kedisini sev'],done:'Yaptım'},
+  {t:'text',k:'kadikoyYer',d:'ferry',eyebrow:'Senin hakkında',q:'Kadıköy\'de en sevdiğin yer neresi?',ph:'Bir kafe, bir sokak, bir köşe'},
   {t:'p',k:'karar'},
   {t:'p',k:'duvar'},
-  {t:'pick',k:'minikAktivite',d:'checklist',eyebrow:'Bugün için',q:'Aşırı küçük yeni bir aktivite seç',o:['Eve gidince kendime bir çay yapacağım','Otobüste 5 dakika camdan dışarı bakacağım','Yatmadan bir sayfa kitap okuyacağım','Birine güzel bir meme atacağım']},
+  {t:'pick',k:'minikAktivite',d:'checklist',eyebrow:'Bugün için',q:'Aşırı küçük yeni bir aktivite seç',o:['Eve gidince kendime bir çay yapacağım','Otobüste 5 dakika camdan dışarı bakacağım','Yatmadan bir sayfa kitap okuyacağım','Bugün kendime sevdiğim bir atıştırmalık alacağım']},
+  {t:'pick',k:'haftasonu',d:'sunrise',eyebrow:'Senin hakkında',q:'İdeal bir hafta sonu sabahı nasıl geçer?',o:['Geç uyanmak','Kahvaltıya çıkmak','Sahilde yürümek','Evde dinlenmek']},
   {t:'p',k:'alarm'},
   {t:'p',k:'mesaj'},
+  {t:'text',k:'ogrenmek',d:'book',eyebrow:'Senin hakkında',q:'Bu ay öğrenmek istediğin bir şey var mı?',ph:'Bir dil, bir tarif, bir beceri...',skip:'Şu an aklımda bir şey yok'},
   {t:'pick',k:'yusufaGorev',d:'task',eyebrow:'Yusuf\'a görev',q:'Yusuf\'a bugün zorunlu bir aktivite ver',o:['10 dakika yürüyüşe çıksın','Bir bardak su içsin','Bir şarkıyı baştan sona dinlesin','Odasını toplasın','Erken yatsın']},
   {t:'p',k:'mevsim'},
+  {t:'pick',k:'enerji',d:'alarm',eyebrow:'Senin hakkında',q:'Sana en çok ne enerji verir?',o:['Müzik','İnsanlarla olmak','Yalnız kalmak','Hareket etmek']},
   {t:'photo'},
 ];
 
@@ -253,10 +260,10 @@ function render(){
 /* ---------- ekranlar ---------- */
 function intro(){
   show(`
-    <div class="eyebrow"><span>26 adım</span><span>yaklaşık 6 dakika</span></div>
+    <div class="eyebrow"><span>${STEPS.length} adım</span><span>yaklaşık 7 dakika</span></div>
     <h1>Yusuf'u ne kadar tanıyorsun?</h1>
     ${doodle('balloons')}
-    <p class="sub">Biraz tahmin, biraz oyun, birkaç minik görev. Doğru ya da yanlış cevap yok, sadece Yusuf hakkındaki sorularda puan var.</p>
+    <p class="sub">Biraz tahmin, biraz oyun, birkaç minik görev. Çoğu soru senin hakkında. Doğru ya da yanlış cevap yok, sadece Yusuf hakkındaki birkaç soruda puan var.</p>
     <div class="note">Cevapların oyun bitince Yusuf'a ulaşır.</div>
     <button class="btn primary" id="go">Başla</button>
   `, c => {
@@ -268,6 +275,7 @@ function personal(s){
   const q = P[s.k];
   const ans = st.p[s.k] || (st.p[s.k] = {});
   const many = q.o.length > 2;
+  if(q.noY && st.sub === 0) st.sub = 1;
   if(st.sub === 0){
     show(`
       <div class="eyebrow"><span>Yusuf hakkında</span><span>Tahmin</span></div>
@@ -289,7 +297,7 @@ function personal(s){
   } else if(st.sub === 1){
     show(`
       <div class="eyebrow"><span>Senin hakkında</span><span>${esc(q.label)}</span></div>
-      <p class="q">${esc(q.sq)}</p>
+      <p class="q">${esc(q.noY ? q.aq : q.sq)}</p>${q.noY?doodle(q.d):''}
       <div class="opts ${q.so.length>2?'':'two'}">${q.so.map(o=>`<button class="btn" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div>
     `, c => {
       c.querySelectorAll('.btn').forEach(b => b.onclick = () => {
@@ -478,16 +486,16 @@ function compute(){
   let tanima = 0, yusufBildi = 0, tahminTuttu = 0;
   const rows = PKEYS.map(k => {
     const q = P[k], a = st.p[k] || {};
-    const okY = a.guess === q.y; if(okY) tanima++;
+    const okY = !q.noY && a.guess === q.y; if(okY) tanima++;
     const yKnew = q.g === a.self; if(yKnew) yusufBildi++;
     const said = a.knows;
     let verdict;
     if(said === 'Bilir') verdict = yKnew ? 'Haklıymışsın, biliyormuş' : 'Aslında bilmiyormuş';
     else verdict = yKnew ? 'Aslında biliyormuş' : 'Haklıymışsın, bilmiyormuş';
     if((said==='Bilir') === yKnew) tahminTuttu++;
-    return {k, label:q.label, guess:a.guess, y:q.y, okY, self:a.self, g:q.g, yKnew, said, verdict};
+    return {k, noY:!!q.noY, label:q.label, guess:a.guess, y:q.y, okY, self:a.self, g:q.g, yKnew, said, verdict};
   });
-  const pct = Math.round(tanima/PKEYS.length*100);
+  const pct = Math.round(tanima/YKEYS.length*100);
   const unvan = pct>=85 ? 'Yusuf\'u Yusuf\'tan iyi tanıyor' : pct>=60 ? 'Yusuf uzmanı' : pct>=30 ? 'Tanıdık bir sima' : 'Yusuf kim?';
   return {tanima, yusufBildi, tahminTuttu, pct, unvan, rows};
 }
@@ -495,10 +503,10 @@ function compute(){
 function summaryText(r){
   const L = [];
   L.push('YUSUF TESTİ SONUCU');
-  L.push('Yusuf\'u tanıma: '+r.tanima+'/'+PKEYS.length+' ('+r.unvan+')');
+  L.push('Yusuf\'u tanıma: '+r.tanima+'/'+YKEYS.length+' ('+r.unvan+')');
   L.push('Yusuf beni tanıyor: '+r.yusufBildi+'/'+PKEYS.length);
   L.push('');
-  r.rows.forEach(x => L.push(x.label+': Yusuf için '+x.guess+' / Ben '+x.self+' / '+x.said+' dedim'));
+  r.rows.forEach(x => L.push(x.label+': '+(x.noY?'':'Yusuf için '+x.guess+' / ')+'Ben '+x.self+' / '+x.said+' dedim'));
   L.push('');
   const A = st.a;
   if(A.kitap) L.push('Okuduğum kitap: '+A.kitap);
@@ -512,6 +520,12 @@ function summaryText(r){
   if(A.kadikoyGorevi) L.push('Kadıköy görevim: '+A.kadikoyGorevi+(A.kadikoyGoreviYapildi?' (yaptım)':''));
   if(A.minikAktivite) L.push('Minik aktivitem: '+A.minikAktivite);
   if(A.yusufaGorev) L.push('Yusuf\'un görevi: '+A.yusufaGorev);
+  if(A.isAn) L.push('İşte en sevdiğim an: '+A.isAn);
+  if(A.guldugu) L.push('Beni güldüren: '+A.guldugu);
+  if(A.kadikoyYer) L.push('Kadıköy\'de en sevdiğim yer: '+A.kadikoyYer);
+  if(A.haftasonu) L.push('İdeal hafta sonu sabahı: '+A.haftasonu);
+  if(A.ogrenmek) L.push('Bu ay öğrenmek istediğim: '+A.ogrenmek);
+  if(A.enerji) L.push('Bana enerji veren: '+A.enerji);
   if(A.foto) L.push('Fotoğraf: '+A.foto);
   return L.join('\n');
 }
@@ -531,7 +545,7 @@ function results(){
     <h1>${esc(r.unvan)}</h1>
     ${doodle('trophy')}
     <div class="meter">
-      <div><span>Yusuf'u ne kadar tanıyorsun</span><strong>${r.tanima}/${PKEYS.length}</strong></div>
+      <div><span>Yusuf'u ne kadar tanıyorsun</span><strong>${r.tanima}/${YKEYS.length}</strong></div>
       <div><span>Yusuf seni ne kadar tanıyor</span><strong>${r.yusufBildi}/${PKEYS.length}</strong></div>
     </div>
     <p class="sub">Yusuf hakkındaki “bilir, bilmez” tahminlerinden ${r.tahminTuttu} tanesi tuttu.</p>
@@ -547,7 +561,7 @@ function results(){
     <div class="note">${notKnown.map(x=>`${esc(x.label)}: <strong>${esc(x.self)}</strong>`).join('<br>')}</div>`:''}
 
     <span class="tag">Senin Yusuf tahminlerin</span>
-    <div class="list">${r.rows.map(x=>`
+    <div class="list">${r.rows.filter(x=>!x.noY).map(x=>`
       <div class="li"><span class="k">${esc(x.label)}</span>
       <span class="verdict ${x.okY?'y':'n'}">${x.okY?'Bildin':'Bilemedin'}</span>
       <span class="v">Senin tahminin: ${esc(x.guess)} · Doğrusu: ${esc(x.y)}</span></div>`).join('')}
