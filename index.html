@@ -27,6 +27,9 @@ html,body{height:100%}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;-webkit-tap-highlight-color:transparent}
 .app{min-height:100%;max-width:460px;margin:0 auto;box-sizing:border-box;padding-block:18px 28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px}
 .top{display:flex;align-items:center;gap:12px}
+.back{appearance:none;flex:none;width:38px;height:38px;display:grid;place-items:center;border:2px solid var(--ink);border-radius:50%;background:var(--paper);color:var(--ink);box-shadow:2px 2px 0 var(--ink);cursor:pointer;padding:0;transition:transform .12s,box-shadow .12s}
+.back:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--ink)}
+.back:focus-visible{outline:3px solid var(--red);outline-offset:3px}
 .bar{flex:1;height:10px;border:2px solid var(--ink);border-radius:999px;overflow:hidden;background:var(--paper)}
 .bar i{display:block;height:100%;width:0;background:var(--red);transition:width .5s cubic-bezier(.3,1.4,.5,1)}
 .count{font-size:12px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums;min-width:44px;text-align:right}
@@ -118,6 +121,7 @@ input::placeholder,textarea::placeholder{color:#9A9585}
 
 <div class="app" lang="tr">
   <div class="top" id="top" hidden>
+    <button class="back" id="backBtn" type="button" aria-label="Geri" hidden><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
     <div class="count" id="count"></div>
   </div>
@@ -249,8 +253,26 @@ function show(html, after){
   if(old){ old.classList.add('out'); setTimeout(put, 260); } else put();
 }
 
-function next(){ st.sub = 0; st.i++; render(); }
+const hist = [];
+let viewId = 0;
+const later = (fn, ms) => { const v = viewId; setTimeout(() => { if(v === viewId) fn(); }, ms); };
+function next(){ hist.push({i:st.i, sub:st.sub}); st.sub = 0; st.i++; render(); }
+function advSub(n){ hist.push({i:st.i, sub:st.sub}); st.sub = n; render(); }
+function back(){
+  if(!hist.length) return;
+  const p = hist.pop(); st.i = p.i; st.sub = p.sub;
+  const s = STEPS[st.i];
+  if(s){
+    if(s.t === 'p' && st.sub === 0 && st.p[s.k]) delete st.p[s.k].guess;
+    if(s.t === 'lang') delete st.a.dil;
+    if(s.t === 'pick'){ delete st.a[s.k]; delete st.a[s.k+'Yapildi']; }
+  }
+  render();
+}
+document.getElementById('backBtn').onclick = back;
 function render(){
+  viewId++;
+  $('#backBtn').hidden = !(st.i >= 0 && st.i < STEPS.length && hist.length);
   if(st.i < 0) return intro();
   if(st.i >= STEPS.length) return results();
   const s = STEPS[st.i];
@@ -291,7 +313,7 @@ function personal(s){
         b.classList.add(ok ? 'right' : 'on');
         if(!ok) c.querySelectorAll('.btn').forEach(x => { if(x.dataset.v === q.y) x.classList.add('right'); });
         $('#fb',c).innerHTML = `<div class="stamp ${ok?'good':'bad'}">${ok?'Bildin':'Bilemedin'}</div>`;
-        setTimeout(()=>{ st.sub = 1; personal(s); }, 1300);
+        later(()=>advSub(1), 1300);
       });
     });
   } else if(st.sub === 1){
@@ -302,7 +324,7 @@ function personal(s){
     `, c => {
       c.querySelectorAll('.btn').forEach(b => b.onclick = () => {
         ans.self = b.dataset.v; b.classList.add('on');
-        setTimeout(()=>{ st.sub = 2; personal(s); }, 350);
+        later(()=>advSub(2), 350);
       });
     });
   } else {
@@ -315,7 +337,7 @@ function personal(s){
     `, c => {
       c.querySelectorAll('.btn').forEach(b => b.onclick = () => {
         ans.knows = b.dataset.v; b.classList.add('on');
-        setTimeout(next, 350);
+        later(next, 350);
       });
     });
   }
@@ -362,7 +384,7 @@ function pick(s){
         $('#after',c).innerHTML = `<div class="note">Görevi yapınca buraya dön ve işaretle. Şimdi devam edebilirsin, sonuçta görünecek.</div><div class="row" style="margin-top:10px"><button class="btn primary" id="did">${esc(s.done)}</button><button class="btn" id="later">Sonra yaparım</button></div>`;
         $('#did',c).onclick = () => { st.a[s.k+'Yapildi'] = true; next(); };
         $('#later',c).onclick = () => { st.a[s.k+'Yapildi'] = false; next(); };
-      } else setTimeout(next, 450);
+      } else later(next, 450);
     });
   });
 }
@@ -390,7 +412,8 @@ function balloons(){
     <div class="score"><span id="left">${N} balon kaldı</span><span id="time">0,0 sn</span></div>
   `, c => {
     const f = $('#field',c); let left = N; const t0 = performance.now();
-    const timer = setInterval(()=>{ $('#time',c).textContent = ((performance.now()-t0)/1000).toFixed(1).replace('.',',')+' sn'; }, 100);
+    const vb = viewId;
+    const timer = setInterval(()=>{ if(vb !== viewId){ clearInterval(timer); return; } $('#time',c).textContent = ((performance.now()-t0)/1000).toFixed(1).replace('.',',')+' sn'; }, 100);
     for(let n=0;n<N;n++){
       const b = document.createElement('button');
       b.className = 'balloon'; b.setAttribute('aria-label','Balonu patlat');
@@ -413,7 +436,7 @@ function balloons(){
           st.a.balonSure = ((performance.now()-t0)/1000).toFixed(1);
           setTimeout(()=>{
             $('#left',c).textContent = st.a.balonSure.replace('.',',')+' saniyede bitirdin';
-            setTimeout(next, 900);
+            later(next, 900);
           }, 300);
         }
       };
@@ -577,7 +600,7 @@ function results(){
   `, c => {
     confetti();
     $('#barFill').style.width = '100%';
-    $('#again',c).onclick = () => { st = {i:-1,sub:0,a:{},p:{},finished:false}; render(); };
+    $('#again',c).onclick = () => { st = {i:-1,sub:0,a:{},p:{},finished:false}; hist.length = 0; render(); };
     const txt = summaryText(r);
     $('#copy',c).onclick = () => {
       const m = $('#copyMsg',c);
