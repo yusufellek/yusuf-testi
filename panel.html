@@ -53,7 +53,7 @@ dt{color:var(--muted)}dd{margin:0;overflow-wrap:anywhere}
 </div>
 <script>
 // Yusuf'un onun hakkındaki tahminleri (oyundaki soru etiketlerine göre)
-const GUESS = {'Çay mı kahve mi':'Kahve','Sabah mı gece mi':'Sabah','Kahve nasıl':'Sade','Kahvaltı':'Kahvaltı yapmam','Cumartesi akşamı':'Arkadaşlarla olurum','Düzenli mi dağınık mı':'Düzenli','Planlı mı spontane mi':'Planlı','Gizli korku':'Örümcek','Sabırlı mı sabırsız mı':'Sabırlı','Mantık mı kalp mi':'Mantıkla','Duvar kağıdı':'Doğa manzarası','Alarm':'Hemen kapatırım','Mesajlar':'Sonra','Yaz mı kış mı':'Kış'};
+const GUESS = {'İşte en sevdiği an':'Mesainin bittiği an','Çay mı kahve mi':'Kahve','Sabah mı gece mi':'Sabah','Kahve nasıl':'Sade','Kahvaltı':'Kahvaltı yapmam','Cumartesi akşamı':'Arkadaşlarla olurum','Düzenli mi dağınık mı':'Düzenli','Planlı mı spontane mi':'Planlı','Gizli korku':'Örümcek','Sabırlı mı sabırsız mı':'Sabırlı','Mantık mı kalp mi':'Mantıkla','Duvar kağıdı':'Doğa manzarası','Alarm':'Hemen kapatırım','Mesajlar':'Sonra','Yaz mı kış mı':'Kış'};
 const LABELS = {kitap:'Okuduğu kitap',sarki:'Bugün dinlediği',sarkiTahmin:'Senin dinlediğin (tahmini)',yusufSuAn:'Sence şu an',harf:'Harf oyunu',dil:'Dil sorusu',balonSure:'Balonlar (sn)',sabahGorevi:'Sabah görevi',kadikoyGorevi:'Kadıköy görevi',kadikoyGoreviYapildi:'Kadıköy görevi yapıldı mı',minikAktivite:'Minik aktivite',yusufaGorev:'Sana verdiği görev',foto:'Fotoğraf',isAn:'İşte en sevdiği an',guldugu:'Onu güldüren',kadikoyYer:'Kadıköy\'de sevdiği yer',haftasonu:'İdeal hafta sonu sabahı',ogrenmek:'Bu ay öğrenmek istediği',enerji:'Ona enerji veren'};
 const $ = s => document.querySelector(s);
 const el = (t, cls, txt) => { const e = document.createElement(t); if(cls) e.className = cls; if(txt!==undefined) e.textContent = txt; return e; };
@@ -86,11 +86,11 @@ function render(rows){
     c.appendChild(h);
     const n = el('div','nums');
     const a = el('div'); a.appendChild(el('span',null,'Seni ne kadar tanıyor')); a.appendChild(el('strong',null,(x.tanima??'-')+'/5'));
-    const b = el('div'); b.appendChild(el('span',null,'Sen onu ne kadar tanıyorsun')); b.appendChild(el('strong',null,(x.yusufBildi??'-')+'/14'));
+    const b = el('div'); b.appendChild(el('span',null,'Sen onu ne kadar tanıyorsun')); b.appendChild(el('strong',null,(x.yusufBildi??'-')+'/15'));
     n.append(a,b); c.appendChild(n);
     if(x.kisisel && x.kisisel.length){
       const tw = el('div','tw'); const t = el('table');
-      const hr = el('tr'); ['Soru','Onun cevabı','Senin tahminin','"Yusuf bilir" dedi mi','Senin için tahmini'].forEach(s=>hr.appendChild(el('th',null,s)));
+      const hr = el('tr'); ['Soru','Onun cevabı','Senin tahminin','Senin için tahmini'].forEach(s=>hr.appendChild(el('th',null,s)));
       t.appendChild(hr);
       x.kisisel.forEach(k => {
         const tr = el('tr');
@@ -98,7 +98,6 @@ function render(rows){
         tr.appendChild(el('td',null,k.soru));
         tr.appendChild(el('td',null,k.kendiCevabi));
         const tg = el('td', hit?'ok':'no', (g||'-') + (hit?' ✓':' ✗')); tr.appendChild(tg);
-        tr.appendChild(el('td',null,k.yusufBilirMi));
         tr.appendChild(el('td',null,k.yusufIcinTahmin||'-'));
         t.appendChild(tr);
       });

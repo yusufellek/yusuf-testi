@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Yusuf Testi</title>
+<title>Ne Kadar Tanıyoruz?</title>
 <meta name="robots" content="noindex">
 <script src="config.js"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=VT323&display=swap">
@@ -246,8 +246,8 @@ input[type=text]{align-self:flex-end;width:min(82%,360px);text-align:right}
 
 <div class="room" id="scene" aria-hidden="true"><div class="lamp"></div><div class="glow"></div><div class="floor"></div></div>
 <div class="cast" aria-hidden="true">
-  <div class="hero hy walkin-l" id="heroYusuf"><div class="bod"><img src="yusuf.png" alt=""></div></div>
-  <div class="hero hs walkin-r" id="heroSen"><div class="bod"><img src="sen.png" alt=""></div></div>
+  <div class="hero hy" id="heroYusuf"><div class="bod"><img src="yusuf.png" alt=""></div></div>
+  <div class="hero hs" id="heroSen"><div class="bod"><img src="sen.png" alt=""></div></div>
 </div>
 <div class="app" lang="tr">
   <div class="top" id="top" hidden>
@@ -314,6 +314,7 @@ const P = {
   duvar:{d:'phone', yq:'Telefonumun duvar kağıdında ne var sence?', sq:'Peki seninkinde ne var?', o:['Doğa manzarası','Bir hayvan','Düz renk','Göz işareti'], so:['Doğa manzarası','Bir hayvan','Düz renk','Bir fotoğraf','Başka bir şey'], y:'Göz işareti', g:'Doğa manzarası', label:'Duvar kağıdı'},
   alarm:{noY:true, aq:'Alarm çalınca ne yaparsın?', d:'alarm', yq:'Yusuf alarm çalınca ne yapar?', sq:'Peki sen?', o:['Hemen kapatır','Erteler'], so:['Hemen kapatırım','Ertelerim'], y:'Erteler', g:'Hemen kapatırım', label:'Alarm'},
   mesaj:{noY:true, aq:'Mesajlara hemen mi dönersin, sonra mı?', d:'envelope', yq:'Yusuf mesajlara hemen mi döner, sonra mı?', sq:'Peki sen?', o:['Hemen','Sonra'], so:['Hemen','Sonra'], y:'Hemen', g:'Sonra', label:'Mesajlar'},
+  isAn:{noY:true, aq:'İşte günün en sevdiğin anı hangisi?', so:['Sabah ilk kahve ya da çay','Öğle arası','Mesainin bittiği an','Bir işi güzelce bitirdiğim an'], g:'Mesainin bittiği an', label:'İşte en sevdiği an'},
   mevsim:{noY:true, aq:'Yazı mı seversin, kışı mı?', d:'season', yq:'Yusuf yazı mı sever, kışı mı?', sq:'Peki sen?', o:['Yaz','Kış'], so:['Yaz','Kış'], y:'Yaz', g:'Kış', label:'Yaz mı kış mı'},
 };
 const PKEYS = Object.keys(P);
@@ -332,10 +333,10 @@ const STEPS = [
   {t:'p',k:'kahve'},
   {t:'letters'},
   {t:'p',k:'kahvalti'},
-  {t:'text',k:'sarkiTahmin',d:'vinyl',eyebrow:'Tahmin',q:'Sence ben bugün hangi parçayı dinledim?',ph:'Şarkı ya da şarkıcı',after:'Doğru mu, bilmek için bana sorman lazım.'},
+  {t:'text',k:'sarkiTahmin',d:'vinyl',eyebrow:'Tahmin',q:'Sence ben bugün hangi parçayı dinledim?',ph:'Şarkı ya da şarkıcı',after:'“{v}” mi? Hadi o zaman bu parçayı aç da dinle!'},
   {t:'text',k:'sarki',d:'vinyl',eyebrow:'Senin günün',q:'Peki sen bugün hangi şarkıyı dinledin?',ph:'Şarkı ve şarkıcı',skip:'Bugün hiç müzik dinlemedim'},
   {t:'p',k:'cumartesi'},
-  {t:'pick',k:'isAn',d:'calendar',eyebrow:'Senin hakkında',q:'İşte günün en sevdiğin anı hangisi?',o:['Sabah ilk kahve ya da çay','Öğle arası','Mesainin bittiği an','Bir işi güzelce bitirdiğim an']},
+  {t:'p',k:'isAn'},
   {t:'lang'},
   {t:'p',k:'duzen'},
   {t:'pick',k:'sabahGorevi',d:'sunrise',eyebrow:'Görev',q:'Yarın 6.45\'te evden çıkarken bir görev seç',o:['Gökyüzüne bak, rengini aklında tut','Yolda ilk gördüğün kediye selam ver','Otobüste en sevdiğin şarkıyı aç','Simitçiden bir simit al']},
@@ -353,7 +354,7 @@ const STEPS = [
   {t:'p',k:'alarm'},
   {t:'p',k:'mesaj'},
   {t:'text',k:'ogrenmek',d:'book',eyebrow:'Senin hakkında',q:'Bu ay öğrenmek istediğin bir şey var mı?',ph:'Bir dil, bir tarif, bir beceri...',skip:'Şu an aklımda bir şey yok'},
-  {t:'pick',k:'yusufaGorev',d:'task',eyebrow:'Yusuf\'a görev',q:'Sıra sende. Bana bugün zorunlu bir aktivite ver.',o:['10 dakika yürüyüşe çık','Bir bardak su iç','Bir şarkıyı baştan sona dinle','Odanı topla','Erken yat']},
+  {t:'pick',k:'yusufaGorev',d:'task',eyebrow:'Yusuf\'a görev',q:'Sıra sende. Bana bugün zorunlu bir aktivite ver.',o:['10 dakika yürüyüşe çık','Bana güzel bir fotoğraf çek ve at','Odanı topla']},
   {t:'p',k:'mevsim'},
   {t:'pick',k:'enerji',d:'alarm',eyebrow:'Senin hakkında',q:'Sana en çok ne enerji verir?',o:['Müzik','İnsanlarla olmak','Yalnız kalmak','Hareket etmek']},
   {t:'photo'},
@@ -440,7 +441,7 @@ function render(){
 function intro(){
   show(`
     <div class="eyebrow"><span>${STEPS.length} adım</span><span>yaklaşık 7 dakika</span></div>
-    <h1>Yusuf'u ne kadar tanıyorsun?</h1>
+    <h1>Ne kadar tanıyoruz?</h1>
     <p class="q">Selam! Sana birkaç soru soracağım, birkaç da görev vereceğim. Hazır mısın?</p>
     <p class="sub">Biraz tahmin, biraz oyun, birkaç minik görev. Çoğu soru senin hakkında. Doğru ya da yanlış cevap yok, sadece Yusuf hakkındaki birkaç soruda puan var.</p>
     <div class="note">Cevapların oyun bitince Yusuf'a ulaşır.</div>
@@ -450,67 +451,48 @@ function intro(){
   });
 }
 
+const optsHTML = arr => `<div class="opts ${arr.length>2?'':'two'}">${arr.map(o=>`<button class="btn" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div>`;
+function bindOpts(o, cb){
+  o.querySelectorAll('.btn').forEach(b => b.onclick = () => {
+    if(o.dataset.done) return; o.dataset.done = '1';
+    b.classList.add('on'); o.querySelectorAll('.btn').forEach(x => { if(x !== b) x.classList.add('dim'); });
+    hop('heroSen'); cb(b.dataset.v);
+  });
+}
+function addOpts(c, arr, cb){
+  c.insertAdjacentHTML('beforeend', optsHTML(arr));
+  const o = c.lastElementChild; bindOpts(o, cb);
+  setTimeout(()=>o.scrollIntoView({behavior:'smooth', block:'nearest'}), 60);
+  return o;
+}
 function personal(s){
   const q = P[s.k];
-  const ans = st.p[s.k] || (st.p[s.k] = {});
-  const many = q.o.length > 2;
-  if(q.noY && st.sub === 0) st.sub = 1;
-  if(st.sub === 0){
-    show(`
-      <div class="eyebrow"><span>Yusuf hakkında</span><span>Tahmin</span></div>
-      <p class="q">${esc(q.yq)}</p>
-      <div class="opts ${many?'':'two'}">${q.o.map(o=>`<button class="btn" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div>
-    `, c => {
-      c.querySelectorAll('.opts .btn').forEach(b => b.onclick = () => {
-        if(ans.guess) return;
-        ans.guess = b.dataset.v;
-        const ok = ans.guess === q.y;
-        b.classList.add('on');
-        c.querySelectorAll('.opts .btn').forEach(x => { if(x !== b) x.classList.add('dim'); });
-        later(() => {
-          if(ok){ heart(); } else react('heroSen','nope');
-          const y = q.y;
-          const line = ok
-            ? pickOne([`Bildin! Cevap gerçekten “${y}”.`, `Evet! “${y}”. Beni iyi tanıyorsun.`, `Tam isabet. “${y}”, aynen öyle.`])
-            : pickOne([`Yok yaa, aslında “${y}”.`, `Hmm, değil. Doğrusu “${y}”.`, `Yaklaştın ama cevap “${y}”.`]);
-          say(c, line, () => { const bt = cont(c); bt.onclick = () => advSub(1); });
-        }, 450);
-      });
+  const ans = st.p[s.k] = {};
+  show(`
+    <div class="eyebrow"><span>${q.noY ? 'Senin hakkında' : 'Karşılıklı'}</span><span>${esc(q.label)}</span></div>
+    <p class="q">${esc(q.noY ? q.aq : q.yq)}</p>
+    ${optsHTML(q.noY ? q.so : q.o)}
+  `, c => {
+    const finish = () => {
+      const knew = q.g === ans.self, g = q.g;
+      const line = knew
+        ? pickOne([`Bildim! Ben de “${g}” demiştim.`, `Biliyordum, “${g}”. Seni tanıyorum.`, `Evet! Tam tahmin ettiğim gibi: “${g}”.`])
+        : pickOne([`Aaa öyle mi? Ben “${g}” sanıyordum. Tüh, bilmiyordum.`, `Tüh! “${g}” demiştim. Bilmiyormuşum, not aldım.`, `Hmm, ben “${g}” sanıyordum. Bunu bilmiyordum.`]);
+      later(() => { if(knew) heart(); else react('heroYusuf','nope'); say(c, line, () => cont(c)); }, 450);
+    };
+    bindOpts(c.querySelector('.opts'), v => {
+      if(q.noY){ ans.self = v; finish(); return; }
+      ans.guess = v;
+      const ok = v === q.y, y = q.y;
+      const line = ok
+        ? pickOne([`Bildin! Cevap gerçekten “${y}”.`, `Evet, “${y}”! Beni iyi tanıyorsun.`, `Tam isabet, “${y}”.`])
+        : pickOne([`Yok yaa, aslında “${y}”.`, `Hmm, değil. Doğrusu “${y}”.`, `Yaklaştın ama cevap “${y}”.`]);
+      later(() => {
+        if(ok) heart(); else react('heroSen','nope');
+        say(c, line + ' ' + q.sq, () => addOpts(c, q.so, v2 => { ans.self = v2; finish(); }));
+      }, 450);
     });
-  } else if(st.sub === 1){
-    show(`
-      <div class="eyebrow"><span>Senin hakkında</span><span>${esc(q.label)}</span></div>
-      <p class="q">${esc(q.noY ? q.aq : q.sq)}</p>
-      <div class="opts ${q.so.length>2?'':'two'}">${q.so.map(o=>`<button class="btn" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div>
-    `, c => {
-      c.querySelectorAll('.opts .btn').forEach(b => b.onclick = () => {
-        ans.self = b.dataset.v; b.classList.add('on');
-        later(()=>advSub(2), 400);
-      });
-    });
-  } else {
-    show(`
-      <div class="eyebrow"><span>Senin hakkında</span><span>${esc(q.label)}</span></div>
-      <p class="q">“${esc(ans.self)}” dedin. Sence ben bunu biliyor muyum?</p>
-      <div class="opts two"><button class="btn" data-v="Bilir">Bilirsin</button><button class="btn" data-v="Bilmez">Bilmezsin</button></div>
-    `, c => {
-      c.querySelectorAll('.opts .btn').forEach(b => b.onclick = () => {
-        if(ans.knows) return;
-        ans.knows = b.dataset.v; b.classList.add('on');
-        c.querySelectorAll('.opts .btn').forEach(x => { if(x !== b) x.classList.add('dim'); });
-        const knew = q.g === ans.self, saidYes = ans.knows === 'Bilir', g = q.g;
-        let line;
-        if(saidYes && knew) line = pickOne([`Evet, bildim! Ben de “${g}” demiştim.`, `Bildim tabii. “${g}”. Seni tanıyorum.`]);
-        else if(saidYes && !knew) line = pickOne([`Aaa öyle miydi? Ben “${g}” sanıyordum. Tüh, bilmiyordum.`, `Tüh! “${g}” demiştim. Bilmiyormuşum.`]);
-        else if(!saidYes && knew) line = pickOne([`Aslında biliyordum! Ben de “${g}” demiştim.`, `Beni hafife aldın, biliyordum: “${g}”.`]);
-        else line = pickOne([`Haklısın, bilmiyordum. Ben “${g}” sanıyordum. Not aldım.`, `Doğru, bilmiyordum. “${g}” demiştim. Bir dahakine bilirim.`]);
-        later(() => {
-          if(knew){ heart(); } else react('heroYusuf','nope');
-          say(c, line, () => cont(c));
-        }, 450);
-      });
-    });
-  }
+  });
 }
 
 function textStep(s){
@@ -528,8 +510,8 @@ function textStep(s){
     const done = v => {
       st.a[s.k] = v;
       if(s.after){
-        c.innerHTML = `<div class="eyebrow"><span>${esc(s.eyebrow)}</span><span></span></div>${doodle(s.d)}<p class="q">Tahminin: “${esc(v)}”</p><div class="note">${esc(s.after)}</div><button class="btn primary" id="ok2">Tamam, sorarım</button>`;
-        $('#ok2',c).onclick = next;
+        inp.disabled = true; $('#ok',c).remove(); const sk = $('#skip',c); sk && sk.remove();
+        say(c, s.after.replace('{v}', v), () => cont(c, 'Tamam'));
       } else next();
     };
     $('#ok',c).onclick = () => { const v = inp.value.trim(); if(!v){ err.textContent = 'Önce bir şey yaz.'; inp.focus(); return; } done(v); };
@@ -689,21 +671,17 @@ function lang(){
 
 /* ---------- sonuç ---------- */
 function compute(){
-  let tanima = 0, yusufBildi = 0, tahminTuttu = 0;
+  let tanima = 0, yusufBildi = 0;
   const rows = PKEYS.map(k => {
     const q = P[k], a = st.p[k] || {};
     const okY = !q.noY && a.guess === q.y; if(okY) tanima++;
     const yKnew = q.g === a.self; if(yKnew) yusufBildi++;
-    const said = a.knows;
-    let verdict;
-    if(said === 'Bilir') verdict = yKnew ? 'Haklıymışsın, biliyormuş' : 'Aslında bilmiyormuş';
-    else verdict = yKnew ? 'Aslında biliyormuş' : 'Haklıymışsın, bilmiyormuş';
-    if((said==='Bilir') === yKnew) tahminTuttu++;
-    return {k, noY:!!q.noY, label:q.label, guess:a.guess, y:q.y, okY, self:a.self, g:q.g, yKnew, said, verdict};
+    const verdict = yKnew ? 'Biliyormuş' : 'Bilmiyormuş';
+    return {k, noY:!!q.noY, label:q.label, guess:a.guess, y:q.y, okY, self:a.self, g:q.g, yKnew, verdict};
   });
   const pct = Math.round(tanima/YKEYS.length*100);
   const unvan = pct>=85 ? 'Yusuf\'u Yusuf\'tan iyi tanıyor' : pct>=60 ? 'Yusuf uzmanı' : pct>=30 ? 'Tanıdık bir sima' : 'Yusuf kim?';
-  return {tanima, yusufBildi, tahminTuttu, pct, unvan, rows};
+  return {tanima, yusufBildi, pct, unvan, rows};
 }
 
 function summaryText(r){
@@ -712,7 +690,7 @@ function summaryText(r){
   L.push('Yusuf\'u tanıma: '+r.tanima+'/'+YKEYS.length+' ('+r.unvan+')');
   L.push('Yusuf beni tanıyor: '+r.yusufBildi+'/'+PKEYS.length);
   L.push('');
-  r.rows.forEach(x => L.push(x.label+': '+(x.noY?'':'Yusuf için '+x.guess+' / ')+'Ben '+x.self+' / '+x.said+' dedim'));
+  r.rows.forEach(x => L.push(x.label+': '+(x.noY?'':'Yusuf için '+x.guess+' / ')+'Ben '+x.self+(x.yKnew?' (Yusuf bildi)':' (Yusuf bilemedi)')));
   L.push('');
   const A = st.a;
   if(A.kitap) L.push('Okuduğum kitap: '+A.kitap);
@@ -726,7 +704,6 @@ function summaryText(r){
   if(A.kadikoyGorevi) L.push('Kadıköy görevim: '+A.kadikoyGorevi+(A.kadikoyGoreviYapildi?' (yaptım)':''));
   if(A.minikAktivite) L.push('Minik aktivitem: '+A.minikAktivite);
   if(A.yusufaGorev) L.push('Yusuf\'un görevi: '+A.yusufaGorev);
-  if(A.isAn) L.push('İşte en sevdiğim an: '+A.isAn);
   if(A.guldugu) L.push('Beni güldüren: '+A.guldugu);
   if(A.kadikoyYer) L.push('Kadıköy\'de en sevdiğim yer: '+A.kadikoyYer);
   if(A.haftasonu) L.push('İdeal hafta sonu sabahı: '+A.haftasonu);
@@ -751,16 +728,15 @@ function results(){
     <h1>${esc(r.unvan)}</h1>
     ${doodle('trophy')}
     <div class="meter">
-      <div><span>Yusuf'u ne kadar tanıyorsun</span><strong>${r.tanima}/${YKEYS.length}</strong></div>
+      <div><span>Sen Yusuf'u ne kadar tanıyorsun</span><strong>${r.tanima}/${YKEYS.length}</strong></div>
       <div><span>Yusuf seni ne kadar tanıyor</span><strong>${r.yusufBildi}/${PKEYS.length}</strong></div>
     </div>
-    <p class="sub">Yusuf hakkındaki “bilir, bilmez” tahminlerinden ${r.tahminTuttu} tanesi tuttu.</p>
 
-    <span class="tag">Yusuf seni biliyor muymuş</span>
+    <span class="tag">Yusuf seni bildi mi</span>
     <div class="list">${r.rows.map(x=>`
       <div class="li"><span class="k">${esc(x.label)}</span>
       <span class="verdict ${x.yKnew?'y':'n'}">${esc(x.verdict)}</span>
-      <span class="v">Sen: ${esc(x.self)} · Yusuf'un tahmini: ${esc(x.g)} · Sen “${esc(x.said)}” dedin</span></div>`).join('')}
+      <span class="v">Sen: ${esc(x.self)} · Yusuf'un tahmini: ${esc(x.g)}</span></div>`).join('')}
     </div>
 
     ${notKnown.length?`<span class="tag">Yusuf'un bilmediği şeyler</span>
@@ -802,7 +778,7 @@ async function save(r, txt, el){
   try{
     await fetch(url, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({
       tanima: r.tanima, yusufBildi: r.yusufBildi, unvan: r.unvan,
-      kisisel: r.rows.map(x=>({soru:x.label, yusufIcinTahmin:x.guess, kendiCevabi:x.self, yusufBilirMi:x.said})),
+      kisisel: r.rows.map(x=>({soru:x.label, yusufIcinTahmin:x.guess, kendiCevabi:x.self})),
       diger: st.a, ozet: txt
     })});
     st.finished = true;
