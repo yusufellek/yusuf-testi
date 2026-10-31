@@ -418,6 +418,158 @@ const P = {
         'Korktuğumu':[['Daha çok neyden?',['Gelecekten','Kaybetmekten','Yeterli olamamaktan']],['Korkuyla nasıl başa çıkarsın?',['Üzerine giderim','Görmezden gelirim','Biriyle paylaşırım']]],
         'Birini özlediğimi':[['Özlediğini ona söyler misin?',['Evet','Belli ederim','Hayır']],['Özlemek senin için?',['Güzel bir his','Acı veren bir his','İkisi birden']]]}},
 };
+// Her ara cevaba özel tepki: RX[soru][kendi cevabı] = [[2. soru cevaplarına], [3. soru cevaplarına]] (şık sırasıyla)
+const RX = {
+  grup:{
+    'Planı yapan':[['B planı da hazır demek. Seninle bir yere gitmek güvenliymiş.','Haklısın, emek verdiğin bir şey bozulunca sinir bozucu oluyor.','Hem plan yapıp hem akışa bırakabilmek zor bir denge. Helal.'],
+      ['O zaman bir gün bir planı da bana yap. Söz, geç kalmam.','Herkesi düşünen birinin yorulması çok normal. Bazen planı başkası yapsın, sen sadece gel.','Hep yapan sen olunca öyle oluyor. Umarım bir gün sen de sadece gelip keyfini sürersin.']],
+    'Herkesi güldüren':[['Ne güzel. O kişi şanslı, seni güldürebildiği için.','Kendi kendini güldürebilmek de bir yetenek. Bir gün o işi ben de denemek isterim.','Bu biraz içimi burktu. Herkesi güldüren birini güldürecek biri de olmalı.'],
+      ['Güzel, demek gülüşün gerçek. Öyle de görünüyor zaten.','Anlıyorum. Bazen gülmek en kolay kalkan oluyor.','Bunu söylemek kolay değil, teşekkür ederim. Şakanın altındakini de dinlemeye hazırım.']],
+    'Dinleyen, sır tutan':[['İyi ki var o arkadaş. Dinleyenin de dinleyeni olmalı.','Ailende öyle birinin olması çok değerli.','Herkesi dinleyip kendini kimseye anlatmamak ağır olabilir. Bir gün istersen ben dinlerim.'],
+      ['Bu gerçekten nadir bir şey. İnsanlar sana anlatırken rahatlıyordur.','Çok anlaşılır. Başkalarının yükünü taşımak yorar, kendine de alan aç.','O zaman bazen dinlemeye ara ver. Yorulduğunu söylemek de senin hakkın.']],
+    'Son dakika gelen':[['Yoğun hayat. Ama geldiğinde değiyordur bence.','Klasik. “Beş dakikaya oradayım” cümlesi çok tanıdık geldi.','Çok dürüst bir cevap. Bundan sonra geç kalırsan ne demek olduğunu biliyorum.'],
+      ['Hiç şüphem yoktu. Beklemeye değen insanlardansın.','Bence sandığından fazla değişiyordur.','Buna inanmıyorum. Fark edenler vardır, belki söylemiyorlardır.']]},
+  izlenim:{
+    'Ciddi biri':[['Bunu biliyorum. Ciddi duruşun arkasında bambaşka biri var.','O “biraz” bence en güzel kısım.','Peki, ciddiyetine saygı duyuyorum. Ama bir gülüşünü yakalayacağım.'],
+      ['Bir hukuk bürosunda ciddi görünmek büyük avantaj. Karşı taraf baştan çekiniyordur.','Anlıyorum. İnsanlar seni tanımadan karar verince haksızlık oluyor.','Zaten seni tanıyan biliyor, gerisi önemli değil.']],
+    'Sıcak biri':[['Bu çok güzel bir özellik. Dünyaya biraz daha lazım.','Demek o sıcaklığı hak etmek gerekiyor. Çok mantıklı.','Akıllıca. Herkes her şeyi hak etmiyor.'],
+      ['Buna sevindim. Umarım hep öyle kalır.','Üzüldüm. Ama sıcaklığını kaybetmemişsin, bu güçlü bir şey.','Bunu duymak üzücü, hak etmiyorsun. Kendini korumak da senin hakkın.']],
+    'Biraz mesafeli':[['O zaman sabırlı olmak lazım. Aklımda.','Buna sevindim, şaka konusunda biraz iddialıyımdır.','Çok mantıklı. Önce karşındakinin güven vermesi gerekiyor.'],
+      ['Anlıyorum. Kendini korumak çok doğal, bunu hiç yanlış bulmuyorum.','Demek tanımayanlar yanılıyor.','Dürüst bir cevap. Çoğumuz biraz öyleyiz.']],
+    'Çok enerjik':[['Gün boyu herkese o enerjiyi verince eve gelince bitmesi çok normal.','Bu enerjinin kaynağını merak ettim. Biraz da bana ver.','Bunu herkese göstermemen anlaşılır. Bana söylediğin için teşekkürler.'],
+      ['En sağlam şarj yöntemi.','Kendine alan açman güzel. O zamanlar senin.','O birinin olması güzel. Şanslı biri.']]},
+  firsat:{
+    'Hemen atlarım':[['Cesaret ister. İşte risk almak herkesin harcı değil.','En güzel atlama türü. Neresiydi, bir gün anlatırsın.','Kalbiyle atlayabilen biri. Bu cesaret ister.','O zaman sıradaki fırsat seni bekliyor.'],
+      ['Ne güzel. Demek içgüdülerin iyi çalışıyor.','Bir kezde kalmışsa bence iyi bir oran.','Bu cevabı çok sevdim. Tam cesur biri.']],
+    'Biraz araştırırım':[['Huzurlu bir bakış. Kendini yormuyorsun, güzel.','Anlıyorum, emek verince kaçması insanı üzüyor.','Her seferinde öğrenen biri. Hoşuma gitti.'],
+      ['Hızlı ve dengeli. Tam kıvamında.','Makul. İyi düşünülmüş karar iyidir.','Tam bir araştırmacı. Avukatlık sana boşuna yakışmıyor.']],
+    'Birine sorarım':[['Ailenle bu kadar yakın olman güzel.','İyi bir arkadaşın fikri altın değerinde.','Çok akıllıca. Doğru kişiye sormak işin yarısı.'],
+      ['Güvendiğin birinin sözü önemli, anlıyorum.','Hem sorup hem bildiğini yapmak. Bu tarafını sevdim.','“Evet” diyeni bulana kadar, değil mi? Çok tanıdık.']],
+    'Genelde geçerim':[['Anlıyorum, bazı kapılar insanın aklında kalıyor. Umarım yenileri açılır.','Normal. İnsan bazen “ya yapsaydım” diye düşünüyor.','Güzel. Geçtiysen bir sebebi vardır, arkana bakmıyorsun.'],
+      ['Bunu fark etmen önemli. Elindekini korumak istemen çok anlaşılır.','Dürüst bir cevap. Bazen konfor gerçekten iyi bir yer.','Doğru zaman gelince atlarsın bence.']]},
+  karar:{
+    'Artısını eksisini tartarım':[['Tam beklediğim cevap. Sağlam birisin.','Bunu duymak hoşuma gitti. Hesap yapıp sonunda kalbe uymak, güzel.','İkisi anlaşana kadar. Mantıklı.'],
+      ['Demek mantığın seni iyi idare ediyor.','Bir kez bile olsa insanın aklında kalıyor, anlıyorum.','O zaman bir dahaki sefere kalbine biraz daha söz hakkı ver derim.']],
+    'İçimden ne geliyorsa':[['Güçlü bir içgüdü. Biraz kıskandım.','Olur o kadar, kimse kusursuz değil.','Kendine güvenmek güzel bir şey. Hoşuma gitti.'],
+      ['Kendinden emin. Güzel.','Bazı kararlar açıklanmaz, hissedilir.','“Öyle hissettim” de bir cevap bence.']],
+    'Sevdiklerime danışırım':[['Ailene bu kadar güvenmen çok güzel.','O arkadaşını tanımıyorum ama bence iyi biri.','Herkesi dinleyip sonunda kendi kararını vermek. En doğrusu.'],
+      ['Demokratik bir yöntem.','Güvendiğin birinin olması çok değerli.','Çok anlıyorum. Bazen fazla fikir, hiç fikir olmamasından zor.']],
+    'Uzun süre kafamda döndürürüm':[['Anlıyorum. Ama bence sen düşündükçe yanlış yapmayacak birisin.','Elindekine değer verdiğin için. Bu kötü bir şey değil.','Herkesi düşünmen güzel ama bazen sadece seni memnun eden karar da doğrudur.'],
+      ['Demek bazen biraz cesaret verecek biri lazım.','Son dakika ama işi bitiriyorsun.','Bu çok güzel bir his. İçin hazır olunca netleşiyor.']]},
+  soz:{
+    'Doğal olarak liderliği alırım':[['Herkesi taşımak yorar. Bazen sen de arkana yaslan.','Doğal lider. Hiç şaşırmadım açıkçası.','Bu gizli kısmı bana söylemen hoşuma gitti.'],
+      ['Hiç şaşırmadım, sesini duyurursun.','Kendini yormamak da bir bilgelik.','En sağlıklısı bu galiba.']],
+    'Gerekirse konuşurum':[['Tam bir hukukçu cevabı. Bu tarafın çok güzel.','Bilmeden konuşmamak, nadir bulunan bir özellik.','O garip sessizliği bozan kahraman demek.'],
+      ['Anlıyorum. Söylemek istediklerini dinleyecek biri hep olsun.','Herkesin olur. Önemli olan en önemlilerini söylemek.','Ne güzel. Kafanda soru işareti bırakmıyorsun.']],
+    'Arkada kalmayı severim':[['Demek ben sıkılsam hemen anlardın.','Biraz korkutucu bir yetenek. Senin yanında rol yapmamak lazım.','Bunu tahmin etmiştim. Sessiz ama her şeyi gören biri.'],
+      ['Demek bazen biri seni öne çıkarsın istiyorsun. Aklımda.','Anlıyorum, seni zorlamamak lazım.','Mantıklı. Doğru anda öne çıkmak güzel.']],
+    'Birilerini desteklerim':[['Bu çok güzel bir taraf. Herkesin böyle birine ihtiyacı var.','Adaletli. Mesleğine çok yakışıyor.','Arkadaşın şanslı, arkasında böyle biri var.'],
+      ['Buna çok sevindim. Hak ediyorsun.','Bence daha sık olmalı. Başkalarını destekleyen, desteklenmeyi de hak ediyor.','Güçlü birisin, belli. Ama bazen başkası da yanında olsun.']]},
+  yeni:{
+    'Hemen merak ederim':[['Hangi konu, merak ettim. Sonra anlatırsın.','Bir gün oraya gidersin bence.','Hmm, bir insan. Sormayacağım. Şimdilik.'],
+      ['Merakı hobiye dönüşen insanları severim.','O saatleri tahmin edebiliyorum. Güzel kayboluşlar.','Bunu bir gün detaylı dinlemek isterim.']],
+    'Önce şüpheyle bakarım':[['Tam bir avukat. Kanıtsız iş yok.','Güvenin değeri burada çıkıyor.','En iyi kanıt deneyim.'],
+      ['O zaman ben de şüphene güveniyorum.','Dengeli. Hem dikkatli hem açık.','Demek şüphenin altında açık bir kalp var.']],
+    'Bildiğimi severim':[['Bunu çok iyi anlıyorum. O ilk yudum kutsal.','Bir yerin “senin yerin” olması güzel bir his.','Hangileri olduğunu sonra söylemelisin.'],
+      ['Ne güzel. Demek bazen değişim de iyi geliyor.','Anlıyorum, belki o yüzden bildiğine güveniyorsun.','O zaman bildiğin yolu sevmeye devam.']],
+    'Ortamına göre':[['Yolda insan bambaşka oluyor, değil mi?','Yakınlarının şanslı olduğu belli.','İlginç. İşte açık olmak cesaret ister.'],
+      ['Anlıyorum, kalabalık herkesi biraz kapatıyor.','Normal. Güven zaman alır.','Çok anlaşılır. Herkesin ailesiyle kendi dengesi var.']]},
+  duygu:{
+    'Açıkça söylerim':[['Anlıyorum. Kırgınlığı söylemek en zoru, insan savunmasız kalıyor.','İlginç. Demek o kelime senin için ağır bir kelime.','Çok insani. Kimse kıskandığını söylemeyi sevmiyor.','Bu gerçekten cesaret. Saygı duydum.'],
+      ['Mantıklı. Açık olana açık olmak lazım.','Bunu söylemen güzel. Belki şimdi söylemiş oldun.','Herkesi olduğu gibi kabul etmek, güzel.']],
+    'Davranışlarımla':[['En değerli hediye vakit. Bunu biliyorum.','Sessizce bir şey yapıp sevgisini gösteren insanları çok severim.','Bu fark edilmesi zor bir dil. Dikkatli bakmak lazım.'],
+      ['Güzel. Bazen kelimeler de lazım.','Anlıyorum. Umarım yanında hep anlayan biri olur.','Bu çok tatlı ve biraz inatçı bir cevap.']],
+    'Şaka yaparak':[['Seni tanıyan anlıyor demek. Güzel.','Bu biraz yalnız hissettirebilir. Ben anlamaya çalışırım.','O zaman şakaların açık kitap.'],
+      ['Normal. Şaka kolay, ciddiyet cesaret ister.','Dengeli bir cevap.','Demek şakanın arkasında sağlam biri var.']],
+    'Pek göstermem':[['Anlıyorum. Alışkanlıklar kolay değişmiyor, değişmesi de gerekmiyor.','Bunu söylemen değerli. Yanlış anlaşılmak gerçekten yorucu.','Net bir cevap. Saygı duyuyorum.'],
+      ['Bu ağır olabilir. Umarım bir gün rahatça gösterebileceğin biri olur.','O kişi çok şanslı.','Kendine karşı dürüst olman güzel.']]},
+  kotugun:{
+    'Yalnız kalmak':[['Kötü günün en iyi ilacı. O gün ne dinlediğini merak ettim.','Bazen en iyisi gerçekten bu.','Kadıköy sahilinde bir yürüyüş, tahmin ediyorum.','Anlıyorum. Bazen sessizlik en iyi dost.'],
+      ['Aklımda. Kötü gününde sana alan bırakırım.','O seçilen kişi olmak güzel olmalı.','Rahat birisin, güzel.']],
+    'Biriyle konuşmak':[['Ailende sığınabileceğin birinin olması çok güzel.','İyi ki var o arkadaş.','O an kim varsa, şanslı.'],
+      ['Pratik birisin. Önce çözüm, sonra rahatlama.','Bunu çok iyi anlıyorum. Bazen sadece biri yanında olsun istersin. Haklısın bu arada.','Bu konuda gönüllüyüm, haberin olsun.']],
+    'Dışarı çıkmak':[['Moda sahili, değil mi? Tahmin ettim.','Kalabalığın içinde kaybolmak bazen iyi gelir.','En iyi yürüyüş türü.'],
+      ['Yanında yürüyecek birinin olması güzel.','Anlıyorum, o yürüyüş senin.','Sessiz durabilirim, söz. Belki.']],
+    'Uyumak':[['Uyku her şeyin ilacı.','Bazen geçiyor, bazen sadece hafifliyor.','Anlıyorum. Ertelemek de bazen gerekli, ama yalnız taşımak zorunda değilsin.'],
+      ['Seni iyi tanıyan biri var demek. Güzel.','O birkaç kişi değerli.','Bunu duymak biraz üzdü. Belki bazen söylemek lazım.']]},
+  stres:{
+    'Sakin kalırım':[['Bu gerçekten bir süper güç.','Anlıyorum. Dışarıdan sakin görünüp içinde fırtına yaşamak yorucu.','Bunu söylemen değerli. İçindeki fırtınayı herkes görmüyor.'],
+      ['Sağlıklı bir yol.','Uyku çoğu şeyi çözer.','Konuşacak birinin olması güzel.']],
+    'İçime kapanırım':[['Kısa sürüp toparlanıyorsun, güzel.','Uzun sürebiliyormuş. O günlerde kendine iyi bak.','Anlıyorum. Kendi zamanında çıkıyorsun.'],
+      ['Aklımda. Cevap gelmezse alınmam.','Kısa cevap da cevaptır, anladım.','Bunu bilmek güzel.']],
+    'Gerilir, belli ederim':[['En yakınlar hep nasibini alır. Çok tanıdık.','Arkadaşın seni seviyordur, idare eder.','Kendine biraz daha yumuşak olabilirsin bence.'],
+      ['Özür dileyebilmek güçlü bir şey.','Davranışla özür bazen en samimisi.','Dürüst bir cevap. Belki yakınların zaten anlıyordur.']],
+    'Hemen çözüm ararım':[['Anlıyorum. Çözümsüz şeyler en zoru.','Kabullenmek de bir çözüm aslında.','Yardım istemeyi bilmek büyük olgunluk.'],
+      ['Her şeyi çözmek zorunda değilsin, bunu bil.','Normal, sonunda çözüyorsun ama.','Problem çözmek sana iyi geliyorsa doğru meslektesin.']]},
+  gun:{
+    'Yeni bir yer keşfederek':[['Bir gün gidersin bence.','Yeşil, sessiz ve uzak. Çok güzel.','İstanbul’da hâlâ keşfedilecek çok semt var.'],
+      ['Kendinle bir keşif. Hem cesur hem huzurlu.','İyi bir yol arkadaşı her şeyi güzelleştirir.','Kalabalık ve neşeli. Güzel.']],
+    'Sevdiklerimle uzun bir sofrada':[['Aile sofrası bambaşka.','Arkadaş sofraları hiç bitmez.','Bir kişi yeter, demek. Şanslı biri.'],
+      ['Buna sevindim.','O zaman yakında bir tane olsun.','Bu biraz üzdü. Bir an önce bir sofra kurulmalı.']],
+    'Tamamen kendimle':[['Kitap ya da film, kendine ayrılmış bir gün. Güzel.','Yürümek düşünceleri toparlıyor.','Hiçbir şey yapmamak da bir sanat.'],
+      ['Ne güzel, kendine zaman ayırabiliyorsun.','Bence daha sık yapmalısın.','Bunu hak ediyorsun ama. Bir gün kendine böyle bir gün ayır.']],
+    'Üretken, bir şeyi bitirerek':[['Çalışkan biri, belli.','Hangi proje, merak ettim.','En tatmin edici bitirme türü.'],
+      ['Bence kutlamalısın. Küçük bir tatlı bile olur.','En doğrusu.','Paylaşınca sevinç ikiye katlanır.']]},
+  onem:{
+    'Aile':[['Annene benzemek güzel bir şey olmalı.','Babasına benzeyen kızlar güçlü olur derler.','Kardeş benzerliği, tatlı.','Kendine has birisin. Bunu tahmin ediyordum.'],
+      ['Bu çok güzel bir miras.','Güçlü biri olduğun belli.','Değerlerine bağlı biri. Saygı duyuyorum.']],
+    'Özgürlük':[['Mesai saatleri... Çok anlıyorum.','İstanbul bazen insanı sıkıştırıyor.','Başkalarının beklentileri ağır olabiliyor.','Bunu fark etmek bile büyük adım.'],
+      ['Nereye gideceğini merak ettim.','Bazen en büyük özgürlük bu.','Umarım o gün yakında gelir.']],
+    'Başarı':[['Dürüst ve net. Güzel.','Emeğinin görülmesini istemek çok doğal.','En güzel başarı tanımı bu bence.'],
+      ['Belli, emek vermişsin.','Bu çok değerli bir başarı.','Bu en zoru. Gurur duymalısın.']],
+    'Huzur':[['Anlıyorum. Umarım ben huzurunu bozanlardan değilimdir.','Belirsizlik herkesi yoruyor.','Kadıköy temposu, anlıyorum.','Bunu söylemen değerli. Düşünceler bazen en gürültülü yer.'],
+      ['Ev en güvenli liman.','Doğa insanı sakinleştiriyor.','Güzel. Sevdiklerin şanslı.']]},
+  hayal:{
+    'Kariyer':[['Kendi büron, kapıda adın. Çok yakışır.','Büyük hedef, yakışır.','Bunu merak ettim, hangi alan?'],
+      ['Yakın. O gün kutlamak isterim.','Sağlam bir plan.','En doğrusu. Yavaş ama emin.']],
+    'Yeni bir hayat, yer değiştirmek':[['Hangi şehir, merak ettim.','Cesur bir hayal.','Deniz, sessizlik, sabah kahvesi. Çok güzel.'],
+      ['Gerçekçi bir başlangıç.','O zaman dil sorusunu da sormalıydım.','Bence sende o cesaret var.']],
+    'Aile kurmak':[['Gürültülü, güzel bir ev.','Huzurlu bir ev. Çok güzel.','Bahçede bir çay. Çok güzel bir hayal.'],
+      ['Eski ve köklü bir hayal.','Zamanla gelen hayaller daha sağlam olur.','Yeni hayaller heyecanlıdır.']],
+    'Bir şey üretmek, iz bırakmak':[['Bir gün o kitabı okumak isterim.','Girişimci bir tarafın da varmış.','Bunu bilmiyordum. Çok güzel.'],
+      ['Harika. Devam et.','Her şey kafada başlar.','Zamanı gelince başlarsın.']]},
+  pisman:{
+    'Söylemediğim şeylerden':[['Anlıyorum. En yakınlara söylemek bazen en zoru.','Umarım bir gün söyleme fırsatın olur.','Bu çok derin bir cevap. Bazen kendine de söylemek gerekiyor.'],
+      ['Umarım söylersin. Rahatlarsın.','Anlıyorum. Geç olsa da insanın içinde kalıyor.','Bilmemek de normal.']],
+    'Denemediğim şeylerden':[['Hangisi olduğunu merak ettim.','Oraya hâlâ gidebilirsin.','Anlıyorum, o yol aklında kalmış.'],
+      ['O zaman dene. Bekleme.','“Belki” iyi bir başlangıç.','Anlıyorum. Belki başka bir kapı açılır.']],
+    'Acele ettiğim kararlardan':[['Baskı altında karar vermek zor.','Demek bu konuda benzeriz.','Korkuyla verilen kararlar insanı en çok yoruyor.'],
+      ['Güzel, öğrenmişsin.','Bu konuda yalnız değilsin.','Dengeli.']],
+    'Pişman olmam':[['Bu güzel bir huzur.','Küçükler sayılmaz bence.','Bu da bir yol. Kendini korumak.'],
+      ['Olgun bir cevap.','İleriye bakan biri.','Bazen bilmeden de iyi gidiyor.']]},
+  kirar:{
+    'Görmezden gelinmek':[['Anlıyorum. Söylemek iyidir.','Anlıyorum. Uzaklaşmak da bir dil.','İçinde tutmak ağır olabilir.'],
+      ['Samimi bir özür. Aklımda.','Anlıyorum. Zamana saygı duymak lazım.','Küçük bir jest bazen çok şey anlatır.']],
+    'Yalan':[['Net ve dürüst bir çizgi.','Anlaşılır bir sınır.','Adil bir bakış.'],
+      ['Affedebilen birisin. Bu güzel.','Anlıyorum. Güven zor kazanılıyor.','Anlıyorum. Bu çizgine saygı duyuyorum.']],
+    'Hafife alınmak':[['Anlıyorum. Emeğinin görülmemesi çok yorucu.','Bu en çok acıtanı olabilir.','Arkadaşların seni hafife almamalı.'],
+      ['Güzel. Sesini çıkarman önemli.','Anlıyorum. Ama hak ettiğini söylemek de senin hakkın.','Güçlü bir cevap. Ama kimseye bir şey kanıtlamak zorunda değilsin.']],
+    'Sözünü tutmamak':[['Affedici birisin.','Adil bir kural.','Net bir çizgi. Saygı duyuyorum.'],
+      ['Buna inanıyorum.','Dürüst bir cevap.','Çalışmak da önemli.']]},
+  itiraf:{
+    'Yorulduğumu':[['Güçlüsün ama durmak da bir güç.','Biraz erken durmayı dene.','Umarım hep fark eden biri olur.'],
+      ['Ailenin seni bu kadar iyi tanıması güzel.','İyi ki var o arkadaş.','Bunu duymak üzdü. Yorulduğunu söylemek de senin hakkın.']],
+    'Yardıma ihtiyacım olduğunu':[['Yardım istemek yük olmak değil.','Bence yardım istemek güç ister.','Anlayan biri çıkabilir, denemeye değer.'],
+      ['Güzel, demek yapabiliyorsun.','Belki yakında bir dahaki olur.','Bunu kendine uzun zamandır borçlusun bence.']],
+    'Kıskandığımı':[['Çok insani. Bazen motivasyon da olur.','Anlıyorum, çok insani bir his.','Herkes biraz özgürlük ister.'],
+      ['Kıskançlığı yakıta çevirmek güzel.','Dengeli.','Anlıyorum. Yorucu bir his.']],
+    'Hata yaptığımı':[['Sorumluluk sahibi birisin.','Kendine fazla yüklenme.','Özür dileyebilmek güçlü bir şey.'],
+      ['Bu sağlıklı bir şey.','Zaman iyi bir öğretmen.','Kendine biraz daha şefkatli olabilirsin.']],
+    'Kırıldığımı':[['Anlıyorum. Ama kırgınlık içeride kalınca büyüyebiliyor.','Anlıyorum. Bunu bilmek benim için önemli.','Güzel. Geç de olsa söylemek önemli.'],
+      ['Hassas olmak zayıflık değil.','Hep başkalarını düşünüyorsun.','Çok dürüst bir cevap.']],
+    'Yalnız hissettiğimi':[['Kalabalıkta yalnızlık en tuhafı.','Akşamlar bazen ağır geliyor.','Paylaşacak birini aramak çok doğal.'],
+      ['Bunu bilmek güzel.','İyi bir ilaç.','Anlıyorum. Akıl dağılınca hafifliyor.']],
+    'Korktuğumu':[['Çok anlaşılır. Belirsizlik herkesi korkutur.','Anlıyorum. Değer verdiğin şeyler var demek.','Bence fazlasıyla yeterlisin.'],
+      ['Cesur.','Bazen işe yarıyor.','Paylaşınca hafifliyor.']],
+    'Birini özlediğimi':[['Cesur bir kalp.','Umarım o kişi fark ediyordur.','Anlıyorum. Bazen söylemek zor.'],
+      ['Özlemi güzel bulabilmek güzel.','Anlıyorum. Umarım hafifler.','Çok doğru. Özlem tam olarak böyle.']]}
+};
+const SOFT = new Set(['pisman','kirar','itiraf']);
+function rx(k, self, lvl, q, ans){
+  const r = RX[k] && RX[k][self] && RX[k][self][lvl];
+  const i = q.indexOf(ans);
+  return (r && r[i]) || 'Anladım.';
+}
 const PKEYS = Object.keys(P);
 const YKEYS = PKEYS.filter(k => P[k].y);
 const gMatch = (q, v) => Array.isArray(q.g) ? q.g.includes(v) : q.g === v;
@@ -577,8 +729,8 @@ function addFree(c, cb){
   $('#free-ok', box).onclick = go;
   inp.onkeydown = e => { if(e.key === 'Enter') go(); };
 }
-const ACK = ['Anladım.', 'Bunu bilmek güzel.', 'Not aldım.', 'Hmm, mantıklı.', 'Güzel bir cevap.'];
-const CLOSE = ['Bunu bilmek güzel, teşekkürler.', 'Not aldım, çok iyi.', 'Seni biraz daha tanıdım.'];
+const ACK = ['Bak bu cevap tam sen.', 'Bunu hiç düşünmemiştim, tatlıymış.', 'Şu an gülümsedim, haberin olsun.', 'Bunu duymak hoşuma gitti.', 'Tamam, bunu aklımın bir köşesine yazdım.'];
+const CLOSE = ['Seni tanıdıkça daha çok merak ediyorum.', 'Bir parçanı daha öğrendim, iyi ki sormuşum.', 'Bu cevap için sana bir kahve borçluyum.', 'Ekranın öbür tarafında gülümsediğimi bil.', 'Bu cevabı unutmam, söyleyeyim.'];
 
 function personal(s){
   const q = P[s.k];
@@ -593,8 +745,8 @@ function personal(s){
       ans.guess = v;
       let line;
       if(!q.y) line = 'Açıkçası ben de tam bilmiyorum. Ama senin tahminin aklımda kalacak.';
-      else if(v === q.y) { heart(); line = pickOne(['Aynen öyle, ben de kendimi böyle görüyorum.', 'Beni iyi okumuşsun.', 'Tam üstüne bastın.']); }
-      else line = pickOne([`İlginç, ben kendimi daha çok “${q.y}” olarak görüyorum. Ama sen beni böyle görüyorsan bunda bir şey var.`, `Hmm, ben “${q.y}” derdim. Seni böyle düşündüren ne, merak ettim.`]);
+      else if(v === q.y) { heart(); line = pickOne(['Aynen öyle. Beni bu kadar iyi okuduğunu bilmiyordum.', 'Tam üstüne bastın. Biraz korkmaya başladım.', 'Bildin. Beni izliyor muydun yoksa?']); }
+      else line = pickOne([`Ben kendimi daha çok “${q.y}” görüyorum. Ama senin gözünden bakmak hoşuma gitti.`, `Hmm, ben “${q.y}” derdim. Demek sende böyle bir izlenim bırakmışım, ilginç.`]);
       if(q.note) line += ' ' + q.note;
       later(() => say(c, line + ' ' + q.sq, () => {
         const own = q.free ? q.o.concat([q.free]) : q.o;
@@ -614,9 +766,12 @@ function personal(s){
                     : `Ben senin kendi cümlenle bir şey yazacağını sanmıştım. Ama “${ans.self}” demen de çok şey anlatıyor.`;
       } else if(Array.isArray(q.g)) {
         line = same ? `İkisinden birini düşünmüştüm: ${gText(q).toLowerCase()}. Tutmuş!` : `Ben seni daha çok “${gText(q)}” diye düşünmüştüm; bunu bilmek güzel.`;
+      } else if(SOFT.has(s.k)) {
+        line = same ? pickOne(['Tahmin etmiştim. Paylaştığın için teşekkür ederim.', 'Öyle düşünmüştüm. Bunu bana söylemen değerli.'])
+                    : pickOne([`Ben “${q.g}” sanıyordum. Bunu bana söylemen değerli.`, `Ben “${q.g}” diye düşünmüştüm. Paylaştığın için teşekkür ederim.`]);
       } else {
-        line = same ? pickOne(['Ben de seni tam böyle görüyordum.', `Tahmin etmiştim, “${q.g}”.`])
-                    : pickOne([`Ben seni daha çok “${q.g}” sanıyordum; bunu bilmek güzel.`, `Benim gözümde daha çok “${q.g}” gibiydin. Demek bu tarafını henüz görmemişim.`]);
+        line = same ? pickOne(['Seni tam böyle hayal etmiştim.', `Bildim, “${q.g}”. Bunu bir kenara yazıyorum.`, 'Biliyordum. Seni sandığından iyi tanıyor olabilirim.'])
+                    : pickOne([`Ben seni daha çok “${q.g}” sanıyordum. Sürpriz yaptın, hoşuma gitti.`, `Benim gözümde “${q.g}” gibiydin. Demek görmediğim tarafların da var, merak ettim.`]);
       }
       later(() => {
         if(same) heart(); else react('heroYusuf','nope');
@@ -624,9 +779,9 @@ function personal(s){
         if(!br){ say(c, line, () => cont(c)); return; }
         say(c, line + ' ' + br[0][0], () => addOpts(c, br[0][1], a2 => {
           ans.d2 = a2;
-          later(() => say(c, pickOne(ACK) + ' ' + br[1][0], () => addOpts(c, br[1][1], a3 => {
+          later(() => say(c, rx(s.k, ans.self, 0, br[0][1], a2) + ' ' + br[1][0], () => addOpts(c, br[1][1], a3 => {
             ans.d3 = a3;
-            later(() => say(c, pickOne(CLOSE), () => cont(c)), 400);
+            later(() => say(c, rx(s.k, ans.self, 1, br[1][1], a3), () => cont(c)), 400);
           })), 400);
         }));
       }, 450);
