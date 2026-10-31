@@ -54,7 +54,7 @@ dt{color:var(--muted)}dd{margin:0;overflow-wrap:anywhere}
 <script>
 // Yusuf'un onun hakkındaki tahminleri (oyundaki soru etiketlerine göre)
 const GUESS = {'İdeal hafta sonu sabahı':'Evde dinlenmek','Enerji veren':'Yalnız kalmak','İşte en sevdiği an':'Mesainin bittiği an','Çay mı kahve mi':'Kahve','Sabah mı gece mi':'Sabah','Kahve nasıl':'Sade','Kahvaltı':'Kahvaltı yapmam','Cumartesi akşamı':'Arkadaşlarla olurum','Düzenli mi dağınık mı':'Düzenli','Planlı mı spontane mi':'Planlı','Gizli korku':'Örümcek','Sabırlı mı sabırsız mı':'Sabırlı','Mantık mı kalp mi':'Mantıkla','Duvar kağıdı':'Doğa manzarası','Alarm':'Hemen kapatırım','Mesajlar':'Sonra','Yaz mı kış mı':'Kış'};
-const LABELS = {kitap:'Okuduğu kitap',sarki:'Bugün dinlediği',sarkiTahmin:'Senin dinlediğin (tahmini)',yusufSuAn:'Sence şu an',harf:'Harf oyunu',dil:'Dil sorusu',balonSure:'Balonlar (sn)',sabahGorevi:'Sabah görevi',kadikoyGorevi:'Kadıköy görevi',kadikoyGoreviYapildi:'Kadıköy görevi yapıldı mı',minikAktivite:'Minik aktivite',yusufaGorev:'Sana verdiği görev',foto:'Fotoğraf',isAn:'İşte en sevdiği an',guldugu:'Onu güldüren',kadikoyYer:'Kadıköy\'de sevdiği yer',haftasonu:'İdeal hafta sonu sabahı',ogrenmek:'Bu ay öğrenmek istediği',enerji:'Ona enerji veren'};
+const LABELS = {kitap:'Okuduğu kitap',sarki:'Bugün dinlediği',sarkiTahmin:'Senin dinlediğin (tahmini)',yusufSuAn:'Sence şu an',harf:'Harf oyunu',dil:'Dil sorusu',balonSure:'Balonlar (sn)',sabahGorevi:'Sabah görevi',kadikoyGorevi:'Kadıköy görevi',kadikoyGoreviYapildi:'Kadıköy görevi yapıldı mı',minikAktivite:'Minik aktivite',yusufaGorev:'Sana verdiği görev',foto:'Fotoğraf',bulusma:'Kahve buluşması',isAn:'İşte en sevdiği an',guldugu:'Onu güldüren',kadikoyYer:'Kadıköy\'de sevdiği yer',haftasonu:'İdeal hafta sonu sabahı',ogrenmek:'Bu ay öğrenmek istediği',enerji:'Ona enerji veren'};
 const $ = s => document.querySelector(s);
 const el = (t, cls, txt) => { const e = document.createElement(t); if(cls) e.className = cls; if(txt!==undefined) e.textContent = txt; return e; };
 let key = ''; try{ key = localStorage.getItem('panelKey') || ''; }catch(e){}
@@ -109,7 +109,7 @@ function render(rows){
     const dl = el('dl');
     Object.keys(LABELS).forEach(k => {
       const v = x.diger && x.diger[k]; if(v===undefined || v==='') return;
-      dl.appendChild(el('dt',null,LABELS[k])); dl.appendChild(el('dd',null, v===true?'Evet':v===false?'Hayır':String(v)));
+      dl.appendChild(el('dt',null,LABELS[k])); dl.appendChild(el('dd',null, v===true?'Evet':v===false?'Hayır':(typeof v==='object'?(v.kart?v.cevap+' · '+v.kart:(v.cevap||'')):String(v))));
     });
     c.appendChild(dl);
     out.appendChild(c);

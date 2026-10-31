@@ -446,6 +446,7 @@ const STEPS = [
   {t:'p',k:'pisman'},
   {t:'p',k:'kirar'},
   {t:'p',k:'itiraf'},
+  {t:'kahve'},
 ];
 
 /* ---------- durum ---------- */
@@ -516,7 +517,7 @@ function back(){
   render();
 }
 document.getElementById('backBtn').onclick = back;
-const SCENE = ['sohbet','sohbet','soru','soru','telefon','telefon','gulme','kafe2','kafe2','kafe1','kafe1','ayakta','sohbet','kafe1','kafe1','kafe1'];
+const SCENE = ['sohbet','sohbet','soru','soru','telefon','telefon','gulme','kafe2','kafe2','kafe1','kafe1','ayakta','sohbet','kafe1','kafe1','kafe1','kafe2'];
 let curScene = 'ayakta', poseFlip = false;
 function setScene(name){
   if(name === curScene) return; curScene = name;
@@ -532,7 +533,7 @@ function render(){
   if(st.i < 0) return intro();
   if(st.i >= STEPS.length) return results();
   const s = STEPS[st.i];
-  ({balloons, p:personal, text:textStep, letters, lang, pick, photo})[s.t](s);
+  ({balloons, p:personal, text:textStep, letters, lang, pick, photo, kahve:coffee})[s.t](s);
 }
 
 /* ---------- ekranlar ---------- */
@@ -802,6 +803,76 @@ function lang(){
   });
 }
 
+/* ---------- kahve buluşması ---------- */
+function addInput(c, opt, cb){
+  const id = 'in-' + Math.random().toString(36).slice(2, 7);
+  c.insertAdjacentHTML('beforeend', `<div class="opts"><input type="${opt.type||'text'}" id="${id}" ${opt.min?`min="${opt.min}"`:''} ${opt.value?`value="${opt.value}"`:''} placeholder="${esc(opt.ph||'')}" maxlength="80" autocomplete="off"><p class="err"></p><button class="btn primary">${esc(opt.btn||'Tamam')}</button></div>`);
+  const box = c.lastElementChild, inp = box.querySelector('input'), err = box.querySelector('.err'), ok = box.querySelector('button');
+  setTimeout(()=>{ box.scrollIntoView({behavior:'smooth', block:'nearest'}); if(opt.type !== 'date' && opt.type !== 'time') inp.focus(); }, 60);
+  inp.oninput = () => err.textContent = '';
+  const go = () => { const v = inp.value.trim(); if(!v){ err.textContent = opt.empty || 'Önce bir şey yaz.'; return; } inp.disabled = true; ok.remove(); hop('heroSen'); cb(v); };
+  ok.onclick = go; inp.onkeydown = e => { if(e.key === 'Enter') go(); };
+}
+function pickOrWrite(c, arr, writeLabel, ph, cb){
+  addOpts(c, arr.concat([writeLabel]), v => {
+    if(v === writeLabel) addInput(c, {ph}, cb); else cb(v);
+  });
+}
+const trDate = v => { try{ return new Date(v + 'T12:00').toLocaleDateString('tr-TR', {day:'numeric', month:'long', weekday:'long'}); }catch(e){ return v; } };
+
+function coffee(){
+  const B = st.a.bulusma = {};
+  const today = new Date(); const pad = n => String(n).padStart(2,'0');
+  const minDate = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
+  show(`
+    <div class="eyebrow"><span>Son soru</span><span>Bir kahve</span></div>
+    <p class="q">Son bir soru. Uzaktayız, bir süredir de konuşmuyorduk. Bir gün sen orada bir kafeye otursan, ben de burada kahvemi alsam, sonra beni arasan... Benimle bir kahve içer misin?</p>
+    ${optsHTML(['Olur, neden olmasın','Belki, ikna et beni','Şimdilik değil'])}
+  `, c => {
+    const steps = () => {
+      say(c, 'Önce yer. Beni hangi kafeden arıyorsun?', () => pickOrWrite(c,
+        ['Moda sahilinde, denize bakan bir kafe','Kadıköy çarşıda küçük bir kahveci','Ofisin yakınında sakin bir yer','Evinin yakınında bir kafe'],
+        'Başka bir yer (kendim yazayım)', 'Kafenin adı ya da yeri', v => { B.kafe = v;
+      say(c, pickOne(['Güzel seçim.','Tam oralık bir yer.','Orayı merak ettim.']) + ' Ne içiyorsun?', () => pickOrWrite(c,
+        ['Türk kahvesi','Filtre kahve','Latte','Flat white','Cappuccino','Americano','Mocha','Kahve yerine çay'],
+        'Başka bir şey (kendim yazayım)', 'Ne içeceksin?', v => { B.kahve = v;
+      say(c, 'Bir de yanına bir şey alıyorsun. Bu kısım zorunlu, kaçış yok.', () => addOpts(c,
+        ['San Sebastian cheesecake','Havuçlu tarçınlı kek','Brownie','Tereyağlı kruvasan','Limonlu kek','Çikolatalı kurabiye','Simit'], v => { B.yaninda = v;
+      say(c, `“${v}”, iyi tercih. Hangi gün?`, () => addInput(c, {type:'date', min:minDate, btn:'Bu gün', empty:'Bir gün seç.'}, v => { B.tarih = v;
+      say(c, `${trDate(v)}. Saat kaçta?`, () => addInput(c, {type:'time', value:'19:00', btn:'Bu saatte', empty:'Bir saat seç.'}, v => { B.saat = v;
+      say(c, 'Son olarak, merak ettim: o gün ne giyiyorsun? Önce başörtüsünün rengi.', () => addInput(c, {ph:'Örn. bej, haki, toz pembe, lacivert', btn:'Bu renk'}, v => { B.basortusuRengi = v;
+      say(c, `${v}, güzel. Nasıl bir başörtüsü?`, () => addOpts(c,
+        ['Şal','İpek eşarp','Pamuklu örme şal','Spor bağlama','Desenli eşarp'], v => { B.basortusu = v;
+      say(c, 'Üstüne ne alıyorsun?', () => addOpts(c,
+        ['Kot ceket, tabii ki','Trençkot','Kaban','Uzun hırka','Blazer ceket','Oversize sweatshirt','Yağmurluk'], v => { B.ust = v;
+      say(c, 'İçine?', () => addOpts(c,
+        ['Gömlek','Triko kazak','Balıkçı yaka','Uzun tunik','Düz tişört','Sweatshirt'], v => { B.ic = v;
+      say(c, 'Altta?', () => addOpts(c,
+        ['Bol paça pantolon','Kot pantolon','Kumaş pantolon','Uzun etek','Pileli etek','Kot etek','Uzun elbise'], v => { B.alt = v;
+      say(c, 'Ayakkabı?', () => addOpts(c,
+        ['Spor ayakkabı','Bot','Babet','Loafer','Çizme','Sandalet'], v => { B.ayakkabi = v;
+      say(c, 'Çanta?', () => addOpts(c,
+        ['Omuz çantası','Sırt çantası','Bez çanta','Küçük çapraz çanta','Çantasız'], v => { B.canta = v;
+        const kart = `${trDate(B.tarih)}, saat ${B.saat}. ${B.kafe}. Sende ${B.kahve} ve ${B.yaninda}. ${B.basortusuRengi.charAt(0).toLocaleUpperCase('tr-TR') + B.basortusuRengi.slice(1)} ${B.basortusu.toLowerCase()}, ${B.ust.toLowerCase().replace(', tabii ki','')}, ${B.ic.toLowerCase()}, ${B.alt.toLowerCase()}, ${B.ayakkabi.toLowerCase()}, ${B.canta.toLowerCase()}.`;
+        B.kart = kart; heart();
+        say(c, `Tamam, not aldım: ${kart} Ben de o saatte kahvemi alıp bekliyor olacağım. Ararsan açarım.`, () => cont(c, 'Sonuçlara geç'));
+      })); })); })); })); })); })); })); })); })); })); })); }));
+    };
+    bindOpts(c.querySelector('.opts'), v => {
+      B.cevap = v;
+      if(v === 'Şimdilik değil'){
+        later(() => say(c, 'Anlıyorum, hiç sorun değil. Teklif hep geçerli.', () => cont(c, 'Sonuçlara geç')), 400);
+      } else if(v === 'Belki, ikna et beni'){
+        later(() => say(c, 'Kahveyi ben ısmarlamış sayalım. Konuşacak konuları da zaten bu oyunda topladık. Ne dersin?', () => addOpts(c, ['Tamam, ikna oldum','Yine de şimdilik değil'], v2 => {
+          B.cevap += ' → ' + v2;
+          if(v2 === 'Tamam, ikna oldum'){ heart(); later(steps, 400); }
+          else later(() => say(c, 'Anlıyorum. Teklif hep geçerli.', () => cont(c, 'Sonuçlara geç')), 400);
+        })), 400);
+      } else { heart(); later(steps, 400); }
+    });
+  });
+}
+
 /* ---------- sonuç ---------- */
 function compute(){
   let tanima = 0, yusufBildi = 0, benzer = 0;
@@ -846,6 +917,7 @@ function summaryText(r){
   if(A.ogrenmek) L.push('Bu ay öğrenmek istediğim: '+A.ogrenmek);
   if(A.yusufaGorev) L.push('Yusuf\'un görevi: '+A.yusufaGorev);
   if(A.foto) L.push('Fotoğraf: '+A.foto);
+  if(A.bulusma){ L.push(''); L.push('Kahve: '+A.bulusma.cevap); if(A.bulusma.kart) L.push('Buluşma: '+A.bulusma.kart); }
   return L.join('\n');
 }
 
@@ -885,6 +957,8 @@ function results(){
     ${talk.length?`<span class="tag">Bunu bir konuşalım</span>
     <div class="note">${talk.map(x=>`${esc(x.label)}: sen “${esc(x.guess)}” dedin, ben kendimi “${esc(x.y)}” görüyorum.`).join('<br>')}</div>`:''}
 
+    ${st.a.bulusma && st.a.bulusma.kart?`<span class="tag">Kahve buluşmamız</span><div class="note">${esc(st.a.bulusma.kart)}</div>`:''}
+    ${st.a.bulusma && !st.a.bulusma.kart && st.a.bulusma.cevap?`<div class="note">Kahve teklifi hâlâ geçerli.</div>`:''}
     ${st.a.yusufaGorev?`<div class="note">Bana verdiğin zorunlu görev: <strong>${esc(st.a.yusufaGorev)}</strong></div>`:''}
     ${st.a.sarkiTahmin?`<div class="note">Bugün dinlediğim şarkı için tahminin “${esc(st.a.sarkiTahmin)}”. Doğru mu, bana sor.</div>`:''}
 
