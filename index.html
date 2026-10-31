@@ -410,38 +410,26 @@ const LANGS = [
   ['Fince','Moi'],['İspanyolca','Hola'],['İtalyanca','Ciao'],['Japonca','Konnichiwa'],
   ['Korece','Annyeong'],['Portekizce','Olá'],['Yunanca','Yassou'],['Hollandaca','Hallo'],['Svahili','Jambo'],['Havaice','Aloha']
 ];
-const LETTERS = ['A','R','K','A','D','A','Ş','L','I','K'];
+const LETTERS = ['D','O','S','T','L','U','K','C','Z','H','P'];
+const TARGET = 'DOSTLUK';
 
 const STEPS = [
-  {t:'text',k:'kitap',d:'book',eyebrow:'Senin günün',q:'Şu an okuduğun kitap hangisi?',ph:'Kitabın adı',skip:'Şu an bir şey okumuyorum'},
   {t:'p',k:'grup'},
   {t:'p',k:'izlenim'},
-  {t:'letters'},
   {t:'p',k:'firsat'},
   {t:'p',k:'karar'},
-  {t:'text',k:'sarkiTahmin',d:'vinyl',eyebrow:'Tahmin',q:'Sence ben bugün hangi parçayı dinledim?',ph:'Şarkı ya da şarkıcı',after:'“{v}” mi? Hadi o zaman bu parçayı aç da dinle!'},
-  {t:'text',k:'sarki',d:'vinyl',eyebrow:'Senin günün',q:'Peki sen bugün hangi şarkıyı dinledin?',ph:'Şarkı ve şarkıcı',skip:'Bugün hiç müzik dinlemedim'},
   {t:'p',k:'soz'},
-  {t:'lang'},
+  {t:'letters'},
   {t:'p',k:'yeni'},
-  {t:'pick',k:'sabahGorevi',d:'sunrise',eyebrow:'Görev',q:'Yarın 6.45\'te evden çıkarken bir görev seç',o:['Gökyüzüne bak, rengini aklında tut','Yolda ilk gördüğün kediye selam ver','Otobüste en sevdiğin şarkıyı aç','Simitçiden bir simit al']},
   {t:'p',k:'duygu'},
-  {t:'text',k:'guldugu',d:'qmark',eyebrow:'Senin hakkında',q:'Son zamanlarda seni en çok güldüren şey ne oldu?',ph:'Bir olay, bir video, bir cümle...'},
   {t:'p',k:'kotugun'},
-  {t:'text',k:'yusufSuAn',d:'qmark',eyebrow:'Tahmin',q:'Sence ben şu an ne yapıyorumdur?',ph:'Bence şu an...'},
   {t:'p',k:'stres'},
-  {t:'pick',k:'kadikoyGorevi',d:'ferry',eyebrow:'Kadıköy görevi',q:'Sana bir görevim var. Ofisten çıkarken birini seç.',o:['Altından boğa heykelini gören bir fotoğraf çek','İskelede martılara selam ver','Dönüşte otobüste cam kenarına otur','Eve giderken bir sokak kedisini sev'],done:'Yaptım'},
-  {t:'text',k:'kadikoyYer',d:'ferry',eyebrow:'Senin hakkında',q:'Kadıköy\'de en sevdiğin yer neresi?',ph:'Bir kafe, bir sokak, bir köşe'},
   {t:'p',k:'gun'},
-  {t:'pick',k:'minikAktivite',d:'checklist',eyebrow:'Bugün için',q:'Aşırı küçük yeni bir aktivite seç',o:['Eve gidince kendime bir çay yapacağım','Otobüste 5 dakika camdan dışarı bakacağım','Yatmadan bir sayfa kitap okuyacağım','Bugün kendime sevdiğim bir atıştırmalık alacağım']},
   {t:'p',k:'onem'},
   {t:'p',k:'hayal'},
-  {t:'text',k:'ogrenmek',d:'book',eyebrow:'Senin hakkında',q:'Bu ay öğrenmek istediğin bir şey var mı?',ph:'Bir dil, bir tarif, bir beceri...',skip:'Şu an aklımda bir şey yok'},
   {t:'p',k:'pisman'},
-  {t:'pick',k:'yusufaGorev',d:'task',eyebrow:'Yusuf\'a görev',q:'Sıra sende. Bana bugün zorunlu bir aktivite ver.',o:['10 dakika yürüyüşe çık','Bana güzel bir fotoğraf çek ve at','Odanı topla']},
   {t:'p',k:'kirar'},
   {t:'p',k:'itiraf'},
-  {t:'photo'},
 ];
 
 /* ---------- durum ---------- */
@@ -524,10 +512,10 @@ function render(){
 /* ---------- ekranlar ---------- */
 function intro(){
   show(`
-    <div class="eyebrow"><span>${STEPS.length} adım</span><span>yaklaşık 7 dakika</span></div>
+    <div class="eyebrow"><span>${STEPS.length} adım</span><span>yaklaşık 10 dakika</span></div>
     <h1>Ne kadar tanıyoruz?</h1>
     <p class="q">Selam! Sana birkaç soru soracağım, birkaç da görev vereceğim. Hazır mısın?</p>
-    <p class="sub">Biraz tahmin, biraz oyun, birkaç minik görev. Hadi bakalım, nasıl yapacaksın görelim.</p>
+    <p class="sub">Önce sen beni tahmin edeceksin, sonra ben seni. Hadi bakalım, nasıl yapacaksın görelim.</p>
     <div class="note">Cevaplarını oyun sonunda kopyalamayı unutma, nasıl yaptığını merak ediyorum.</div>
     <button class="btn primary" id="go">Hazırım</button>
   `, c => {
@@ -716,14 +704,14 @@ function balloons(){
   });
 }
 
-const WORDS = new Set(["ad", "ada", "adak", "adaklı", "adaklık", "adalar", "adalı", "adaş", "adaşlık", "adlar", "adlı", "adı", "adıl", "ak", "aka", "akak", "akala", "akar", "akdarı", "akkışla", "akla", "aklı", "aklık", "akı", "akıl", "akış", "al", "ala", "alaka", "alarak", "aldı", "alkış", "alık", "alış", "ar", "ara", "arada", "arak", "araka", "araklı", "aral", "aralı", "aralık", "arda", "ardak", "ardı", "ardıl", "ark", "arka", "arkadaş", "arkadaşlık", "arkalı", "arkalık", "arlı", "arı", "arık", "arış", "arş", "aş", "aşar", "aşk", "aşlık", "aşı", "aşık", "da", "dal", "dalak", "dalar", "dalaş", "dalış", "dar", "dara", "daralış", "daraş", "daraşlık", "darlık", "darı", "dılak", "dış", "dışa", "dışrak", "kadar", "kadı", "kak", "kaka", "kakır", "kakış", "kal", "kala", "kalak", "kaldı", "kaldır", "kalk", "kalkar", "kalkış", "kalık", "kalış", "kar", "kara", "karakaş", "karalı", "karalık", "karlı", "karlık", "karı", "karık", "karış", "karşı", "kaş", "kaşar", "kaşarlı", "kaşlar", "kaşlı", "kaşık", "kral", "kıl", "kır", "kırdı", "kırk", "kış", "kışla", "kışlak", "la", "lak", "laka", "ra", "rakı", "ır", "ıra", "ırak", "ırk", "şa", "şad", "şak", "şaka", "şakak", "şakalı", "şakrak", "şakıldak", "şakır", "şal", "şalak", "şar", "şark", "şarklı", "şarkı", "şarıl", "şık", "şıra", "şırak"]);
+const WORDS = new Set(["cop", "cuk", "cup", "do", "dok", "doku", "dokuz", "dolu", "dost", "dostluk", "doz", "dul", "dut", "hol", "hop", "hot", "kod", "koh", "kol", "kolcu", "kolsu", "kolsuz", "kolu", "kopuz", "kot", "koz", "kul", "kulp", "kup", "kut", "kuz", "lok", "lop", "lot", "lotus", "lup", "od", "odsuz", "ok", "oklu", "okul", "oldu", "oluk", "opus", "ot", "otlu", "otluk", "otsu", "otsul", "otsuz", "otuz", "pos", "post", "postlu", "pot", "potluk", "potuk", "poz", "pul", "pus", "put", "soku", "sol", "solcu", "soluk", "spot", "stok", "stop", "su", "sulh", "sulp", "sup", "sut", "tok", "toklu", "tokuz", "tol", "top", "toplu", "topsuz", "topu", "topuk", "topuz", "tos", "toz", "tozlu", "tozluk", "tuh", "tul", "tuz", "uzo"]);
 function letters(){
   const pool = LETTERS.map((l,i)=>({l,i})).sort(()=>Math.random()-.5);
   let word = [];
   show(`
     <div class="eyebrow"><span>Harf oyunu</span><span></span></div>
     ${doodle('tiles')}
-    <p class="q">Bu harflerle yazabildiğin en uzun kelimeyi yaz</p>
+    <p class="q">Bu harflerin içinde bir kelime saklı. Ama dikkat, bazı harfler işe yaramaz. Yazabildiğin en uzun kelimeyi bul.</p>
     <div class="word" id="word" aria-live="polite"></div>
     <div class="tiles" id="tiles">${pool.map(p=>`<button class="tile" data-i="${p.i}">${p.l}</button>`).join('')}</div>
     <p class="err" id="err"></p>
@@ -745,11 +733,11 @@ function letters(){
       const w = word.map(x=>x.l).join('');
       if(!WORDS.has(w.toLocaleLowerCase('tr-TR'))){ fail('“'+w+'” bir kelime değil gibi. Başka bir tane dene.'); return; }
       st.a.harf = w;
-      const best = w === 'ARKADAŞLIK';
+      const best = w === TARGET;
       c.innerHTML = `<div class="eyebrow"><span>Harf oyunu</span><span></span></div>
         <h2>${esc(w)}</h2>
         <p class="q">${w.length} harf.</p>
-        <div class="note">${best ? 'Tam isabet, bütün harfleri kullandın.' : 'Bu harflerin hepsiyle tek bir kelime çıkıyordu: <strong>ARKADAŞLIK</strong>.'}</div>
+        <div class="note">${best ? 'Tam isabet. Fazladan harflere kanmadın, gizli kelime buydu.' : 'Harflerin bazıları sadece kafa karıştırmak içindi. Gizli kelime: <strong>DOSTLUK</strong>.'}</div>
         <button class="btn primary" id="n">Devam</button>`;
       $('#n',c).onclick = next;
     };
