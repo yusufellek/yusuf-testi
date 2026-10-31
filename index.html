@@ -395,6 +395,7 @@ const P = {
         'Bir şey üretmek, iz bırakmak':[['Ne?',['Bir yazı, kitap','Bir iş, marka','Bir sanat eseri']],['Başladın mı?',['Evet','Kafamda','Henüz değil']]]}},
   pisman:{label:'Pişmanlık', yq:'Sence ben en çok neyden pişmanlık duyarım?', sq:'Peki sen en çok neyden pişmanlık duyarsın?',
     o:['Söylemediğim şeylerden','Denemediğim şeylerden','Acele ettiğim kararlardan','Pişman olmam'], y:'Acele ettiğim kararlardan', g:'Pişman olmam',
+    note:'Bazen bir adım fazla atıyorum, farkındayım. Frenim pek iyi çalışmıyor.',
     br:{'Söylemediğim şeylerden':[['Daha çok kime?',['Aileme','Bir arkadaşıma','Kendime']],['Hâlâ söyleyebilir misin?',['Evet, belki söylerim','Artık geç','Bilmiyorum']]],
         'Denemediğim şeylerden':[['En çok hangisi?',['Bir hobi, beceri','Bir yere gitmek','Bir iş, bölüm']],['Şimdi deneyebilir misin?',['Evet','Belki','Kapı kapandı']]],
         'Acele ettiğim kararlardan':[['Acele ettiren neydi?',['Baskı','Heyecan','Korku']],['Şimdi daha mı yavaşsın?',['Evet','Hâlâ hızlıyım','Duruma göre']]],
@@ -594,6 +595,7 @@ function personal(s){
       if(!q.y) line = 'Açıkçası ben de tam bilmiyorum. Ama senin tahminin aklımda kalacak.';
       else if(v === q.y) { heart(); line = pickOne(['Aynen öyle, ben de kendimi böyle görüyorum.', 'Beni iyi okumuşsun.', 'Tam üstüne bastın.']); }
       else line = pickOne([`İlginç, ben kendimi daha çok “${q.y}” olarak görüyorum. Ama sen beni böyle görüyorsan bunda bir şey var.`, `Hmm, ben “${q.y}” derdim. Seni böyle düşündüren ne, merak ettim.`]);
+      if(q.note) line += ' ' + q.note;
       later(() => say(c, line + ' ' + q.sq, () => {
         const own = q.free ? q.o.concat([q.free]) : q.o;
         addOpts(c, own, v2 => {
