@@ -85,20 +85,23 @@ function render(rows){
     h.appendChild(el('span','date', new Date(x.at).toLocaleString('tr-TR')));
     c.appendChild(h);
     const n = el('div','nums');
-    const a = el('div'); a.appendChild(el('span',null,'Seni ne kadar tanıyor')); a.appendChild(el('strong',null,(x.tanima??'-')+'/17'));
-    const b = el('div'); b.appendChild(el('span',null,'Sen onu ne kadar tanıyorsun')); b.appendChild(el('strong',null,(x.yusufBildi??'-')+'/17'));
+    const a = el('div'); a.appendChild(el('span',null,'Seni ne kadar tanıyor')); a.appendChild(el('strong',null,(x.tanima??'-')+'/14'));
+    const b = el('div'); b.appendChild(el('span',null,'Sen onu ne kadar tanıyorsun')); b.appendChild(el('strong',null,(x.yusufBildi??'-')+'/15'));
     n.append(a,b); c.appendChild(n);
     if(x.kisisel && x.kisisel.length){
       const tw = el('div','tw'); const t = el('table');
-      const hr = el('tr'); ['Soru','Onun cevabı','Senin tahminin','Senin için tahmini'].forEach(s=>hr.appendChild(el('th',null,s)));
+      const hr = el('tr'); ['Soru','Onun cevabı','Senin tahminin','Onun senin için tahmini','Senin cevabın','Devamı'].forEach(s=>hr.appendChild(el('th',null,s)));
       t.appendChild(hr);
       x.kisisel.forEach(k => {
         const tr = el('tr');
-        const g = GUESS[k.soru]; const hit = g && g === k.kendiCevabi;
+        const g = k.yusufTahmini || GUESS[k.soru]; const hit = k.ayni !== undefined ? k.ayni : (g && g === k.kendiCevabi);
         tr.appendChild(el('td',null,k.soru));
         tr.appendChild(el('td',null,k.kendiCevabi));
         const tg = el('td', hit?'ok':'no', (g||'-') + (hit?' ✓':' ✗')); tr.appendChild(tg);
-        tr.appendChild(el('td',null,k.yusufIcinTahmin||'-'));
+        const yc = k.yusufCevabi; const yh = yc && k.yusufIcinTahmin === yc;
+        tr.appendChild(el('td', yc ? (yh?'ok':'no') : null, (k.yusufIcinTahmin||'-') + (yc ? (yh?' ✓':' ✗') : '')));
+        tr.appendChild(el('td',null,yc||'-'));
+        tr.appendChild(el('td',null,(k.devam||[]).join(' · ')||'-'));
         t.appendChild(tr);
       });
       tw.appendChild(t); c.appendChild(tw);

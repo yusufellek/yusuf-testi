@@ -97,6 +97,8 @@ input::placeholder,textarea::placeholder{color:#9A9585}
 .big{font-weight:800;font-family:var(--display);font-size:64px;color:var(--ink);line-height:1;font-variant-numeric:tabular-nums}
 .big small{font-size:28px;color:var(--muted)}
 .meter{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.meter3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:420px){.meter3{grid-template-columns:1fr}}
 .meter div{border:2px solid var(--ink);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:4px}
 .meter span{font-size:12px;color:var(--muted);line-height:1.35}
 .meter strong{font-family:var(--display);font-weight:800;font-size:34px;color:var(--red);font-variant-numeric:tabular-nums}
@@ -300,27 +302,109 @@ const doodle = k => `<svg class="doodle wob" viewBox="0 0 240 150" aria-hidden="
 
 /* ---------- veriler ---------- */
 // Yusuf hakkında kişisel sorular. y = Yusuf'un cevabı, g = Yusuf'un onun hakkındaki tahmini
+// Karakter soruları. y = Yusuf'un kendi cevabı, g = Yusuf'un onun hakkındaki tahmini.
+// br = onun cevabına göre açılan 2. ve 3. soru: [soru, şıklar].
 const P = {
-  cay:{yq:'Sence ben çay mı severim, kahve mi?', sq:'Peki sen? Çay mı, kahve mi?', o:['Çay','Kahve'], so:['Çay','Kahve'], y:'Çay', g:'Kahve', label:'Çay mı kahve mi'},
-  gece:{yq:'Ben sabah insanı mıyım, gece insanı mı?', sq:'Peki sen?', o:['Sabah','Gece'], so:['Sabah','Gece'], y:'Gece', g:'Sabah', label:'Sabah mı gece mi'},
-  kahve:{yq:'Ben kahveyi nasıl içerim sence?', sq:'Peki sen kahveyi nasıl içersin?', o:['Sade','Sütlü','Şekerli','Hiç içmez'], so:['Sade','Sütlü','Şekerli','Hiç içmem'], y:'Sade', g:'Sade', label:'Kahve nasıl'},
-  kahvalti:{yq:'Kahvaltıda vazgeçemediğim şey ne sence?', sq:'Peki senin vazgeçemediğin?', o:['Peynir','Yumurta','Kruvasan','Kahvaltı yapmaz'], so:['Peynir','Yumurta','Kruvasan','Kahvaltı yapmam'], y:'Kruvasan', g:'Kahvaltı yapmam', label:'Kahvaltı'},
-  cumartesi:{yq:'Cumartesi akşamları genelde ne yaparım sence?', sq:'Peki sen cumartesi akşamı genelde ne yaparsın?', o:['Dışarı çıkar','Evde olur','Arkadaşlarla olur'], so:['Dışarı çıkarım','Evde olurum','Arkadaşlarla olurum'], y:'Evde olur', g:'Arkadaşlarla olurum', label:'Cumartesi akşamı'},
-  isAn:{yq:'Günümde en sevdiğim an sence hangisi?', sq:'Peki senin işte günün en sevdiğin anı?', o:['Sabah ilk kahve ya da çay','Öğle arası','İşin bittiği an','Bir işi güzelce bitirdiğim an'], so:['Sabah ilk kahve ya da çay','Öğle arası','Mesainin bittiği an','Bir işi güzelce bitirdiğim an'], y:'Bir işi güzelce bitirdiğim an', g:'Mesainin bittiği an', label:'İşte en sevdiği an'},
-  duzen:{yq:'Sence ben düzenli miyim, dağınık mı?', sq:'Peki sen?', o:['Düzenli','Dağınık'], so:['Düzenli','Dağınık'], y:'Düzenli', g:'Düzenli', label:'Düzenli mi dağınık mı'},
-  plan:{yq:'Ben planlı mıyım, spontane mi?', sq:'Peki sen?', o:['Planlı','Spontane'], so:['Planlı','Spontane'], y:'Spontane', g:'Planlı', label:'Planlı mı spontane mi'},
-  korku:{yq:'Sence ben gizlice neyden korkarım?', sq:'Peki sen gizlice neyden korkarsın?', o:['Örümcek','Yükseklik','Karanlık','Derin deniz'], so:['Örümcek','Yükseklik','Karanlık','Derin deniz'], y:'Yükseklik', g:'Örümcek', label:'Gizli korku'},
-  sabir:{yq:'Sence ben sabırlı mıyım, sabırsız mı?', sq:'Peki sen?', o:['Sabırlı','Sabırsız'], so:['Sabırlı','Sabırsız'], y:'Sabırlı', g:'Sabırlı', label:'Sabırlı mı sabırsız mı'},
-  karar:{yq:'Ben mantıkla mı karar veririm, kalple mi?', sq:'Peki sen?', o:['Mantıkla','Kalple'], so:['Mantıkla','Kalple'], y:'Kalple', g:'Mantıkla', label:'Mantık mı kalp mi'},
-  duvar:{yq:'Telefonumun duvar kağıdında ne var sence?', sq:'Peki seninkinde ne var?', o:['Doğa manzarası','Bir hayvan','Düz renk','Göz işareti'], so:['Doğa manzarası','Bir hayvan','Düz renk','Bir fotoğraf','Başka bir şey'], y:'Göz işareti', g:'Doğa manzarası', label:'Duvar kağıdı'},
-  haftasonu:{yq:'Benim ideal hafta sonu sabahım nasıl geçer sence?', sq:'Peki seninki nasıl geçer?', o:['Geç uyanmak','Kahvaltıya çıkmak','Sahilde yürümek','Evde dinlenmek'], so:['Geç uyanmak','Kahvaltıya çıkmak','Sahilde yürümek','Evde dinlenmek'], y:'Geç uyanmak', g:'Evde dinlenmek', label:'İdeal hafta sonu sabahı'},
-  alarm:{yq:'Alarm çalınca ben ne yaparım sence?', sq:'Peki sen?', o:['Hemen kapatır','Erteler'], so:['Hemen kapatırım','Ertelerim'], y:'Erteler', g:'Hemen kapatırım', label:'Alarm'},
-  mesaj:{yq:'Ben mesajlara hemen mi dönerim, sonra mı?', sq:'Peki sen?', o:['Hemen','Sonra'], so:['Hemen','Sonra'], y:'Hemen', g:'Sonra', label:'Mesajlar'},
-  mevsim:{yq:'Ben yazı mı severim, kışı mı?', sq:'Peki sen?', o:['Yaz','Kış'], so:['Yaz','Kış'], y:'Yaz', g:'Kış', label:'Yaz mı kış mı'},
-  enerji:{yq:'Bana en çok ne enerji verir sence?', sq:'Peki sana ne enerji verir?', o:['Müzik','İnsanlarla olmak','Yalnız kalmak','Hareket etmek'], so:['Müzik','İnsanlarla olmak','Yalnız kalmak','Hareket etmek'], y:'Hareket etmek', g:'Yalnız kalmak', label:'Enerji veren'},
+  grup:{label:'Arkadaş grubundaki rolü', yq:'Sence ben arkadaş grubunda hangisiyim?', sq:'Peki sen arkadaş grubunda hangisisin?',
+    o:['Planı yapan','Herkesi güldüren','Dinleyen, sır tutan','Son dakika gelen'], y:'Herkesi güldüren', g:'Dinleyen, sır tutan',
+    br:{'Planı yapan':[['Plan bozulunca ne olur?',['Hemen B planı','Biraz sinirlenirim','Akışına bırakırım']],['Bu rolü seviyor musun?',['Evet','Bazen yorucu','Mecburen üstleniyorum']]],
+        'Herkesi güldüren':[['Sen gülmek istediğinde seni kim güldürür?',['Biri hep var','Kendi kendime','Pek kimse']],['Mizah bazen bir şeyi saklamak için mi?',['Hayır','Bazen','Evet']]],
+        'Dinleyen, sır tutan':[['Peki seni kim dinler?',['Yakın bir arkadaş','Ailemden biri','Kimseye anlatmam']],['Dinlemek seni yorar mı?',['Hayır','Bazen','Çok']]],
+        'Son dakika gelen':[['Genelde neden geç kalırsın?',['Hep bir iş çıkar','Zamanı yanlış hesaplarım','Gitmek istemediğim zaman']],['Gelince ortam değişir mi?',['Kesinlikle','Biraz','Pek fark edilmez']]]}},
+  izlenim:{label:'İlk izlenim', yq:'Biri beni ilk kez görünce ne düşünür sence?', sq:'Peki seni ilk kez gören ne düşünür?',
+    o:['Ciddi biri','Sıcak biri','Biraz mesafeli','Çok enerjik'], y:'Biraz mesafeli', g:'Ciddi biri',
+    br:{'Ciddi biri':[['Tanıyınca fikirleri değişir mi?',['Tamamen','Biraz','Hayır, gerçekten ciddiyim']],['Bu ilk izlenim işine yarıyor mu?',['Evet, işte çok','Bazen engel oluyor','Fark etmiyor']]],
+        'Sıcak biri':[['Bu sıcaklık herkese mi?',['Evet','Sadece güvendiğime','Duruma göre']],['Hiç suistimal edildi mi?',['Hayır','Birkaç kez','Maalesef sık']]],
+        'Biraz mesafeli':[['Mesafe nasıl kırılır?',['Zamanla','Ortak bir şakayla','Karşı taraf açılırsa']],['Bu mesafe bilinçli mi?',['Evet, korumak için','Hayır, öyle görünüyorum','Biraz ikisi']]],
+        'Çok enerjik':[['Enerjin hiç bitiyor mu?',['Evet, eve gelince','Nadiren','Herkes görmez ama evet']],['Bitince ne yaparsın?',['Uyurum','Yalnız kalırım','Biriyle konuşurum']]]}},
+  firsat:{label:'Riskli fırsat', yq:'Önüme riskli bir fırsat çıksa ne yaparım sence?', sq:'Peki sen ne yaparsın?',
+    o:['Hemen atlarım','Biraz araştırırım','Birine sorarım','Genelde geçerim'], y:'Biraz araştırırım', g:'Genelde geçerim',
+    br:{'Hemen atlarım':[['En son hangi alanda atladın?',['İş','Seyahat','İlişki, arkadaşlık','Henüz atlamadım']],['Pişman olduğun oldu mu?',['Hiç','Bir kez','Ders aldım ama yine atlarım']]],
+        'Biraz araştırırım':[['Araştırırken fırsat kaçarsa?',['Kader derim','Üzülürüm','Bir dahakine daha hızlı olurum']],['Ne kadar süre araştırırsın?',['Bir gün','Bir hafta','Bitene kadar']]],
+        'Birine sorarım':[['Kime?',['Aileme','Bir arkadaşıma','O konuyu bilen birine']],['“Yapma” derse?',['Vazgeçerim','Yine yaparım','Başkasına sorarım']]],
+        'Genelde geçerim':[['Geçtiğin bir fırsat aklında kaldı mı?',['Evet, sık düşünürüm','Bazen','Hayır']],['Sence seni ne durduruyor?',['Kaybetme korkusu','Konfor','Zamanlama']]]}},
+  karar:{label:'Büyük kararlar', yq:'Sence ben büyük bir kararı nasıl veririm?', sq:'Peki sen büyük bir kararı nasıl verirsin?',
+    o:['Artısını eksisini tartarım','İçimden ne geliyorsa','Sevdiklerime danışırım','Uzun süre kafamda döndürürüm'], y:'Artısını eksisini tartarım', g:'Artısını eksisini tartarım',
+    br:{'Artısını eksisini tartarım':[['Mantığın bir şey, kalbin başka şey derse?',['Mantığa uyarım','Kalbime uyarım','Biraz daha düşünürüm']],['“Keşke kalbimi dinleseydim” dediğin oldu mu?',['Hiç','Bir kez','Birkaç kez']]],
+        'İçimden ne geliyorsa':[['İçgüdün seni hiç yanılttı mı?',['Neredeyse hiç','Birkaç kez','Evet ama yine ona güvenirim']],['Kararını başkalarına açıklamak zor olur mu?',['Hayır','Bazen','Evet, “neden” diye sorduklarında']]],
+        'Sevdiklerime danışırım':[['Sonunda kimin sözü ağır basar?',['Ailemin','En yakın arkadaşımın','Yine benim']],['Herkes farklı bir şey söylerse?',['Çoğunluğa uyarım','En güvendiğime uyarım','Kafam iyice karışır']]],
+        'Uzun süre kafamda döndürürüm':[['Seni en çok ne tutuyor?',['Yanlış seçme korkusu','Bir şeyi kaybetme korkusu','Herkesi memnun etme isteği']],['Sonunda nasıl karar verirsin?',['Biri beni itince','Süre dolunca','Bir sabah kendiliğinden netleşir']]]}},
+  soz:{label:'Grupta söz almak', yq:'Bir grupta söz almak konusunda nasılımdır sence?', sq:'Peki sen bir grupta nasılsın?',
+    o:['Doğal olarak liderliği alırım','Gerekirse konuşurum','Arkada kalmayı severim','Birilerini desteklerim'], y:'Gerekirse konuşurum', g:'Gerekirse konuşurum',
+    br:{'Doğal olarak liderliği alırım':[['Bu bazen yorar mı?',['Evet','Hayır','Gizlice evet']],['Kimse dinlemezse?',['Israr ederim','Bırakırım','Gülüp geçerim']]],
+        'Gerekirse konuşurum':[['Seni ne konuşturur?',['Haksızlık','Bildiğim bir konu','Sessizlik uzayınca']],['Söylemek isteyip söylemediğin oldu mu?',['Sık','Bazen','Hayır']]],
+        'Arkada kalmayı severim':[['Arkadan neyi görürsün?',['Kimin sıkıldığını','Kimin rol yaptığını','Her şeyi']],['Biri seni öne itse?',['Severim','Rahatsız olurum','Duruma göre']]],
+        'Birilerini desteklerim':[['Kimi?',['Sesi kısık olanı','Haklı olanı','Arkadaşımı']],['Seni kim destekler?',['Hep biri','Bazen','Kendim']]]}},
+  yeni:{label:'Yeni şeylere karşı', yq:'Yeni fikirlere, farklı şeylere karşı nasılımdır sence?', sq:'Peki sen nasılsın?',
+    o:['Hemen merak ederim','Önce şüpheyle bakarım','Bildiğimi severim','Ortamına göre'], y:'Ortamına göre', g:'Bildiğimi severim',
+    br:{'Hemen merak ederim':[['En son neyi merak ettin?',['Bir konu','Bir yer','Bir insan']],['Merakın seni nereye götürdü?',['Yeni bir hobiye','Saatlerce okumaya','Bir maceraya']]],
+        'Önce şüpheyle bakarım':[['Seni ne ikna eder?',['Kanıt','Güvendiğim biri','Denemek']],['Şüphen haklı çıktı mı?',['Sık sık','Bazen','Pek değil']]],
+        'Bildiğimi severim':[['En vazgeçemediğin rutin?',['Sabah çayı, kahvesi','Aynı mekânlar','Aynı diziler']],['Bir değişiklik seni hiç şaşırttı mı?',['Evet, iyi yönde','Evet, kötü yönde','Hayır']]],
+        'Ortamına göre':[['Hangi ortamda daha açıksın?',['Yolculukta','Yakınlarımla','İşte']],['Hangisinde kapalısın?',['Kalabalıkta','Yeni insanlarla','Ailede']]]}},
+  duygu:{label:'Duyguları göstermek', yq:'Ben duygularımı nasıl gösteririm sence?', sq:'Peki sen duygularını nasıl gösterirsin?',
+    o:['Açıkça söylerim','Davranışlarımla','Şaka yaparak','Pek göstermem'], y:'Açıkça söylerim', g:'Pek göstermem',
+    br:{'Açıkça söylerim':[['Söylemesi en zor duygu?',['Kırıldığımı','Sevdiğimi','Kıskandığımı','Hiçbiri']],['Karşındakinin de öyle olmasını bekler misin?',['Evet','Beklerim ama söylemem','Hayır']]],
+        'Davranışlarımla':[['En çok nasıl belli olur?',['Vakit ayırarak','Bir şeyler yaparak','Sessizleşerek']],['Karşındaki anlamazsa?',['Söylerim','Üzülürüm ama susarım','Daha çok gösteririm']]],
+        'Şaka yaparak':[['Şakanın altındaki ciddiyeti kim anlar?',['Yakınlarım','Neredeyse kimse','Herkes']],['Ciddileşmen gereken an zor mu?',['Evet','Biraz','Hayır']]],
+        'Pek göstermem':[['Neden sence?',['Alışkanlık','Yanlış anlaşılmaktan korku','Gerek görmüyorum']],['Kimin yanında gösterirsin?',['Kimsenin','Bir kişinin','Yalnızken']]]}},
+  kotugun:{label:'Kötü günün ilacı', yq:'Kötü bir günün sonunda bana ne iyi gelir sence?', sq:'Peki sana ne iyi gelir?',
+    o:['Yalnız kalmak','Biriyle konuşmak','Dışarı çıkmak','Uyumak'], y:'Biriyle konuşmak', g:'Yalnız kalmak',
+    br:{'Yalnız kalmak':[['Yalnızken ne yaparsın?',['Müzik','Uyku','Yürüyüş','Sadece sessizlik']],['Bunu biri bozsa?',['Rahatsız olurum','Seçtiğim biriyse sorun değil','Fark etmez']]],
+        'Biriyle konuşmak':[['Genelde kiminle?',['Ailemden biri','Yakın bir arkadaş','Kim varsa']],['Ondan ne duymak istersin?',['Çözüm','Sadece “haklısın”','Beni güldürmesi']]],
+        'Dışarı çıkmak':[['Nereye?',['Deniz kenarı','Kalabalık bir yer','Hedefsiz yürüyüş']],['Yanında biri olsun mu?',['Evet','Hayır','Sessiz biri olursa']]],
+        'Uyumak':[['Uyanınca geçmiş olur mu?',['Genelde evet','Bazen','Hayır, sadece ertelerim']],['Kötü gününü biri fark eder mi?',['Hemen','Birkaç kişi','Kimse fark etmez']]]}},
+  stres:{label:'Stresliyken', yq:'Ben stresliyken nasıl biriyimdir sence?', sq:'Peki sen stresliyken nasıl birisin?',
+    o:['Sakin kalırım','İçime kapanırım','Gerilir, belli ederim','Hemen çözüm ararım'], y:'Gerilir, belli ederim', g:'Sakin kalırım',
+    br:{'Sakin kalırım':[['İçin de sakin mi?',['Evet','Dışarıdan öyle','Hayır']],['Sonra nasıl atıyorsun?',['Spor','Uyku','Biriyle konuşmak']]],
+        'İçime kapanırım':[['Ne kadar sürer?',['Birkaç saat','Günler','Geçene kadar']],['O sırada biri yazarsa?',['Cevap vermem','Kısa yazarım','Sevinirim aslında']]],
+        'Gerilir, belli ederim':[['En çok kim nasibini alır?',['Ailem','Yakın arkadaşım','Kimse, kendime kızarım']],['Sonra özür diler misin?',['Evet','Davranışla','Pek değil']]],
+        'Hemen çözüm ararım':[['Çözüm yoksa?',['Daha çok streslenirim','Kabullenirim','Yardım isterim']],['Bu seni yorar mı?',['Çok','Biraz','Hayır, iyi gelir']]]}},
+  gun:{label:'Mükemmel bir gün', yq:'Benim için mükemmel bir gün nasıl geçer sence?', sq:'Peki senin mükemmel günün nasıl geçerdi?',
+    o:['Yeni bir yer keşfederek','Sevdiklerimle uzun bir sofrada','Tamamen kendimle','Üretken, bir şeyi bitirerek'], y:'Sevdiklerimle uzun bir sofrada', g:'Tamamen kendimle',
+    br:{'Yeni bir yer keşfederek':[['Nerede?',['Yurt dışında','Doğada','Bilmediğim bir semtte']],['Kiminle?',['Yalnız','Bir arkadaşla','Kalabalık']]],
+        'Sevdiklerimle uzun bir sofrada':[['Sofrada kim mutlaka olmalı?',['Ailem','Arkadaşlarım','Bir kişi yeter']],['En son ne zaman böyle bir gün geçirdin?',['Yakın zamanda','Epey oldu','Hatırlamıyorum']]],
+        'Tamamen kendimle':[['Kendinle ne yaparsın?',['Okurum, izlerim','Yürürüm','Hiçbir şey']],['Bunu ne sıklıkla yapabiliyorsun?',['Sık','Nadiren','Neredeyse hiç']]],
+        'Üretken, bir şeyi bitirerek':[['Ne bitirmek?',['İş','Kişisel bir proje','Ev işleri']],['Bitirince nasıl kutlarsın?',['Kutlamam','Kendime ödül','Biriyle paylaşırım']]]}},
+  onem:{label:'En önem verilen şey', yq:'Hayatta en çok neye önem veririm sence?', sq:'Peki sen hayatta en çok neye önem verirsin?',
+    o:['Aile','Özgürlük','Başarı','Huzur'], y:'Aile', g:['Aile','Huzur'],
+    br:{'Aile':[['Ailende en çok kime benziyorsun?',['Anneme','Babama','Kardeşime','Kimseye']],['Ailenden en çok neyi taşımak istersin?',['Sıcaklığı','Gücü','Değerlerini']]],
+        'Özgürlük':[['Şu an seni en çok ne kısıtlıyor?',['İş','Şehir','Beklentiler','Kendim']],['Tamamen özgür bir günde ilk ne yaparsın?',['Uzaklara giderim','Hiçbir şey','Hep ertelediğim şeyi']]],
+        'Başarı':[['Başarıyı nasıl tanımlıyorsun?',['Para','Takdir edilmek','Kendimi aşmak']],['Bugüne kadarki en büyük başarın hangi alanda?',['İş, okul','İlişkiler','Kişisel bir zorluğu aşmak']]],
+        'Huzur':[['Huzurunu en çok ne bozuyor?',['İnsanlar','Belirsizlik','Yoğunluk','Kendi düşüncelerim']],['Huzuru en çok nerede buluyorsun?',['Evde','Doğada','Sevdiklerimin yanında']]]}},
+  hayal:{label:'En büyük hayal', yq:'Sence benim en büyük hayalim hangi alanda?', sq:'Peki senin en büyük hayalin hangi alanda?',
+    o:['Kariyer','Yeni bir hayat, yer değiştirmek','Aile kurmak','Bir şey üretmek, iz bırakmak'], y:'Yeni bir hayat, yer değiştirmek', g:'Bir şey üretmek, iz bırakmak',
+    br:{'Kariyer':[['Nasıl bir yer?',['Kendi büromu','Büyük bir firma','Tamamen farklı bir alan']],['Kaç yıl içinde?',['1–3 yıl','5 yıl','Acelem yok']]],
+        'Yeni bir hayat, yer değiştirmek':[['Nerede?',['Başka bir şehir','Yurt dışı','Bir sahil kasabası']],['İlk adım ne olurdu?',['Para biriktirmek','Dil öğrenmek','Cesaret']]],
+        'Aile kurmak':[['Nasıl bir ev?',['Kalabalık, neşeli','Sakin','Bahçeli']],['Bu hayal ne zamandır var?',['Hep','Son yıllarda','Yeni']]],
+        'Bir şey üretmek, iz bırakmak':[['Ne?',['Bir yazı, kitap','Bir iş, marka','Bir sanat eseri']],['Başladın mı?',['Evet','Kafamda','Henüz değil']]]}},
+  pisman:{label:'Pişmanlık', yq:'Sence ben en çok neyden pişmanlık duyarım?', sq:'Peki sen en çok neyden pişmanlık duyarsın?',
+    o:['Söylemediğim şeylerden','Denemediğim şeylerden','Acele ettiğim kararlardan','Pişman olmam'], y:'Acele ettiğim kararlardan', g:'Pişman olmam',
+    br:{'Söylemediğim şeylerden':[['Daha çok kime?',['Aileme','Bir arkadaşıma','Kendime']],['Hâlâ söyleyebilir misin?',['Evet, belki söylerim','Artık geç','Bilmiyorum']]],
+        'Denemediğim şeylerden':[['En çok hangisi?',['Bir hobi, beceri','Bir yere gitmek','Bir iş, bölüm']],['Şimdi deneyebilir misin?',['Evet','Belki','Kapı kapandı']]],
+        'Acele ettiğim kararlardan':[['Acele ettiren neydi?',['Baskı','Heyecan','Korku']],['Şimdi daha mı yavaşsın?',['Evet','Hâlâ hızlıyım','Duruma göre']]],
+        'Pişman olmam':[['Gerçekten hiç mi?',['Gerçekten','Küçük şeylerde olur','Düşünmemeyi seçiyorum']],['Bunu nasıl yapıyorsun?',['Her şeyden ders çıkarırım','Geçmişe bakmam','Bilmiyorum']]]}},
+  kirar:{label:'Kırılmak', yq:'Beni en çok ne kırar sence?', sq:'Peki seni en çok ne kırar?',
+    o:['Görmezden gelinmek','Yalan','Hafife alınmak','Sözünü tutmamak'], y:'Görmezden gelinmek', g:'Yalan',
+    br:{'Görmezden gelinmek':[['Kırılınca belli eder misin?',['Evet','Uzaklaşırım','Hayır']],['Seni ne onarır?',['Bir özür','Zaman','Bir jest']]],
+        'Yalan':[['Küçük yalanlar da mı?',['Evet','Büyükleri','Niyete bağlı']],['Güven geri gelir mi?',['Gelir','Zor','Gelmez']]],
+        'Hafife alınmak':[['En çok hangi alanda?',['İşte','Ailede','Arkadaşlar arasında']],['Nasıl tepki verirsin?',['Gösteririm','Susarım','Daha çok çalışırım']]],
+        'Sözünü tutmamak':[['Bir şans daha verir misin?',['Evet','Bir kez','Hayır']],['Sen sözünü tutar mısın?',['Her zaman','Çoğunlukla','Çalışıyorum']]]}},
+  itiraf:{label:'Kendine itiraf', yq:'Sence ben kendime neyi itiraf etmekte zorlanırım?', sq:'Peki sen kendine neyi itiraf etmekte zorlanırsın?',
+    o:['Yorulduğumu','Yardıma ihtiyacım olduğunu','Kıskandığımı','Hata yaptığımı','Kırıldığımı','Yalnız hissettiğimi','Korktuğumu','Birini özlediğimi'],
+    free:'Başka bir şey (kendim yazayım)', y:null, g:'Başka bir şey (kendim yazayım)',
+    br:{'Yorulduğumu':[['Yorulunca ne yaparsın?',['Devam ederim','Çok geç dururum','Biri fark ederse dururum']],['Kim fark eder?',['Ailem','Bir arkadaşım','Kimse']]],
+        'Yardıma ihtiyacım olduğunu':[['Neden zor?',['Yük olmak istemem','Zayıf görünmek','Kimse anlamaz diye']],['En son ne zaman istedin?',['Yakında','Epey oldu','Hatırlamıyorum']]],
+        'Kıskandığımı':[['Daha çok neyi?',['Başarıları','İlişkileri','Özgürlüğü']],['Bu seni harekete geçirir mi?',['Evet','Bazen','Hayır, yorar']]],
+        'Hata yaptığımı':[['Kabullenince ne yaparsın?',['Hemen düzeltirim','Uzun düşünürüm','Özür dilerim']],['Kendini affetmek kolay mı?',['Evet','Zamanla','Zor']]],
+        'Kırıldığımı':[['Kırılınca ne yaparsın?',['Hiçbir şey olmamış gibi davranırım','Uzaklaşırım','Sonra söylerim']],['Neden itiraf etmesi zor?',['Hassas görünmek istemem','Karşı taraf üzülmesin','Kendim de emin olamam']]],
+        'Yalnız hissettiğimi':[['Bu his en çok ne zaman gelir?',['Kalabalıkta','Akşamları','Önemli bir şey olunca']],['O zaman ne iyi gelir?',['Biri yazsa','Dışarı çıkmak','Bir şeyle meşgul olmak']]],
+        'Korktuğumu':[['Daha çok neyden?',['Gelecekten','Kaybetmekten','Yeterli olamamaktan']],['Korkuyla nasıl başa çıkarsın?',['Üzerine giderim','Görmezden gelirim','Biriyle paylaşırım']]],
+        'Birini özlediğimi':[['Özlediğini ona söyler misin?',['Evet','Belli ederim','Hayır']],['Özlemek senin için?',['Güzel bir his','Acı veren bir his','İkisi birden']]]}},
 };
 const PKEYS = Object.keys(P);
-const YKEYS = PKEYS.filter(k=>!P[k].noY);
+const YKEYS = PKEYS.filter(k => P[k].y);
+const gMatch = (q, v) => Array.isArray(q.g) ? q.g.includes(v) : q.g === v;
+const gText = q => Array.isArray(q.g) ? q.g.join(' ya da ') : q.g;
 
 const LANGS = [
   ['Fince','Moi'],['İspanyolca','Hola'],['İtalyanca','Ciao'],['Japonca','Konnichiwa'],
@@ -329,36 +413,34 @@ const LANGS = [
 const LETTERS = ['A','R','K','A','D','A','Ş','L','I','K'];
 
 const STEPS = [
-  {t:'p',k:'cay'},
-  {t:'p',k:'gece'},
   {t:'text',k:'kitap',d:'book',eyebrow:'Senin günün',q:'Şu an okuduğun kitap hangisi?',ph:'Kitabın adı',skip:'Şu an bir şey okumuyorum'},
-  {t:'p',k:'kahve'},
+  {t:'p',k:'grup'},
+  {t:'p',k:'izlenim'},
   {t:'letters'},
-  {t:'p',k:'kahvalti'},
+  {t:'p',k:'firsat'},
+  {t:'p',k:'karar'},
   {t:'text',k:'sarkiTahmin',d:'vinyl',eyebrow:'Tahmin',q:'Sence ben bugün hangi parçayı dinledim?',ph:'Şarkı ya da şarkıcı',after:'“{v}” mi? Hadi o zaman bu parçayı aç da dinle!'},
   {t:'text',k:'sarki',d:'vinyl',eyebrow:'Senin günün',q:'Peki sen bugün hangi şarkıyı dinledin?',ph:'Şarkı ve şarkıcı',skip:'Bugün hiç müzik dinlemedim'},
-  {t:'p',k:'cumartesi'},
-  {t:'p',k:'isAn'},
+  {t:'p',k:'soz'},
   {t:'lang'},
-  {t:'p',k:'duzen'},
+  {t:'p',k:'yeni'},
   {t:'pick',k:'sabahGorevi',d:'sunrise',eyebrow:'Görev',q:'Yarın 6.45\'te evden çıkarken bir görev seç',o:['Gökyüzüne bak, rengini aklında tut','Yolda ilk gördüğün kediye selam ver','Otobüste en sevdiğin şarkıyı aç','Simitçiden bir simit al']},
+  {t:'p',k:'duygu'},
   {t:'text',k:'guldugu',d:'qmark',eyebrow:'Senin hakkında',q:'Son zamanlarda seni en çok güldüren şey ne oldu?',ph:'Bir olay, bir video, bir cümle...'},
-  {t:'p',k:'plan'},
-  {t:'p',k:'korku'},
+  {t:'p',k:'kotugun'},
   {t:'text',k:'yusufSuAn',d:'qmark',eyebrow:'Tahmin',q:'Sence ben şu an ne yapıyorumdur?',ph:'Bence şu an...'},
-  {t:'p',k:'sabir'},
+  {t:'p',k:'stres'},
   {t:'pick',k:'kadikoyGorevi',d:'ferry',eyebrow:'Kadıköy görevi',q:'Sana bir görevim var. Ofisten çıkarken birini seç.',o:['Altından boğa heykelini gören bir fotoğraf çek','İskelede martılara selam ver','Dönüşte otobüste cam kenarına otur','Eve giderken bir sokak kedisini sev'],done:'Yaptım'},
   {t:'text',k:'kadikoyYer',d:'ferry',eyebrow:'Senin hakkında',q:'Kadıköy\'de en sevdiğin yer neresi?',ph:'Bir kafe, bir sokak, bir köşe'},
-  {t:'p',k:'karar'},
-  {t:'p',k:'duvar'},
+  {t:'p',k:'gun'},
   {t:'pick',k:'minikAktivite',d:'checklist',eyebrow:'Bugün için',q:'Aşırı küçük yeni bir aktivite seç',o:['Eve gidince kendime bir çay yapacağım','Otobüste 5 dakika camdan dışarı bakacağım','Yatmadan bir sayfa kitap okuyacağım','Bugün kendime sevdiğim bir atıştırmalık alacağım']},
-  {t:'p',k:'haftasonu'},
-  {t:'p',k:'alarm'},
-  {t:'p',k:'mesaj'},
+  {t:'p',k:'onem'},
+  {t:'p',k:'hayal'},
   {t:'text',k:'ogrenmek',d:'book',eyebrow:'Senin hakkında',q:'Bu ay öğrenmek istediğin bir şey var mı?',ph:'Bir dil, bir tarif, bir beceri...',skip:'Şu an aklımda bir şey yok'},
+  {t:'p',k:'pisman'},
   {t:'pick',k:'yusufaGorev',d:'task',eyebrow:'Yusuf\'a görev',q:'Sıra sende. Bana bugün zorunlu bir aktivite ver.',o:['10 dakika yürüyüşe çık','Bana güzel bir fotoğraf çek ve at','Odanı topla']},
-  {t:'p',k:'mevsim'},
-  {t:'p',k:'enerji'},
+  {t:'p',k:'kirar'},
+  {t:'p',k:'itiraf'},
   {t:'photo'},
 ];
 
@@ -467,33 +549,68 @@ function addOpts(c, arr, cb){
   setTimeout(()=>o.scrollIntoView({behavior:'smooth', block:'nearest'}), 60);
   return o;
 }
+function addFree(c, cb){
+  c.insertAdjacentHTML('beforeend', `<div class="opts"><input type="text" id="free-in" placeholder="Kendi cümlenle yaz" maxlength="200" autocomplete="off"><p class="err" id="free-err"></p><button class="btn primary" id="free-ok">Gönder</button></div>`);
+  const box = c.lastElementChild, inp = $('#free-in', box), err = $('#free-err', box);
+  setTimeout(()=>{ box.scrollIntoView({behavior:'smooth', block:'nearest'}); inp.focus(); }, 60);
+  inp.oninput = () => err.textContent = '';
+  const go = () => { const v = inp.value.trim(); if(!v){ err.textContent = 'Önce bir şey yaz.'; return; } inp.disabled = true; $('#free-ok', box).remove(); hop('heroSen'); cb(v); };
+  $('#free-ok', box).onclick = go;
+  inp.onkeydown = e => { if(e.key === 'Enter') go(); };
+}
+const ACK = ['Anladım.', 'Bunu bilmek güzel.', 'Not aldım.', 'Hmm, mantıklı.', 'Güzel bir cevap.'];
+const CLOSE = ['Bunu bilmek güzel, teşekkürler.', 'Not aldım, çok iyi.', 'Seni biraz daha tanıdım.'];
+
 function personal(s){
   const q = P[s.k];
   const ans = st.p[s.k] = {};
   show(`
-    <div class="eyebrow"><span>${q.noY ? 'Senin hakkında' : 'Karşılıklı'}</span><span>${esc(q.label)}</span></div>
-    <p class="q">${esc(q.noY ? q.aq : q.yq)}</p>
-    ${optsHTML(q.noY ? q.so : q.o)}
+    <div class="eyebrow"><span>Karşılıklı</span><span>${esc(q.label)}</span></div>
+    <p class="q">${esc(q.yq)}</p>
+    ${optsHTML(q.o)}
   `, c => {
-    const finish = () => {
-      const knew = q.g === ans.self, g = q.g;
-      const line = knew
-        ? pickOne([`Bildim! Ben de “${g}” demiştim.`, `Biliyordum, “${g}”. Seni tanıyorum.`, `Evet! Tam tahmin ettiğim gibi: “${g}”.`])
-        : pickOne([`Aaa öyle mi? Ben “${g}” sanıyordum. Tüh, bilmiyordum.`, `Tüh! “${g}” demiştim. Bilmiyormuşum, not aldım.`, `Hmm, ben “${g}” sanıyordum. Bunu bilmiyordum.`]);
-      later(() => { if(knew) heart(); else react('heroYusuf','nope'); say(c, line, () => cont(c)); }, 450);
-    };
+    // 1) Onun Yusuf hakkındaki tahmini
     bindOpts(c.querySelector('.opts'), v => {
-      if(q.noY){ ans.self = v; finish(); return; }
       ans.guess = v;
-      const ok = v === q.y, y = q.y;
-      const line = ok
-        ? pickOne([`Bildin! Cevap gerçekten “${y}”.`, `Evet, “${y}”! Beni iyi tanıyorsun.`, `Tam isabet, “${y}”.`])
-        : pickOne([`Yok yaa, aslında “${y}”.`, `Hmm, değil. Doğrusu “${y}”.`, `Yaklaştın ama cevap “${y}”.`]);
-      later(() => {
-        if(ok) heart(); else react('heroSen','nope');
-        say(c, line + ' ' + q.sq, () => addOpts(c, q.so, v2 => { ans.self = v2; finish(); }));
-      }, 450);
+      let line;
+      if(!q.y) line = 'Açıkçası ben de tam bilmiyorum. Ama senin tahminin aklımda kalacak.';
+      else if(v === q.y) { heart(); line = pickOne(['Aynen öyle, ben de kendimi böyle görüyorum.', 'Beni iyi okumuşsun.', 'Tam üstüne bastın.']); }
+      else line = pickOne([`İlginç, ben kendimi daha çok “${q.y}” olarak görüyorum. Ama sen beni böyle görüyorsan bunda bir şey var.`, `Hmm, ben “${q.y}” derdim. Seni böyle düşündüren ne, merak ettim.`]);
+      later(() => say(c, line + ' ' + q.sq, () => {
+        const own = q.free ? q.o.concat([q.free]) : q.o;
+        addOpts(c, own, v2 => {
+          if(q.free && v2 === q.free){
+            addFree(c, txt => { ans.self = q.free; ans.text = txt; reactSelf(); });
+          } else { ans.self = v2; reactSelf(); }
+        });
+      }), 450);
     });
+    // 2) Yusuf'un onun hakkındaki tahmini, sonra dallar
+    function reactSelf(){
+      const same = gMatch(q, ans.self);
+      let line;
+      if(q.free && q.g === q.free){
+        line = same ? 'Tahmin etmiştim, kendi cümlenle yazacağını düşünmüştüm. Paylaştığın için teşekkür ederim.'
+                    : `Ben senin kendi cümlenle bir şey yazacağını sanmıştım. Ama “${ans.self}” demen de çok şey anlatıyor.`;
+      } else if(Array.isArray(q.g)) {
+        line = same ? `İkisinden birini düşünmüştüm: ${gText(q).toLowerCase()}. Tutmuş!` : `Ben seni daha çok “${gText(q)}” diye düşünmüştüm; bunu bilmek güzel.`;
+      } else {
+        line = same ? pickOne(['Ben de seni tam böyle görüyordum.', `Tahmin etmiştim, “${q.g}”.`])
+                    : pickOne([`Ben seni daha çok “${q.g}” sanıyordum; bunu bilmek güzel.`, `Benim gözümde daha çok “${q.g}” gibiydin. Demek bu tarafını henüz görmemişim.`]);
+      }
+      later(() => {
+        if(same) heart(); else react('heroYusuf','nope');
+        const br = q.br && q.br[ans.self];
+        if(!br){ say(c, line, () => cont(c)); return; }
+        say(c, line + ' ' + br[0][0], () => addOpts(c, br[0][1], a2 => {
+          ans.d2 = a2;
+          later(() => say(c, pickOne(ACK) + ' ' + br[1][0], () => addOpts(c, br[1][1], a3 => {
+            ans.d3 = a3;
+            later(() => say(c, pickOne(CLOSE), () => cont(c)), 400);
+          })), 400);
+        }));
+      }, 450);
+    }
   });
 }
 
@@ -673,26 +790,32 @@ function lang(){
 
 /* ---------- sonuç ---------- */
 function compute(){
-  let tanima = 0, yusufBildi = 0;
+  let tanima = 0, yusufBildi = 0, benzer = 0;
   const rows = PKEYS.map(k => {
     const q = P[k], a = st.p[k] || {};
-    const okY = !q.noY && a.guess === q.y; if(okY) tanima++;
-    const yKnew = q.g === a.self; if(yKnew) yusufBildi++;
-    const verdict = yKnew ? 'Biliyormuş' : 'Bilmiyormuş';
-    return {k, noY:!!q.noY, label:q.label, guess:a.guess, y:q.y, okY, self:a.self, g:q.g, yKnew, verdict};
+    const okY = !!q.y && a.guess === q.y; if(okY) tanima++;
+    const yKnew = gMatch(q, a.self); if(yKnew) yusufBildi++;
+    const same = !!q.y && a.self === q.y; if(same) benzer++;
+    const br = q.br && q.br[a.self];
+    return {k, label:q.label, guess:a.guess, y:q.y, okY, self:a.self, text:a.text, g:gText(q), yKnew, same,
+      d2q: br ? br[0][0] : null, d2: a.d2, d3q: br ? br[1][0] : null, d3: a.d3};
   });
-  const pct = Math.round(tanima/YKEYS.length*100);
-  const unvan = pct>=85 ? 'Yusuf\'u Yusuf\'tan iyi tanıyor' : pct>=60 ? 'Yusuf uzmanı' : pct>=30 ? 'Tanıdık bir sima' : 'Yusuf kim?';
-  return {tanima, yusufBildi, pct, unvan, rows};
+  const unvan = `Benzerlik ${benzer}/${YKEYS.length}`;
+  return {tanima, yusufBildi, benzer, unvan, rows};
 }
 
 function summaryText(r){
   const L = [];
-  L.push('YUSUF TESTİ SONUCU');
-  L.push('Yusuf\'u tanıma: '+r.tanima+'/'+YKEYS.length+' ('+r.unvan+')');
+  L.push('NE KADAR TANIYORUZ');
+  L.push('Ne kadar benziyoruz: '+r.benzer+'/'+YKEYS.length);
+  L.push('Yusuf\'u tanıma: '+r.tanima+'/'+YKEYS.length);
   L.push('Yusuf beni tanıyor: '+r.yusufBildi+'/'+PKEYS.length);
   L.push('');
-  r.rows.forEach(x => L.push(x.label+': '+(x.noY?'':'Yusuf için '+x.guess+' / ')+'Ben '+x.self+(x.yKnew?' (Yusuf bildi)':' (Yusuf bilemedi)')));
+  r.rows.forEach(x => {
+    L.push(x.label+': Yusuf için '+(x.guess||'-')+' / Ben '+(x.text ? '“'+x.text+'”' : (x.self||'-')));
+    if(x.d2) L.push('   '+x.d2q+' '+x.d2);
+    if(x.d3) L.push('   '+x.d3q+' '+x.d3);
+  });
   L.push('');
   const A = st.a;
   if(A.kitap) L.push('Okuduğum kitap: '+A.kitap);
@@ -701,16 +824,13 @@ function summaryText(r){
   if(A.yusufSuAn) L.push('Yusuf şu an: '+A.yusufSuAn);
   if(A.harf) L.push('Harf oyunu: '+A.harf);
   if(A.dil) L.push('Dil: '+A.dil);
-  if(A.balonSure) L.push('Balonlar: '+A.balonSure+' sn');
   if(A.sabahGorevi) L.push('Sabah görevim: '+A.sabahGorevi);
   if(A.kadikoyGorevi) L.push('Kadıköy görevim: '+A.kadikoyGorevi+(A.kadikoyGoreviYapildi?' (yaptım)':''));
   if(A.minikAktivite) L.push('Minik aktivitem: '+A.minikAktivite);
-  if(A.yusufaGorev) L.push('Yusuf\'un görevi: '+A.yusufaGorev);
   if(A.guldugu) L.push('Beni güldüren: '+A.guldugu);
   if(A.kadikoyYer) L.push('Kadıköy\'de en sevdiğim yer: '+A.kadikoyYer);
-  if(A.haftasonu) L.push('İdeal hafta sonu sabahı: '+A.haftasonu);
   if(A.ogrenmek) L.push('Bu ay öğrenmek istediğim: '+A.ogrenmek);
-  if(A.enerji) L.push('Bana enerji veren: '+A.enerji);
+  if(A.yusufaGorev) L.push('Yusuf\'un görevi: '+A.yusufaGorev);
   if(A.foto) L.push('Fotoğraf: '+A.foto);
   return L.join('\n');
 }
@@ -718,41 +838,41 @@ function summaryText(r){
 function confetti(){
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const box = document.createElement('div'); box.className = 'confetti';
-  box.innerHTML = Array.from({length:40},()=>`<i style="left:${Math.random()*100}%;background:${Math.random()<.5?R:'#EEECE3'};animation-duration:${2.2+Math.random()*2}s;animation-delay:${Math.random()*.6}s;border-radius:${Math.random()<.4?'50%':'2px'}"></i>`).join('');
+  box.innerHTML = Array.from({length:40},()=>`<i style="left:${Math.random()*100}%;background:${Math.random()<.5?R:'#EEECE3'};animation-duration:${2.2+Math.random()*2}s;animation-delay:${Math.random()*.6}s"></i>`).join('');
   document.body.appendChild(box); setTimeout(()=>box.remove(), 5000);
 }
 
 function results(){
   const r = compute();
-  const notKnown = r.rows.filter(x=>!x.yKnew);
+  const talk = r.rows.filter(x => x.y && x.guess && !x.okY).slice(0, 3);
   show(`
-    <div class="eyebrow"><span>Sonuç</span><span>${PKEYS.length} kişisel soru</span></div>
-    <h1>${esc(r.unvan)}</h1>
-    ${doodle('trophy')}
-    <div class="meter">
-      <div><span>Sen Yusuf'u ne kadar tanıyorsun</span><strong>${r.tanima}/${YKEYS.length}</strong></div>
-      <div><span>Yusuf seni ne kadar tanıyor</span><strong>${r.yusufBildi}/${PKEYS.length}</strong></div>
+    <div class="eyebrow"><span>Sonuç</span><span>${PKEYS.length} soru</span></div>
+    <h1>Ne kadar tanıyoruz?</h1>
+    <div class="meter meter3">
+      <div><span>Ne kadar benziyoruz</span><strong>${r.benzer}/${YKEYS.length}</strong></div>
+      <div><span>Sen beni ne kadar tanıyorsun</span><strong>${r.tanima}/${YKEYS.length}</strong></div>
+      <div><span>Ben seni ne kadar tanıyorum</span><strong>${r.yusufBildi}/${PKEYS.length}</strong></div>
     </div>
 
-    <span class="tag">Yusuf seni bildi mi</span>
+    <span class="tag">Beni nasıl gördün</span>
+    <div class="list">${r.rows.filter(x=>x.y).map(x=>`
+      <div class="li"><span class="k">${esc(x.label)}</span>
+      <span class="verdict ${x.okY?'y':'n'}">${x.okY?'Aynı':'Farklı'}</span>
+      <span class="v">Sen: ${esc(x.guess||'-')} · Ben: ${esc(x.y)}</span></div>`).join('')}
+    </div>
+
+    <span class="tag">Seni nasıl görmüşüm</span>
     <div class="list">${r.rows.map(x=>`
       <div class="li"><span class="k">${esc(x.label)}</span>
-      <span class="verdict ${x.yKnew?'y':'n'}">${esc(x.verdict)}</span>
-      <span class="v">Sen: ${esc(x.self)} · Yusuf'un tahmini: ${esc(x.g)}</span></div>`).join('')}
+      <span class="verdict ${x.yKnew?'y':'n'}">${x.yKnew?'Aynı':'Farklı'}</span>
+      <span class="v">Sen: ${esc(x.text ? '“'+x.text+'”' : (x.self||'-'))} · Benim tahminim: ${esc(x.g)}</span></div>`).join('')}
     </div>
 
-    ${notKnown.length?`<span class="tag">Yusuf'un bilmediği şeyler</span>
-    <div class="note">${notKnown.map(x=>`${esc(x.label)}: <strong>${esc(x.self)}</strong>`).join('<br>')}</div>`:''}
+    ${talk.length?`<span class="tag">Bunu bir konuşalım</span>
+    <div class="note">${talk.map(x=>`${esc(x.label)}: sen “${esc(x.guess)}” dedin, ben kendimi “${esc(x.y)}” görüyorum.`).join('<br>')}</div>`:''}
 
-    <span class="tag">Senin Yusuf tahminlerin</span>
-    <div class="list">${r.rows.filter(x=>!x.noY).map(x=>`
-      <div class="li"><span class="k">${esc(x.label)}</span>
-      <span class="verdict ${x.okY?'y':'n'}">${x.okY?'Bildin':'Bilemedin'}</span>
-      <span class="v">Senin tahminin: ${esc(x.guess)} · Doğrusu: ${esc(x.y)}</span></div>`).join('')}
-    </div>
-
-    ${st.a.yusufaGorev?`<div class="note">Yusuf'un bugünkü zorunlu görevi: <strong>${esc(st.a.yusufaGorev)}</strong></div>`:''}
-    ${st.a.sarkiTahmin?`<div class="note">Yusuf'un bugün dinlediği şarkı için tahminin “${esc(st.a.sarkiTahmin)}”. Teyit için ona sor.</div>`:''}
+    ${st.a.yusufaGorev?`<div class="note">Bana verdiğin zorunlu görev: <strong>${esc(st.a.yusufaGorev)}</strong></div>`:''}
+    ${st.a.sarkiTahmin?`<div class="note">Bugün dinlediğim şarkı için tahminin “${esc(st.a.sarkiTahmin)}”. Doğru mu, bana sor.</div>`:''}
 
     <p class="saved" id="saved">Cevapların kaydediliyor...</p>
     <button class="btn" id="copy">Sonucu kopyala</button>
@@ -780,7 +900,7 @@ async function save(r, txt, el){
   try{
     await fetch(url, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({
       tanima: r.tanima, yusufBildi: r.yusufBildi, unvan: r.unvan,
-      kisisel: r.rows.map(x=>({soru:x.label, yusufIcinTahmin:x.guess, kendiCevabi:x.self})),
+      kisisel: r.rows.map(x=>({soru:x.label, yusufIcinTahmin:x.guess, kendiCevabi:x.text ? x.self+': '+x.text : x.self, yusufCevabi:x.y, yusufTahmini:x.g, ayni:x.yKnew, devam:[x.d2?x.d2q+' '+x.d2:null, x.d3?x.d3q+' '+x.d3:null].filter(Boolean)})),
       diger: st.a, ozet: txt
     })});
     st.finished = true;
