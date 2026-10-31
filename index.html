@@ -1030,23 +1030,10 @@ function coffee(){
         ['San Sebastian cheesecake','Havuçlu tarçınlı kek','Brownie','Tereyağlı kruvasan','Limonlu kek','Çikolatalı kurabiye','Simit'], v => { B.yaninda = v;
       say(c, `“${v}”, iyi tercih. Hangi gün?`, () => addInput(c, {type:'date', min:minDate, btn:'Bu gün', empty:'Bir gün seç.'}, v => { B.tarih = v;
       say(c, `${trDate(v)}. Saat kaçta?`, () => addInput(c, {type:'time', value:'19:00', btn:'Bu saatte', empty:'Bir saat seç.'}, v => { B.saat = v;
-      say(c, 'Son olarak, merak ettim: o gün ne giyiyorsun? Önce başörtüsünün rengi.', () => addInput(c, {ph:'Örn. bej, haki, toz pembe, lacivert', btn:'Bu renk'}, v => { B.basortusuRengi = v;
-      say(c, `${v}, güzel. Nasıl bir başörtüsü?`, () => addOpts(c,
-        ['Şal','İpek eşarp','Pamuklu örme şal','Spor bağlama','Desenli eşarp'], v => { B.basortusu = v;
-      say(c, 'Üstüne ne alıyorsun?', () => addOpts(c,
-        ['Kot ceket, tabii ki','Trençkot','Kaban','Uzun hırka','Blazer ceket','Oversize sweatshirt','Yağmurluk'], v => { B.ust = v;
-      say(c, 'İçine?', () => addOpts(c,
-        ['Gömlek','Triko kazak','Balıkçı yaka','Uzun tunik','Düz tişört','Sweatshirt'], v => { B.ic = v;
-      say(c, 'Altta?', () => addOpts(c,
-        ['Bol paça pantolon','Kot pantolon','Kumaş pantolon','Uzun etek','Pileli etek','Kot etek','Uzun elbise'], v => { B.alt = v;
-      say(c, 'Ayakkabı?', () => addOpts(c,
-        ['Spor ayakkabı','Bot','Babet','Loafer','Çizme','Sandalet'], v => { B.ayakkabi = v;
-      say(c, 'Çanta?', () => addOpts(c,
-        ['Omuz çantası','Sırt çantası','Bez çanta','Küçük çapraz çanta','Çantasız'], v => { B.canta = v;
-        const kart = `${trDate(B.tarih)}, saat ${B.saat}. ${B.kafe}. Sende ${B.kahve} ve ${B.yaninda}. ${B.basortusuRengi.charAt(0).toLocaleUpperCase('tr-TR') + B.basortusuRengi.slice(1)} ${B.basortusu.toLowerCase()}, ${B.ust.toLowerCase().replace(', tabii ki','')}, ${B.ic.toLowerCase()}, ${B.alt.toLowerCase()}, ${B.ayakkabi.toLowerCase()}, ${B.canta.toLowerCase()}.`;
+        const kart = `${trDate(B.tarih)}, saat ${B.saat}. ${B.kafe}. Sende ${B.kahve} ve ${B.yaninda}.`;
         B.kart = kart; heart();
         say(c, `Tamam, not aldım: ${kart} Ben de o saatte kahvemi alıp bekliyor olacağım. Ararsan açarım.`, () => cont(c, 'Sonuçlara geç'));
-      })); })); })); })); })); })); })); })); })); })); })); }));
+      })); })); })); })); }));
     };
     bindOpts(c.querySelector('.opts'), v => {
       B.cevap = v;
