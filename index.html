@@ -256,6 +256,45 @@ input[type=text]{align-self:flex-end;width:min(82%,360px);text-align:right}
 .pose.hop img{animation:hop .55s steps(4)}
 .count{background:rgba(36,29,43,.88);padding:3px 6px;border:2px solid var(--ink)}
 .word{background:rgba(36,29,43,.6);padding-inline:8px}
+
+/* sonuç ekranı */
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stats div{background:var(--panel);border:3px solid var(--ink);box-shadow:inset 0 0 0 2px #4b4258;padding:10px 6px 8px;text-align:center;display:flex;flex-direction:column;gap:2px}
+.stats strong{font-family:var(--display);color:var(--gold);font-size:30px;line-height:1;font-weight:400}
+.stats strong i{font-style:normal;font-size:16px;color:var(--muted)}
+.stats span{color:#f2ead7;font-size:17px;line-height:1}
+.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:4px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{text-align:center;font-family:var(--body);font-size:19px;line-height:1;color:#f2ead7;background:var(--panel);border:3px solid var(--ink);padding:8px 10px;cursor:pointer}
+.tab em{font-style:normal;font-family:var(--display);font-size:12px;background:var(--ink);color:var(--gold);padding:2px 5px;margin-left:4px;vertical-align:2px}
+.tab.on{background:var(--gold);color:var(--ink);transform:translate(2px,2px)}
+.tab.on em{background:var(--ink);color:var(--gold)}
+.tab:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.legend{margin:0;color:#f2ead7;font-size:17px;background:rgba(31,34,43,.92);border:3px solid var(--ink);padding:6px 8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.who{font-family:var(--display);font-size:10px;padding:3px 5px;color:var(--ink);letter-spacing:.06em;align-self:center}
+.who.b{background:var(--gold)}.who.s{background:var(--sky)}
+.rcs{display:flex;flex-direction:column;gap:10px}
+.rc{background:rgba(31,34,43,.95);border:3px solid var(--ink);box-shadow:inset 0 0 0 2px #4b4258;padding:10px;display:flex;flex-direction:column;gap:8px}
+.rc[hidden]{display:none}
+.rc header{display:flex;justify-content:space-between;align-items:center;gap:8px;color:#f2ead7;font-size:21px;line-height:1.05}
+.rc header b{font-family:var(--display);font-size:10px;font-weight:400;padding:4px 6px;letter-spacing:.06em;flex:0 0 auto}
+.rc header b.y{background:#f2ead7;color:var(--ink)}.rc header b.n{background:var(--red);color:#fff}
+.lane{display:grid;grid-template-columns:auto minmax(0,1fr) auto minmax(0,1fr);gap:6px;align-items:stretch;padding:6px;border:2px dashed #5a5266}
+.lane.no{border:2px solid var(--red);background:rgba(226,59,74,.08)}
+.pair{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pair small{color:var(--muted);font-size:15px;line-height:1}
+.pair p{margin:0;color:#f2ead7;font-size:19px;line-height:1.05;overflow-wrap:anywhere}
+.lane.no .pair:last-child p{color:var(--red-ink)}
+.eq{align-self:center;font-family:var(--display);font-size:16px;color:var(--muted)}
+.lane.no .eq{color:var(--red-ink)}
+.rc details{color:var(--muted);font-size:18px;line-height:1.1}
+.rc summary{cursor:pointer;color:var(--sky);list-style:none}
+.rc summary::-webkit-details-marker{display:none}
+.rc summary::before{content:'▸ '}
+.rc details[open] summary::before{content:'▾ '}
+.rc details p{margin:6px 0 0;color:#f2ead7}
+.rc details small{display:block;color:var(--muted);font-size:15px}
+.empty{color:#f2ead7;background:var(--panel);border:3px dashed #5a5266;padding:14px;text-align:center;font-size:20px;margin:0}
 </style>
 </head>
 <body>
@@ -1110,37 +1149,47 @@ function confetti(){
 
 function results(){
   const r = compute();
-  const talk = r.rows.filter(x => x.y && x.guess && !x.okY).slice(0, 3);
+  const val = x => x.text ? '“'+x.text+'”' : (x.self||'-');
+  const items = r.rows.map(x => {
+    const lanes = [];
+    if(x.y) lanes.push({who:'BEN', a:['Ben kendimi', x.y], b:['Sen beni', x.guess||'-'], ok:x.okY});
+    lanes.push({who:'SEN', a:['Sen kendini', val(x)], b:['Ben seni', /kendim yazay/.test(x.g)?'Kendi cümlenle yazarsın':x.g], ok:x.yKnew});
+    const diff = lanes.filter(l=>!l.ok).length;
+    const devam = [x.d2?[x.d2q,x.d2]:null, x.d3?[x.d3q,x.d3]:null].filter(Boolean);
+    return {x, lanes, diff, devam};
+  });
+  const nDiff = items.filter(i=>i.diff).length, nSame = items.length - nDiff;
+  const card = i => `
+    <article class="rc ${i.diff?'has-diff':'all-same'}" data-diff="${i.diff?1:0}">
+      <header><span>${esc(i.x.label)}</span><b class="${i.diff?'n':'y'}">${i.diff?'FARKLI':'AYNI'}</b></header>
+      ${i.lanes.map(l=>`
+      <div class="lane ${l.ok?'ok':'no'}">
+        <span class="who ${l.who==='BEN'?'b':'s'}">${l.who}</span>
+        <div class="pair"><small>${l.a[0]}</small><p>${esc(l.a[1])}</p></div>
+        <span class="eq">${l.ok?'=':'≠'}</span>
+        <div class="pair"><small>${l.b[0]}</small><p>${esc(l.b[1])}</p></div>
+      </div>`).join('')}
+      ${i.devam.length?`<details><summary>Devamında ne dedin</summary>${i.devam.map(d=>`<p><small>${esc(d[0])}</small> ${esc(d[1])}</p>`).join('')}</details>`:''}
+    </article>`;
   show(`
     <div class="eyebrow"><span>Sonuç</span><span>${PKEYS.length} soru</span></div>
     <h1>Ne kadar tanıyoruz?</h1>
-    <div class="meter meter3">
-      <div><span>Ne kadar benziyoruz</span><strong>${r.benzer}/${YKEYS.length}</strong></div>
-      <div><span>Sen beni ne kadar tanıyorsun</span><strong>${r.tanima}/${YKEYS.length}</strong></div>
-      <div><span>Ben seni ne kadar tanıyorum</span><strong>${r.yusufBildi}/${PKEYS.length}</strong></div>
+    <div class="stats">
+      <div><strong>${r.benzer}<i>/${YKEYS.length}</i></strong><span>Benziyoruz</span></div>
+      <div><strong>${r.tanima}<i>/${YKEYS.length}</i></strong><span>Sen beni tanıdın</span></div>
+      <div><strong>${r.yusufBildi}<i>/${PKEYS.length}</i></strong><span>Ben seni tanıdım</span></div>
     </div>
-
-    <span class="tag">Beni nasıl gördün</span>
-    <div class="list">${r.rows.filter(x=>x.y).map(x=>`
-      <div class="li"><span class="k">${esc(x.label)}</span>
-      <span class="verdict ${x.okY?'y':'n'}">${x.okY?'Aynı':'Farklı'}</span>
-      <span class="v">Sen: ${esc(x.guess||'-')} · Ben: ${esc(x.y)}</span></div>`).join('')}
+    <div class="tabs" role="tablist">
+      <button class="tab on" data-f="diff" role="tab">Farklı <em>${nDiff}</em></button>
+      <button class="tab" data-f="same" role="tab">Aynı <em>${nSame}</em></button>
+      <button class="tab" data-f="all" role="tab">Hepsi <em>${items.length}</em></button>
     </div>
-
-    <span class="tag">Seni nasıl görmüşüm</span>
-    <div class="list">${r.rows.map(x=>`
-      <div class="li"><span class="k">${esc(x.label)}</span>
-      <span class="verdict ${x.yKnew?'y':'n'}">${x.yKnew?'Aynı':'Farklı'}</span>
-      <span class="v">Sen: ${esc(x.text ? '“'+x.text+'”' : (x.self||'-'))} · Benim tahminim: ${esc(x.g)}</span></div>`).join('')}
-    </div>
-
-    ${talk.length?`<span class="tag">Bunu bir konuşalım</span>
-    <div class="note">${talk.map(x=>`${esc(x.label)}: sen “${esc(x.guess)}” dedin, ben kendimi “${esc(x.y)}” görüyorum.`).join('<br>')}</div>`:''}
+    <p class="legend"><span class="who b">BEN</span> benim hakkımda · <span class="who s">SEN</span> senin hakkında</p>
+    <div class="rcs" id="rcs">${items.map(card).join('')}</div>
+    <p class="empty" id="rcEmpty" hidden></p>
 
     ${st.a.bulusma && st.a.bulusma.kart?`<span class="tag">Kahve buluşmamız</span><div class="note">${esc(st.a.bulusma.kart)}</div>`:''}
     ${st.a.bulusma && !st.a.bulusma.kart && st.a.bulusma.cevap?`<div class="note">Kahve teklifi hâlâ geçerli.</div>`:''}
-    ${st.a.yusufaGorev?`<div class="note">Bana verdiğin zorunlu görev: <strong>${esc(st.a.yusufaGorev)}</strong></div>`:''}
-    ${st.a.sarkiTahmin?`<div class="note">Bugün dinlediğim şarkı için tahminin “${esc(st.a.sarkiTahmin)}”. Doğru mu, bana sor.</div>`:''}
 
     <p class="saved" id="saved">Cevapların kaydediliyor...</p>
     <button class="btn" id="copy">Sonucu kopyala</button>
@@ -1149,6 +1198,15 @@ function results(){
   `, c => {
     confetti();
     $('#barFill').style.width = '100%';
+    const tabs = [...c.querySelectorAll('.tab')], em = $('#rcEmpty',c);
+    const filt = f => {
+      tabs.forEach(t=>{ const on = t.dataset.f===f; t.classList.toggle('on',on); t.setAttribute('aria-selected',on); });
+      let n = 0;
+      c.querySelectorAll('.rc').forEach(e=>{ const d = e.dataset.diff==='1'; const v = f==='all' || (f==='diff')===d; e.hidden = !v; if(v) n++; });
+      em.hidden = n>0; em.textContent = f==='diff' ? 'Hiç farkımız yok. Bu biraz korkutucu.' : 'Burada hiç soru yok.';
+    };
+    tabs.forEach(t=>t.onclick=()=>filt(t.dataset.f));
+    filt(nDiff ? 'diff' : 'all');
     $('#again',c).onclick = () => { st = {i:-1,sub:0,a:{},p:{},finished:false}; hist.length = 0; render(); };
     const txt = summaryText(r);
     $('#copy',c).onclick = () => {
