@@ -434,8 +434,10 @@ const STEPS = [
   {t:'p',k:'izlenim'},
   {t:'p',k:'firsat'},
   {t:'p',k:'karar'},
+  {t:'gorev',k:'gorevIsim',baslik:'Kahve adı',q:'Sana bir görevim var. Bugün kahve alırken adını sorarlarsa başka bir isim söyleyeceksin. Hangi isim olsun?'},
   {t:'p',k:'soz'},
   {t:'letters'},
+  {t:'gorev',k:'gorevBulut',baslik:'Bulutlar',q:'Kısa bir mola. Görevin: bulutlara bak ve birinde bir şekil bul.'},
   {t:'p',k:'yeni'},
   {t:'p',k:'duygu'},
   {t:'p',k:'kotugun'},
@@ -446,6 +448,7 @@ const STEPS = [
   {t:'p',k:'pisman'},
   {t:'p',k:'kirar'},
   {t:'p',k:'itiraf'},
+  {t:'gorev',k:'gorevFoto',baslik:'Bir fotoğraf',q:'Son görev: telefonundaki son 10 fotoğraftan birini seç, bana gönder ve hikâyesini anlat.'},
   {t:'kahve'},
 ];
 
@@ -517,7 +520,7 @@ function back(){
   render();
 }
 document.getElementById('backBtn').onclick = back;
-const SCENE = ['sohbet','sohbet','soru','soru','telefon','telefon','gulme','kafe2','kafe2','kafe1','kafe1','ayakta','sohbet','kafe1','kafe1','kafe1','kafe2'];
+const SCENE = ['sohbet','sohbet','soru','soru','kafe2','telefon','telefon','ayakta','gulme','kafe2','kafe2','kafe1','kafe1','ayakta','sohbet','kafe1','kafe1','kafe1','telefon','kafe2'];
 let curScene = 'ayakta', poseFlip = false;
 function setScene(name){
   if(name === curScene) return; curScene = name;
@@ -533,7 +536,7 @@ function render(){
   if(st.i < 0) return intro();
   if(st.i >= STEPS.length) return results();
   const s = STEPS[st.i];
-  ({balloons, p:personal, text:textStep, letters, lang, pick, photo, kahve:coffee})[s.t](s);
+  ({balloons, p:personal, text:textStep, letters, lang, pick, photo, kahve:coffee, gorev})[s.t](s);
 }
 
 /* ---------- ekranlar ---------- */
@@ -803,6 +806,36 @@ function lang(){
   });
 }
 
+/* ---------- yeni görevler ---------- */
+function doneButtons(c, key, labels, after){
+  addOpts(c, labels, v => { st.a[key] = v; later(() => say(c, after(v), () => cont(c)), 400); });
+}
+function gorev(s){
+  show(`
+    <div class="eyebrow"><span>Görev</span><span>${esc(s.baslik)}</span></div>
+    <p class="q">${esc(s.q)}</p>
+  `, c => {
+    const k = s.k;
+    if(k === 'gorevIsim'){
+      pickOrWrite(c, ['Defne','Pamuk','Cemile','Lale'], 'Kendim bulayım', 'Bugünkü kahve adın', v => {
+        st.a.gorevIsim = v;
+        later(() => say(c, `Tamam, bugünkü adın “${v}”. Kahveci adını bardağa yazarsa fotoğrafını bekliyorum.`, () =>
+          doneButtons(c, 'gorevIsimDurum', ['Yaptım','Sonra yapacağım'], d => d === 'Yaptım' ? 'Efsane. Kahveci ne dedi, sonra anlatırsın.' : 'Tamam, bir dahaki kahvende.')), 400);
+      });
+    } else if(k === 'gorevBulut'){
+      addOpts(c, ['Şimdi bakıyorum','Şu an bakamam, sonra'], v => {
+        if(v === 'Şimdi bakıyorum'){
+          later(() => say(c, 'Neye benziyordu?', () => addInput(c, {ph:'Bir hayvan, bir yüz, bir şey...', btn:'Buna benziyordu'}, w => {
+            st.a.gorevBulut = w; later(() => say(c, `“${w}” mi? Ben de bugün bakıp kendiminkini bulacağım.`, () => cont(c)), 400);
+          })), 400);
+        } else { st.a.gorevBulut = 'Sonra bakacak'; later(() => say(c, 'Tamam, bugün bir ara yukarı bak. Bulursan bana söyle.', () => cont(c)), 400); }
+      });
+    } else if(k === 'gorevFoto'){
+      doneButtons(c, 'gorevFoto', ['Gönderdim','Sonra göndereceğim'], d => d === 'Gönderdim' ? 'Merakla bakıyorum. Hikâyesini de anlatmayı unutma.' : 'Tamam, bekliyorum. Hikâyesiyle birlikte ama.');
+    }
+  });
+}
+
 /* ---------- kahve buluşması ---------- */
 function addInput(c, opt, cb){
   const id = 'in-' + Math.random().toString(36).slice(2, 7);
@@ -917,6 +950,9 @@ function summaryText(r){
   if(A.ogrenmek) L.push('Bu ay öğrenmek istediğim: '+A.ogrenmek);
   if(A.yusufaGorev) L.push('Yusuf\'un görevi: '+A.yusufaGorev);
   if(A.foto) L.push('Fotoğraf: '+A.foto);
+  if(A.gorevIsim) L.push('Bugünkü kahve adım: '+A.gorevIsim+(A.gorevIsimDurum?' ('+A.gorevIsimDurum+')':''));
+  if(A.gorevBulut) L.push('Buluttaki şekil: '+A.gorevBulut);
+  if(A.gorevFoto) L.push('Fotoğraf hikâyesi: '+A.gorevFoto);
   if(A.bulusma){ L.push(''); L.push('Kahve: '+A.bulusma.cevap); if(A.bulusma.kart) L.push('Buluşma: '+A.bulusma.kart); }
   return L.join('\n');
 }
