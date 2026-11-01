@@ -609,6 +609,7 @@ function rx(k, self, lvl, q, ans){
   const i = q.indexOf(ans);
   return (r && r[i]) || 'Anladım.';
 }
+['firsat','karar','soz','yeni','stres','onem','itiraf'].forEach(k => delete P[k]); // kısaltıldı: 8 soru
 const PKEYS = Object.keys(P);
 const YKEYS = PKEYS.filter(k => P[k].y);
 const gMatch = (q, v) => Array.isArray(q.g) ? q.g.includes(v) : q.g === v;
@@ -624,22 +625,15 @@ const TARGET = 'DOSTLUK';
 const STEPS = [
   {t:'p',k:'grup'},
   {t:'p',k:'izlenim'},
-  {t:'p',k:'firsat'},
-  {t:'p',k:'karar'},
   {t:'gorev',k:'gorevIsim',baslik:'Kahve adı',q:'Sana bir görevim var. Bugün kahve alırken adını sorarlarsa başka bir isim söyleyeceksin. Hangi isim olsun?'},
-  {t:'p',k:'soz'},
-  {t:'letters'},
-  {t:'gorev',k:'gorevBulut',baslik:'Bulutlar',q:'Kısa bir mola. Görevin: bulutlara bak ve birinde bir şekil bul.'},
-  {t:'p',k:'yeni'},
   {t:'p',k:'duygu'},
+  {t:'letters'},
   {t:'p',k:'kotugun'},
-  {t:'p',k:'stres'},
+  {t:'gorev',k:'gorevBulut',baslik:'Bulutlar',q:'Kısa bir mola. Görevin: bulutlara bak ve birinde bir şekil bul.'},
   {t:'p',k:'gun'},
-  {t:'p',k:'onem'},
   {t:'p',k:'hayal'},
   {t:'p',k:'pisman'},
   {t:'p',k:'kirar'},
-  {t:'p',k:'itiraf'},
   {t:'gorev',k:'gorevFoto',baslik:'Bir fotoğraf',q:'Son görev: telefonundaki son 10 fotoğraftan birini seç, bana gönder ve hikâyesini anlat.'},
   {t:'kahve'},
 ];
@@ -712,7 +706,7 @@ function back(){
   render();
 }
 document.getElementById('backBtn').onclick = back;
-const SCENE = ['sohbet','sohbet','soru','soru','kafe2','telefon','telefon','ayakta','gulme','kafe2','kafe2','kafe1','kafe1','ayakta','sohbet','kafe1','kafe1','kafe1','telefon','kafe2'];
+const SCENE = ['sohbet','soru','kafe2','telefon','gulme','kafe1','ayakta','sohbet','kafe2','kafe1','kafe1','telefon','kafe2'];
 let curScene = 'ayakta', poseFlip = false;
 function setScene(name){
   if(name === curScene) return; curScene = name;
@@ -816,12 +810,15 @@ function personal(s){
         if(same) heart(); else react('heroYusuf','nope');
         const br = q.br && q.br[ans.self];
         if(!br){ say(c, line, () => cont(c)); return; }
-        say(c, line + ' ' + br[0][0], () => addOpts(c, br[0][1], a2 => {
+        say(c, line, () => addOpts(c, ['Biraz açayım', 'Sonraki soruya geç'], w => {
+          if(w !== 'Biraz açayım'){ later(() => cont(c), 250); return; }
+          later(() => say(c, br[0][0], () => addOpts(c, br[0][1], a2 => {
           ans.d2 = a2;
           later(() => say(c, rx(s.k, ans.self, 0, br[0][1], a2) + ' ' + br[1][0], () => addOpts(c, br[1][1], a3 => {
             ans.d3 = a3;
             later(() => say(c, rx(s.k, ans.self, 1, br[1][1], a3), () => cont(c)), 400);
           })), 400);
+        })), 400);
         }));
       }, 450);
     }

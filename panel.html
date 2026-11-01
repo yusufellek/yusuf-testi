@@ -85,8 +85,8 @@ function render(rows){
     h.appendChild(el('span','date', new Date(x.at).toLocaleString('tr-TR')));
     c.appendChild(h);
     const n = el('div','nums');
-    const a = el('div'); a.appendChild(el('span',null,'Seni ne kadar tanıyor')); a.appendChild(el('strong',null,(x.tanima??'-')+'/14'));
-    const b = el('div'); b.appendChild(el('span',null,'Sen onu ne kadar tanıyorsun')); b.appendChild(el('strong',null,(x.yusufBildi??'-')+'/15'));
+    const a = el('div'); a.appendChild(el('span',null,'Seni ne kadar tanıyor')); a.appendChild(el('strong',null,(x.tanima??'-')+'/8'));
+    const b = el('div'); b.appendChild(el('span',null,'Sen onu ne kadar tanıyorsun')); b.appendChild(el('strong',null,(x.yusufBildi??'-')+'/8'));
     n.append(a,b); c.appendChild(n);
     if(x.kisisel && x.kisisel.length){
       const tw = el('div','tw'); const t = el('table');
