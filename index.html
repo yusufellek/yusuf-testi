@@ -811,15 +811,12 @@ function personal(s){
         if(same) heart(); else react('heroYusuf','nope');
         const br = q.br && q.br[ans.self];
         if(!br){ say(c, line, () => cont(c)); return; }
-        say(c, line, () => addOpts(c, ['Biraz açayım', 'Sonraki soruya geç'], w => {
-          if(w !== 'Biraz açayım'){ later(() => cont(c), 250); return; }
-          later(() => say(c, br[0][0], () => addOpts(c, br[0][1], a2 => {
+        say(c, line + ' ' + br[0][0], () => addOpts(c, br[0][1], a2 => {
           ans.d2 = a2;
           later(() => say(c, rx(s.k, ans.self, 0, br[0][1], a2) + ' ' + br[1][0], () => addOpts(c, br[1][1], a3 => {
             ans.d3 = a3;
             later(() => say(c, rx(s.k, ans.self, 1, br[1][1], a3), () => cont(c)), 400);
           })), 400);
-        })), 400);
         }));
       }, 450);
     }
