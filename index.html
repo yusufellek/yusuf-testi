@@ -516,8 +516,8 @@ const RX = {
   duygu:{
     'Açıkça söylerim':[['Anlıyorum. Kırgınlığı söylemek en zoru, insan savunmasız kalıyor.','İlginç. Demek o kelime senin için ağır bir kelime.','Çok insani. Kimse kıskandığını söylemeyi sevmiyor.','Bu gerçekten cesaret. Saygı duydum.'],
       ['Mantıklı. Açık olana açık olmak lazım.','Bunu söylemen güzel. Belki şimdi söylemiş oldun.','Herkesi olduğu gibi kabul etmek, güzel.']],
-    'Davranışlarımla':[['En değerli hediye vakit. Bunu biliyorum.','Sessizce bir şey yapıp sevgisini gösteren insanları çok severim.','Bu fark edilmesi zor bir dil. Dikkatli bakmak lazım.'],
-      ['Güzel. Bazen kelimeler de lazım.','Anlıyorum. Umarım yanında hep anlayan biri olur.','Bu çok tatlı ve biraz inatçı bir cevap.']],
+    'Davranışlarımla':[['En değerli hediye vakit. Bana ayırdığın vakitleri özlüyorum bu arada.','Sessizce bir şey yapıp sevgisini gösteren insanları çok severim.','Bu fark edilmesi zor bir dil. Dikkatli bakmak lazım.'],
+      ['Güzel. Bazen kelimeler de lazım.','Bunu duyunca kendi hatalarım gözümde canlanıyor. Zamanı geri almanın bir yolu olsaydı, o anlarda sadece yanında sessizce oturmak isterdim.','Bu çok tatlı ve biraz inatçı bir cevap.']],
     'Şaka yaparak':[['Seni tanıyan anlıyor demek. Güzel.','Bu biraz yalnız hissettirebilir. Ben anlamaya çalışırım.','O zaman şakaların açık kitap.'],
       ['Normal. Şaka kolay, ciddiyet cesaret ister.','Dengeli bir cevap.','Demek şakanın arkasında sağlam biri var.']],
     'Pek göstermem':[['Anlıyorum. Alışkanlıklar kolay değişmiyor, değişmesi de gerekmiyor.','Bunu söylemen değerli. Yanlış anlaşılmak gerçekten yorucu.','Net bir cevap. Saygı duyuyorum.'],
@@ -635,6 +635,7 @@ const STEPS = [
   {t:'p',k:'hayal'},
   {t:'p',k:'pisman'},
   {t:'p',k:'kirar'},
+  {t:'itirafEt'},
   {t:'gorev',k:'gorevFoto',baslik:'Bir fotoğraf',q:'Son görev: telefonundaki son 10 fotoğraftan birini seç, bana gönder ve hikâyesini anlat.'},
   {t:'kahve'},
 ];
@@ -707,7 +708,7 @@ function back(){
   render();
 }
 document.getElementById('backBtn').onclick = back;
-const SCENE = ['sohbet','soru','kafe2','telefon','gulme','kafe1','ayakta','sohbet','gulme','kafe2','kafe1','kafe1','telefon','kafe2'];
+const SCENE = ['sohbet','soru','kafe2','telefon','gulme','kafe1','ayakta','sohbet','gulme','kafe2','kafe1','kafe1','soru','telefon','kafe2'];
 let curScene = 'ayakta', poseFlip = false;
 function setScene(name){
   if(name === curScene) return; curScene = name;
@@ -723,7 +724,7 @@ function render(){
   if(st.i < 0) return intro();
   if(st.i >= STEPS.length) return results();
   const s = STEPS[st.i];
-  ({balloons, p:personal, text:textStep, letters, lang, pick, photo, kahve:coffee, gorev, yalan})[s.t](s);
+  ({balloons, p:personal, text:textStep, letters, lang, pick, photo, kahve:coffee, gorev, yalan, itirafEt})[s.t](s);
 }
 
 /* ---------- ekranlar ---------- */
@@ -1042,6 +1043,26 @@ function yalan(){
   });
 }
 
+function itirafEt(){
+  show(`
+    <div class="eyebrow"><span>İtiraf</span><span>Bilmediğim bir şey</span></div>
+    <p class="q">Bir de şunu merak ediyorum: bana bilmediğim bir şeyi itiraf et. Büyük olmak zorunda değil. Küçük, komik, saçma bir şey de olur. Bilmem gerekmeyen bir şey bile olabilir.</p>
+    ${optsHTML(['Tamam, bir şey var','Pas geçiyorum'])}
+  `, c => {
+    bindOpts(c.querySelector('.opts'), v => {
+      if(v === 'Pas geçiyorum'){
+        st.a.itirafEt = 'Pas geçti';
+        later(() => say(c, 'Hiç sorun değil. Belki bir dahaki oyunda.', () => cont(c)), 400);
+        return;
+      }
+      later(() => say(c, 'Dinliyorum.', () => addInput(c, {ph:'İtirafın...', btn:'İtiraf ettim', max:300}, w => {
+        st.a.itirafEt = w; heart();
+        later(() => say(c, pickOne(['Bunu bana söylediğin için teşekkür ederim. Aramızda kalır.', 'Bunu bilmiyordum. Söylediğin için teşekkürler, aramızda kalır.']), () => cont(c)), 400);
+      })), 400);
+    });
+  });
+}
+
 function gorev(s){
   show(`
     <div class="eyebrow"><span>Görev</span><span>${esc(s.baslik)}</span></div>
@@ -1169,6 +1190,7 @@ function summaryText(r){
   if(A.ogrenmek) L.push('Bu ay öğrenmek istediğim: '+A.ogrenmek);
   if(A.yusufaGorev) L.push('Yusuf\'un görevi: '+A.yusufaGorev);
   if(A.foto) L.push('Fotoğraf: '+A.foto);
+  if(A.itirafEt) L.push('İtirafım: '+A.itirafEt);
   if(A.ikiDogru){ const D = A.ikiDogru; L.push(''); L.push('İki doğru bir yalan: Yusuf\'un yalanı için tahminim “'+D.benimTahminim+'”'+(D.bildi?' (bildim)':'')); (D.onunkiler||[]).forEach((x,i)=>L.push('  '+(i+1)+'. '+x)); }
   if(A.gorevIsim) L.push('Bugünkü kahve adım: '+A.gorevIsim+(A.gorevIsimDurum?' ('+A.gorevIsimDurum+')':''));
   if(A.gorevBulut) L.push('Buluttaki şekil: '+A.gorevBulut);
