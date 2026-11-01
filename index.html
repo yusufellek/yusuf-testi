@@ -631,6 +631,7 @@ const STEPS = [
   {t:'p',k:'kotugun'},
   {t:'gorev',k:'gorevBulut',baslik:'Bulutlar',q:'Kısa bir mola. Görevin: bulutlara bak ve birinde bir şekil bul.'},
   {t:'p',k:'gun'},
+  {t:'yalan'},
   {t:'p',k:'hayal'},
   {t:'p',k:'pisman'},
   {t:'p',k:'kirar'},
@@ -706,7 +707,7 @@ function back(){
   render();
 }
 document.getElementById('backBtn').onclick = back;
-const SCENE = ['sohbet','soru','kafe2','telefon','gulme','kafe1','ayakta','sohbet','kafe2','kafe1','kafe1','telefon','kafe2'];
+const SCENE = ['sohbet','soru','kafe2','telefon','gulme','kafe1','ayakta','sohbet','gulme','kafe2','kafe1','kafe1','telefon','kafe2'];
 let curScene = 'ayakta', poseFlip = false;
 function setScene(name){
   if(name === curScene) return; curScene = name;
@@ -722,7 +723,7 @@ function render(){
   if(st.i < 0) return intro();
   if(st.i >= STEPS.length) return results();
   const s = STEPS[st.i];
-  ({balloons, p:personal, text:textStep, letters, lang, pick, photo, kahve:coffee, gorev})[s.t](s);
+  ({balloons, p:personal, text:textStep, letters, lang, pick, photo, kahve:coffee, gorev, yalan})[s.t](s);
 }
 
 /* ---------- ekranlar ---------- */
@@ -1003,6 +1004,47 @@ function lang(){
 function doneButtons(c, key, labels, after){
   addOpts(c, labels, v => { st.a[key] = v; later(() => say(c, after(v), () => cont(c)), 400); });
 }
+
+/* ---------- iki doğru bir yalan ---------- */
+const YALAN = {
+  cumleler:['Senin sevdiğin şarkıları, benim tarzım olmasa bile sevesim geliyor.','Ciddi Ömür\'ü karşımda görünce saçmalamadan edemiyorum.','Seninle sesli konuşunca içime hep bir huzur geliyor.'],
+  yalan:2,
+  aciklama:'“Hep” kısmı yalan. Çoğu zaman huzur geliyor ama her zaman değil; bazen kalbim koşu bandındaymış gibi atıyor. Hele aramamam gereken bir anda aradıysam, kapatınca on dakika kendi kendime “neden aradın” diye söyleniyorum.',
+  dogru:['O doğru. Tarzım olmasa bile senin sevdiğin bir şarkıyı dinlerken buluyorum kendimi.','O doğru. Sen ciddileştikçe ben komikleşiyorum, elimde değil.']
+};
+function yalan(){
+  const D = st.a.ikiDogru = {};
+  const sira = [0,1,2].sort(() => Math.random() - .5);
+  show(`
+    <div class="eyebrow"><span>Oyun</span><span>İki doğru bir yalan</span></div>
+    <p class="q">Kendimle ilgili üç cümle söyleyeceğim. İkisi doğru, biri yalan. Bakalım bulabilecek misin?</p>
+    ${optsHTML(sira.map(i => YALAN.cumleler[i]))}
+  `, c => {
+    bindOpts(c.querySelector('.opts'), v => {
+      const ok = v === YALAN.cumleler[YALAN.yalan];
+      D.benimTahminim = v; D.bildi = ok;
+      if(ok) heart(); else react('heroYusuf','nope');
+      const lie = YALAN.cumleler[YALAN.yalan];
+      const ilk = ok ? pickOne(['Buldun! Beni iyi okuyorsun.','Bildin. Biraz korkmaya başladım.']) + ' ' + YALAN.aciklama + ' Diğer ikisi ise tamamen doğru.'
+                     : YALAN.dogru[YALAN.cumleler.indexOf(v)] + ` Yalan olan şuydu: “${lie}” ` + YALAN.aciklama;
+      later(() => say(c, ilk, () =>
+        say(c, 'Şimdi sıra sende. Kendinle ilgili üç cümle yaz: ikisi doğru, biri yalan. Ben de bulmaya çalışacağım.', () => sor(1))), 450);
+    });
+    const ons = D.onunkiler = [];
+    function sor(n){
+      addInput(c, {ph: n + '. cümlen', btn: n < 3 ? 'Sıradaki' : 'Bitti', max:140}, w => {
+        ons.push(w);
+        if(n < 3) later(() => sor(n + 1), 200);
+        else later(() => say(c, 'Hangisi yalan? Söz, bakmadan önce tahmin edeceğim.', () =>
+          addOpts(c, ons.map((x, i) => (i + 1) + '. ' + x), y => {
+            D.yalan = ons.findIndex((x, i) => (i + 1) + '. ' + x === y);
+            later(() => say(c, 'Tamam, kaydettim. Tahminimi sonra sana yazacağım, hazır ol.', () => cont(c)), 400);
+          })), 400);
+      });
+    }
+  });
+}
+
 function gorev(s){
   show(`
     <div class="eyebrow"><span>Görev</span><span>${esc(s.baslik)}</span></div>
@@ -1032,7 +1074,7 @@ function gorev(s){
 /* ---------- kahve buluşması ---------- */
 function addInput(c, opt, cb){
   const id = 'in-' + Math.random().toString(36).slice(2, 7);
-  c.insertAdjacentHTML('beforeend', `<div class="opts"><input type="${opt.type||'text'}" id="${id}" ${opt.min?`min="${opt.min}"`:''} ${opt.value?`value="${opt.value}"`:''} placeholder="${esc(opt.ph||'')}" maxlength="80" autocomplete="off"><p class="err"></p><button class="btn primary">${esc(opt.btn||'Tamam')}</button></div>`);
+  c.insertAdjacentHTML('beforeend', `<div class="opts"><input type="${opt.type||'text'}" id="${id}" ${opt.min?`min="${opt.min}"`:''} ${opt.value?`value="${opt.value}"`:''} placeholder="${esc(opt.ph||'')}" maxlength="${opt.max||80}" autocomplete="off"><p class="err"></p><button class="btn primary">${esc(opt.btn||'Tamam')}</button></div>`);
   const box = c.lastElementChild, inp = box.querySelector('input'), err = box.querySelector('.err'), ok = box.querySelector('button');
   setTimeout(()=>{ box.scrollIntoView({behavior:'smooth', block:'nearest'}); if(opt.type !== 'date' && opt.type !== 'time') inp.focus(); }, 60);
   inp.oninput = () => err.textContent = '';
@@ -1130,6 +1172,7 @@ function summaryText(r){
   if(A.ogrenmek) L.push('Bu ay öğrenmek istediğim: '+A.ogrenmek);
   if(A.yusufaGorev) L.push('Yusuf\'un görevi: '+A.yusufaGorev);
   if(A.foto) L.push('Fotoğraf: '+A.foto);
+  if(A.ikiDogru){ const D = A.ikiDogru; L.push(''); L.push('İki doğru bir yalan: Yusuf\'un yalanı için tahminim “'+D.benimTahminim+'”'+(D.bildi?' (bildim)':'')); (D.onunkiler||[]).forEach((x,i)=>L.push('  '+(i+1)+'. '+x)); }
   if(A.gorevIsim) L.push('Bugünkü kahve adım: '+A.gorevIsim+(A.gorevIsimDurum?' ('+A.gorevIsimDurum+')':''));
   if(A.gorevBulut) L.push('Buluttaki şekil: '+A.gorevBulut);
   if(A.gorevFoto) L.push('Fotoğraf hikâyesi: '+A.gorevFoto);

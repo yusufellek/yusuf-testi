@@ -36,6 +36,7 @@ th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute
 .ok{color:var(--ok);font-weight:600}.no{color:var(--red);font-weight:600}
 dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 14px;margin:0;font-size:14px}
 dt{color:var(--muted)}dd{margin:0;overflow-wrap:anywhere}
+.yalan{background:var(--paper-2);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}.yalan ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}.yalan .btn{align-self:flex-start}
 .empty{border:2px dashed var(--ink);border-radius:16px;padding:20px;text-align:center;color:var(--muted)}
 </style>
 </head>
@@ -105,6 +106,21 @@ function render(rows){
         t.appendChild(tr);
       });
       tw.appendChild(t); c.appendChild(tw);
+    }
+    const D = x.diger && x.diger.ikiDogru;
+    if(D && D.onunkiler && D.onunkiler.length){
+      const box = el('div','yalan');
+      box.appendChild(el('strong',null,'İki doğru bir yalan'));
+      box.appendChild(el('p','sub','Senin yalanın için tahmini: ' + (D.benimTahminim||'-') + (D.bildi ? ' ✓ bildi' : ' ✗ bilemedi')));
+      box.appendChild(el('p','sub','Onun cümleleri. Hangisi yalan, önce sen tahmin et:'));
+      const ol = el('ol');
+      D.onunkiler.forEach((t,i) => { const li = el('li',null,t); li.dataset.i = i; ol.appendChild(li); });
+      box.appendChild(ol);
+      const bt = el('button','btn ghost','Cevabı göster');
+      bt.type = 'button';
+      bt.onclick = () => { ol.querySelectorAll('li').forEach(li => { if(+li.dataset.i === D.yalan){ li.className = 'no'; li.textContent += '  ← yalan'; } else li.className = 'ok'; }); bt.remove(); };
+      box.appendChild(bt);
+      c.appendChild(box);
     }
     const dl = el('dl');
     Object.keys(LABELS).forEach(k => {
