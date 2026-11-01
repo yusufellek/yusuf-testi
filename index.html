@@ -417,7 +417,7 @@ const P = {
   gun:{label:'Mükemmel bir gün', yq:'Benim için mükemmel bir gün nasıl geçer sence?', sq:'Peki senin mükemmel günün nasıl geçerdi?',
     o:['Yeni bir yer keşfederek','Sevdiklerimle uzun bir sofrada','Tamamen kendimle','Üretken, bir şeyi bitirerek'], y:'Sevdiklerimle uzun bir sofrada', g:'Tamamen kendimle',
     br:{'Yeni bir yer keşfederek':[['Nerede?',['Yurt dışında','Doğada','Bilmediğim bir semtte']],['Kiminle?',['Yalnız','Bir arkadaşla','Kalabalık']]],
-        'Sevdiklerimle uzun bir sofrada':[['Sofrada kim mutlaka olmalı?',['Ailem','Arkadaşlarım','Bir kişi yeter']],['En son ne zaman böyle bir gün geçirdin?',['Yakın zamanda','Epey oldu','Hatırlamıyorum']]],
+        'Sevdiklerimle uzun bir sofrada':[['Sofrada kim mutlaka olmalı?',['Ailem','Arkadaşlarım','Bir kişi yeter']]],
         'Tamamen kendimle':[['Kendinle ne yaparsın?',['Okurum, izlerim','Yürürüm','Hiçbir şey']],['Bunu ne sıklıkla yapabiliyorsun?',['Sık','Nadiren','Neredeyse hiç']]],
         'Üretken, bir şeyi bitirerek':[['Ne bitirmek?',['İş','Kişisel bir proje','Ev işleri']],['Bitirince nasıl kutlarsın?',['Kutlamam','Kendime ödül','Biriyle paylaşırım']]]}},
   onem:{label:'En önem verilen şey', yq:'Hayatta en çok neye önem veririm sence?', sq:'Peki sen hayatta en çok neye önem verirsin?',
@@ -427,7 +427,7 @@ const P = {
         'Başarı':[['Başarıyı nasıl tanımlıyorsun?',['Para','Takdir edilmek','Kendimi aşmak']],['Bugüne kadarki en büyük başarın hangi alanda?',['İş, okul','İlişkiler','Kişisel bir zorluğu aşmak']]],
         'Huzur':[['Huzurunu en çok ne bozuyor?',['İnsanlar','Belirsizlik','Yoğunluk','Kendi düşüncelerim']],['Huzuru en çok nerede buluyorsun?',['Evde','Doğada','Sevdiklerimin yanında']]]}},
   hayal:{label:'En büyük hayal', yq:'Sence benim en büyük hayalim hangi alanda?', sq:'Peki senin en büyük hayalin hangi alanda?',
-    o:['Kariyer','Yeni bir hayat, yer değiştirmek','Aile kurmak','Bir şey üretmek, iz bırakmak'], y:'Yeni bir hayat, yer değiştirmek', g:'Bir şey üretmek, iz bırakmak',
+    o:['Kariyer','Yeni bir hayat, yer değiştirmek','Aile kurmak','Bir şey üretmek, iz bırakmak'], free:'Başka bir şey (kendim yazayım)', y:'Yeni bir hayat, yer değiştirmek', g:'Bir şey üretmek, iz bırakmak',
     br:{'Kariyer':[['Nasıl bir yer?',['Kendi büromu','Büyük bir firma','Tamamen farklı bir alan']],['Kaç yıl içinde?',['1–3 yıl','5 yıl','Acelem yok']]],
         'Yeni bir hayat, yer değiştirmek':[['Nerede?',['Başka bir şehir','Yurt dışı','Bir sahil kasabası']],['İlk adım ne olurdu?',['Para biriktirmek','Dil öğrenmek','Cesaret']]],
         'Aile kurmak':[['Nasıl bir ev?',['Kalabalık, neşeli','Sakin','Bahçeli']],['Bu hayal ne zamandır var?',['Hep','Son yıllarda','Yeni']]],
@@ -543,8 +543,7 @@ const RX = {
   gun:{
     'Yeni bir yer keşfederek':[['Bir gün gidersin bence.','Yeşil, sessiz ve uzak. Çok güzel.','İstanbul’da hâlâ keşfedilecek çok semt var.'],
       ['Kendinle bir keşif. Hem cesur hem huzurlu.','İyi bir yol arkadaşı her şeyi güzelleştirir.','Kalabalık ve neşeli. Güzel.']],
-    'Sevdiklerimle uzun bir sofrada':[['Aile sofrası bambaşka.','Arkadaş sofraları hiç bitmez.','Bir kişi yeter, demek. Şanslı biri.'],
-      ['Buna sevindim.','O zaman yakında bir tane olsun.','Bu biraz üzdü. Bir an önce bir sofra kurulmalı.']],
+    'Sevdiklerimle uzun bir sofrada':[['Aile sofrası bambaşka. O sofranın bir köşesinde ben de olmak isterdim; söz, bulaşıkları ben yıkarım.','Arkadaş sofraları hiç bitmez. Bir sandalye de bana çekersen çayları ben koyarım.','Bir kişi yeter, demek. O sofrada ben de olmak isterdim, söyleyeyim.']],
     'Tamamen kendimle':[['Kitap ya da film, kendine ayrılmış bir gün. Güzel.','Yürümek düşünceleri toparlıyor.','Hiçbir şey yapmamak da bir sanat.'],
       ['Ne güzel, kendine zaman ayırabiliyorsun.','Bence daha sık yapmalısın.','Bunu hak ediyorsun ama. Bir gün kendine böyle bir gün ayır.']],
     'Üretken, bir şeyi bitirerek':[['Çalışkan biri, belli.','Hangi proje, merak ettim.','En tatmin edici bitirme türü.'],
@@ -814,6 +813,7 @@ function personal(s){
         if(!br){ say(c, line, () => cont(c)); return; }
         say(c, line + ' ' + br[0][0], () => addOpts(c, br[0][1], a2 => {
           ans.d2 = a2;
+          if(!br[1]){ later(() => say(c, rx(s.k, ans.self, 0, br[0][1], a2), () => cont(c)), 400); return; }
           later(() => say(c, rx(s.k, ans.self, 0, br[0][1], a2) + ' ' + br[1][0], () => addOpts(c, br[1][1], a3 => {
             ans.d3 = a3;
             later(() => say(c, rx(s.k, ans.self, 1, br[1][1], a3), () => cont(c)), 400);
@@ -1047,19 +1047,11 @@ function itirafEt(){
   show(`
     <div class="eyebrow"><span>İtiraf</span><span>Bilmediğim bir şey</span></div>
     <p class="q">Bir de şunu merak ediyorum: bana bilmediğim bir şeyi itiraf et. Büyük olmak zorunda değil. Küçük, komik, saçma bir şey de olur. Bilmem gerekmeyen bir şey bile olabilir.</p>
-    ${optsHTML(['Tamam, bir şey var','Pas geçiyorum'])}
   `, c => {
-    bindOpts(c.querySelector('.opts'), v => {
-      if(v === 'Pas geçiyorum'){
-        st.a.itirafEt = 'Pas geçti';
-        later(() => say(c, 'Hiç sorun değil. Belki bir dahaki oyunda.', () => cont(c)), 400);
-        return;
-      }
-      later(() => say(c, 'Dinliyorum.', () => addInput(c, {ph:'İtirafın...', btn:'İtiraf ettim', max:300}, w => {
-        st.a.itirafEt = w; heart();
-        later(() => say(c, pickOne(['Bunu bana söylediğin için teşekkür ederim. Aramızda kalır.', 'Bunu bilmiyordum. Söylediğin için teşekkürler, aramızda kalır.']), () => cont(c)), 400);
-      })), 400);
-    });
+    later(() => say(c, 'Dinliyorum. Söz, aramızda kalacak.', () => addInput(c, {ph:'İtirafın...', btn:'İtiraf ettim', max:300}, w => {
+      st.a.itirafEt = w; heart();
+      later(() => say(c, pickOne(['Bunu bana söylediğin için teşekkür ederim. Aramızda kalır.', 'Bunu bilmiyordum. Söylediğin için teşekkürler, aramızda kalır.']), () => cont(c)), 400);
+    })), 300);
   });
 }
 
@@ -1156,7 +1148,7 @@ function compute(){
     const same = !!q.y && a.self === q.y; if(same) benzer++;
     const br = q.br && q.br[a.self];
     return {k, label:q.label, guess:a.guess, y:q.y, okY, self:a.self, text:a.text, g:gText(q), yKnew, same,
-      d2q: br ? br[0][0] : null, d2: a.d2, d3q: br ? br[1][0] : null, d3: a.d3};
+      d2q: br ? br[0][0] : null, d2: a.d2, d3q: br && br[1] ? br[1][0] : null, d3: a.d3};
   });
   const unvan = `Benzerlik ${benzer}/${YKEYS.length}`;
   return {tanima, yusufBildi, benzer, unvan, rows};
