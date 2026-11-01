@@ -245,6 +245,8 @@ input[type=text]{align-self:flex-end;width:min(82%,360px);text-align:right}
 /* ===== kafe + sahne pozları (önizleme) ===== */
 .room{background:#e2c9a6 url(cafe.png) center bottom/cover no-repeat;image-rendering:pixelated}
 .room > div{display:none}
+.room::after{content:'';position:absolute;inset:0;background:#5c84aa url(sky.png) center bottom/cover no-repeat;image-rendering:pixelated;opacity:0;transition:opacity .8s}
+body.sky .room::after{opacity:1}
 .eyebrow{background:rgba(36,29,43,.88);padding:4px 8px;border:2px solid var(--ink)}
 .opts::before{background:rgba(36,29,43,.88);padding:1px 5px;top:-2px}
 .q::before{color:#6b4bd1}
@@ -295,6 +297,14 @@ input[type=text]{align-self:flex-end;width:min(82%,360px);text-align:right}
 .rc details p{margin:6px 0 0;color:#f2ead7}
 .rc details small{display:block;color:var(--muted);font-size:15px}
 .empty{color:#f2ead7;background:var(--panel);border:3px dashed #5a5266;padding:14px;text-align:center;font-size:20px;margin:0}
+
+/* yapboz */
+.pz{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;background:var(--ink);border:3px solid var(--ink);box-shadow:4px 4px 0 rgba(0,0,0,.5);width:100%;max-width:360px;aspect-ratio:1;align-self:center;margin:0 auto}
+.pzt{border:0;padding:0;background-image:url(puzzle.jpg);background-size:300% 300%;cursor:pointer;transition:filter .15s}
+.pzt.sel{outline:4px solid var(--gold);outline-offset:-4px;filter:brightness(1.15)}
+.pz.solved{gap:0}
+.pzc{margin:0;text-align:center;color:#f2ead7;font-size:18px;text-shadow:2px 2px 0 var(--ink)}
+a.btn{text-decoration:none;text-align:center;display:block}
 </style>
 </head>
 <body>
@@ -626,9 +636,9 @@ const STEPS = [
   {t:'p',k:'izlenim'},
   {t:'gorev',k:'gorevIsim',baslik:'Kahve adı',q:'Sana bir görevim var. Bugün kahve alırken adını sorarlarsa başka bir isim söyleyeceksin. Hangi isim olsun?'},
   {t:'p',k:'duygu'},
-  {t:'letters'},
+  {t:'puzzle'},
   {t:'p',k:'kotugun'},
-  {t:'gorev',k:'gorevBulut',baslik:'Bulutlar',q:'Kısa bir mola. Görevin: bulutlara bak ve birinde bir şekil bul.'},
+  {t:'gorev',k:'gorevBulut',baslik:'Bulutlar',q:'Kısa bir görev: bulutlarda şekil bulmak.'},
   {t:'p',k:'gun'},
   {t:'yalan'},
   {t:'p',k:'hayal'},
@@ -707,10 +717,11 @@ function back(){
   render();
 }
 document.getElementById('backBtn').onclick = back;
-const SCENE = ['sohbet','soru','kafe2','telefon','gulme','kafe1','ayakta','sohbet','gulme','kafe2','kafe1','kafe1','soru','telefon','kafe2'];
+const SCENE = ['sohbet','soru','kafe2','telefon','gulme','kafe1','bulut','sohbet','gulme','kafe2','kafe1','kafe1','soru','telefon','kafe2'];
 let curScene = 'ayakta', poseFlip = false;
 function setScene(name){
   if(name === curScene) return; curScene = name;
+  document.body.classList.toggle('sky', name === 'bulut');
   const cast = document.getElementById('cast'), a = document.getElementById('poseA'), b = document.getElementById('poseB');
   const show = poseFlip ? a : b, hide = poseFlip ? b : a; poseFlip = !poseFlip;
   if(name === 'ayakta'){ a.classList.remove('on'); b.classList.remove('on'); cast.classList.remove('posed'); return; }
@@ -723,7 +734,7 @@ function render(){
   if(st.i < 0) return intro();
   if(st.i >= STEPS.length) return results();
   const s = STEPS[st.i];
-  ({balloons, p:personal, text:textStep, letters, lang, pick, photo, kahve:coffee, gorev, yalan, itirafEt})[s.t](s);
+  ({balloons, p:personal, text:textStep, letters, lang, pick, photo, kahve:coffee, gorev, yalan, itirafEt, puzzle})[s.t](s);
 }
 
 /* ---------- ekranlar ---------- */
@@ -1043,6 +1054,40 @@ function yalan(){
   });
 }
 
+/* ---------- yapboz ---------- */
+function puzzle(){
+  const N = 3, T = N * N;
+  let order;
+  do { order = [...Array(T).keys()].sort(() => Math.random() - .5); } while(order.every((k, i) => k === i));
+  const tile = k => `background-position:${(k % N) * 50}% ${Math.floor(k / N) * 50}%`;
+  show(`
+    <div class="eyebrow"><span>Oyun</span><span>Yapboz</span></div>
+    <p class="q">Bir resim hazırladım ama parçaları karıştı. Bir parçaya dokun, sonra yer değiştireceği parçaya dokun. Bakalım ne çıkacak?</p>
+    <div class="pz" id="pz">${order.map((k, i) => `<button class="pzt" data-k="${k}" style="${tile(k)}" aria-label="Parça ${i + 1}"></button>`).join('')}</div>
+    <p class="pzc" id="pzc">0 hamle</p>
+  `, c => {
+    const box = $('#pz', c); let sel = null, moves = 0, done = false;
+    box.onclick = e => {
+      const b = e.target.closest('.pzt'); if(!b || done) return;
+      if(!sel){ sel = b; b.classList.add('sel'); return; }
+      if(sel === b){ b.classList.remove('sel'); sel = null; return; }
+      const k1 = sel.dataset.k, k2 = b.dataset.k;
+      sel.dataset.k = k2; sel.style.cssText = tile(+k2);
+      b.dataset.k = k1; b.style.cssText = tile(+k1);
+      sel.classList.remove('sel'); sel = null; moves++;
+      $('#pzc', c).textContent = moves + ' hamle';
+      if([...box.children].every((t, i) => +t.dataset.k === i)){
+        done = true; st.a.yapboz = moves + ' hamlede tamamladı';
+        box.classList.add('solved'); heart(); hop('heroSen');
+        later(() => say(c, 'Tamamladın! Bir köşede iki koltuk, iki kitap, aradaki masada iki kahve. Bu resim senin, istersen indir.', () => {
+          c.insertAdjacentHTML('beforeend', `<div class="opts two"><a class="btn primary" href="kitap-kosesi.jpg" download="kitap-kosesi.jpg" target="_blank" rel="noopener">Resmi indir</a></div>`);
+          cont(c);
+        }), 700);
+      }
+    };
+  });
+}
+
 function itirafEt(){
   show(`
     <div class="eyebrow"><span>İtiraf</span><span>Bilmediğim bir şey</span></div>
@@ -1064,19 +1109,14 @@ function gorev(s){
     if(k === 'gorevIsim'){
       pickOrWrite(c, ['Defne','Pamuk','Cemile','Lale'], 'Kendim bulayım', 'Bugünkü kahve adın', v => {
         st.a.gorevIsim = v;
-        later(() => say(c, `Tamam, bugünkü adın “${v}”. Kahveci adını bardağa yazarsa fotoğrafını bekliyorum.`, () =>
-          doneButtons(c, 'gorevIsimDurum', ['Yaptım','Sonra yapacağım'], d => d === 'Yaptım' ? 'Efsane. Kahveci ne dedi, sonra anlatırsın.' : 'Tamam, bir dahaki kahvende.')), 400);
+        later(() => say(c, `Tamam, bugünkü adın “${v}”. Kahveci adını bardağa yazınca fotoğrafını çekip bana at. Kahvecinin yüzünü de anlatırsın.`, () => cont(c)), 400);
       });
     } else if(k === 'gorevBulut'){
-      addOpts(c, ['Şimdi bakıyorum','Şu an bakamam, sonra'], v => {
-        if(v === 'Şimdi bakıyorum'){
-          later(() => say(c, 'Neye benziyordu?', () => addInput(c, {ph:'Bir hayvan, bir yüz, bir şey...', btn:'Buna benziyordu'}, w => {
-            st.a.gorevBulut = w; later(() => say(c, `“${w}” mi? Ben de bugün bakıp kendiminkini bulacağım.`, () => cont(c)), 400);
-          })), 400);
-        } else { st.a.gorevBulut = 'Sonra bakacak'; later(() => say(c, 'Tamam, bugün bir ara yukarı bak. Bulursan bana söyle.', () => cont(c)), 400); }
-      });
+      st.a.gorevBulut = 'Verildi';
+      later(() => say(c, 'Bugün bir ara başını kaldırıp gökyüzüne bak. Bir bulutta şekil bulunca fotoğrafını çekip bana at, ne gördüğünü de yaz. Ben de kendiminkini bulup atacağım.', () => cont(c)), 400);
     } else if(k === 'gorevFoto'){
-      doneButtons(c, 'gorevFoto', ['Gönderdim','Sonra göndereceğim'], d => d === 'Gönderdim' ? 'Merakla bakıyorum. Hikâyesini de anlatmayı unutma.' : 'Tamam, bekliyorum. Hikâyesiyle birlikte ama.');
+      st.a.gorevFoto = 'Verildi';
+      later(() => say(c, 'Seçince WhatsApp\'tan bana at, hikâyesini de yaz. Merakla bekliyorum.', () => cont(c)), 400);
     }
   });
 }
