@@ -68,6 +68,8 @@ h1{font-family:'Pixelify Sans';font-weight:700;font-size:clamp(46px,14vw,74px);l
 .spr.sit{position:absolute;right:16px;top:0;height:72px;z-index:1}
 .pair{display:flex;justify-content:space-between;align-items:flex-end;margin-top:6px}
 .pair .spr{height:110px}
+.gal:not(.open) .g:nth-child(n+3){display:none}
+.more{align-self:center;margin-top:-6px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -94,7 +96,7 @@ h1{font-family:'Pixelify Sans';font-weight:700;font-size:clamp(46px,14vw,74px);l
 
   <div class="secrow"><div class="sec" id="bolumler">Bölümler</div><img class="spr" src="karakter/oturma.png" alt="" style="height:78px"></div>
   <div class="chs">
-    <a class="ch box" href="hafta1.html"><span class="tag">oynandı</span><div class="im" style="background-image:url(galeri/soru.jpg)"></div><div class="tx"><span class="wk">Hafta 1</span><strong>Ne kadar tanıyoruz?</strong></div></a>
+    <a class="ch box" href="hafta1.html"><span class="tag">oynandı</span><div class="im" style="background-image:url(galeri/hafta1.jpg)"></div><div class="tx"><span class="wk">Hafta 1</span><strong>Ne kadar tanıyoruz?</strong></div></a>
     <a class="ch box" href="hafta2.html"><span class="tag">oynandı</span><div class="im" style="background-image:url(galeri/kafe1.jpg)"></div><div class="tx"><span class="wk">Hafta 2</span><strong>Bir hikâye</strong></div></a>
     <a class="ch box" href="hafta3.html"><span class="tag new">yeni</span><div class="im" style="background-image:url(galeri/bulut.jpg)"></div><div class="tx"><span class="wk">Hafta 3</span><strong>Bulutların altında</strong></div></a>
     <div class="ch box lock"><div class="im"><canvas data-i="lock" width="12" height="12"></canvas></div><div class="tx"><span class="wk">Hafta 4</span><strong>Yakında</strong></div></div>
@@ -110,17 +112,8 @@ h1{font-family:'Pixelify Sans';font-weight:700;font-size:clamp(46px,14vw,74px);l
     <button class="g box" data-c="Sohbet" data-s="Hafta 3"><img src="galeri/sohbet.jpg" alt=""></button>
     <button class="g box" data-c="Bir soru" data-s="Hafta 3"><img src="galeri/soru.jpg" alt=""></button>
     <button class="g box" data-c="Telefon" data-s="Hafta 3"><img src="galeri/telefon.jpg" alt=""></button>
-    <button class="g box" data-c="Aynı şarkı" data-s=""><img src="galeri/muzik.jpg" alt=""></button>
-    <button class="g box" data-c="Bir masa" data-s=""><img src="galeri/masa.jpg" alt=""></button>
-    <button class="g box" data-c="Çiçekler" data-s=""><img src="galeri/cicek.jpg" alt=""></button>
-    <button class="g box" data-c="Akşam yürüyüşü" data-s=""><img src="galeri/yurume.jpg" alt=""></button>
-    <button class="g box" data-c="Mesajlar" data-s=""><img src="galeri/telefon3.jpg" alt=""></button>
-    <button class="g box" data-c="Çimenlerde" data-s=""><img src="galeri/oturma.jpg" alt=""></button>
-    <button class="g box" data-c="Kahve" data-s=""><img src="galeri/kahve.jpg" alt=""></button>
-    <button class="g box" data-c="Gün batımı" data-s=""><img src="galeri/arkadan.jpg" alt=""></button>
-    <button class="g box" data-c="Gece" data-s=""><img src="galeri/mesaj.jpg" alt=""></button>
   </div>
-  <div class="foot"><span>17 resim</span><span>dokun, büyüsün</span></div>
+  <button class="btn ghost more" id="more" aria-expanded="false">Tümünü gör (8)</button>
 
   <div class="sec" id="not">Not</div>
   <div class="notewrap"><img class="spr sit" src="karakter/arkadan.png" alt=""><div class="note box">Her hafta yeni bir bölüm geliyor. Acele yok. İstediğin zaman, istediğin bölüme dönebilirsin.<small>— Yusuf</small></div></div>
@@ -146,6 +139,8 @@ tick(); setInterval(tick, 20000);
 const lb = document.getElementById('lb');
 document.getElementById('gal').onclick = e => { const g = e.target.closest('.g'); if(!g) return; lbi.src = g.querySelector('img').src; lbc.textContent = g.dataset.c; lbs.textContent = g.dataset.s; lb.classList.add('on'); };
 lb.onclick = () => lb.classList.remove('on');
+const more = document.getElementById('more'), gal = document.getElementById('gal');
+more.onclick = () => { const o = gal.classList.toggle('open'); more.textContent = o ? 'Daha az göster' : 'Tümünü gör (8)'; more.setAttribute('aria-expanded', o); if(!o) document.getElementById('galeri').scrollIntoView({behavior:'smooth'}); };
 document.addEventListener('keydown', e => { if(e.key === 'Escape') lb.classList.remove('on'); });
 </script>
 </body>
