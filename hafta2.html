@@ -315,11 +315,12 @@ N.push('10. Kitap'); S.push(async () => {
   await lines(sc, ['Kitap okuyor. Bir yandan da sana ses kaydı atıyor.', 'Sonra telefon çalıyor.']);
   add(sc, `<div class="big">“Ben okuyorum, sen de dinle.”</div>`);
   await lines(sc, ['Sormadı bile. Hep böyleydi.', 'Benimle yapmak istediği şeyleri böyle, sorar gibi değil, karar vermiş gibi söylerdi.', 'Ve ben zaten dünden razıydım.']);
-  const h = add(sc, `<button class="btn">Basılı tut ve dinle</button>`); let tm, sec = 0;
+  const h = add(sc, `<button class="btn">Basılı tut ve dinle</button>`); let tm, sec = 0, done = false;
   const bar = add(sc, `<div class="bar"><i style="transition:none" id="lb"></i></div>`);
   const stop = () => clearInterval(tm);
-  h.onpointerdown = e => { e.stopPropagation(); tm = setInterval(async () => { sec++; $('#lb').style.width = Math.min(100, sec * 4) + '%'; if(sec === 25){ stop(); h.remove(); bar.remove(); await lines(sc, ['Ne okuduğunu tam hatırlamıyorsun.', 'Sesini hatırlıyorsun.']); nextBtn(sc); } }, 100); };
-  h.onpointerup = h.onpointerleave = stop; h.onclick = e => e.stopPropagation();
+  const tick = async n => { if(done) return; sec += n; $('#lb').style.width = Math.min(100, sec * 4) + '%'; if(sec >= 25){ done = true; stop(); h.remove(); bar.remove(); await lines(sc, ['Ne okuduğunu tam hatırlamıyorsun.', 'Sesini hatırlıyorsun.']); nextBtn(sc); } };
+  h.onpointerdown = e => { e.stopPropagation(); stop(); tm = setInterval(() => tick(1), 100); };
+  h.onpointerup = h.onpointerleave = h.onpointercancel = stop; h.onclick = e => { e.stopPropagation(); tick(3); };
 });
 
 
