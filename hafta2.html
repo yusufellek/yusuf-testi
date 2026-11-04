@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bölüm 3</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&family=VT323&display=swap">
+<style>
+:root{--ink:#16120f;--paper:#f6efdc;--gold:#f3c94b;--muted:#b9b1c8;--sky:#cfe1f7}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#0f0d12;color:var(--paper);font-family:'VT323',monospace;font-size:22px}
+.wrap{max-width:440px;margin:0 auto;min-height:100%;display:flex;flex-direction:column}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 14px;font-family:'Pixelify Sans';font-size:12px;letter-spacing:.08em;color:var(--muted)}
+.top select,.top button{font:inherit;color:var(--muted);background:#1b1822;border:2px solid #3a3446;padding:4px 6px;cursor:pointer;max-width:170px}
+.stage{position:relative;flex:1;min-height:600px;margin:0 12px 12px;border:3px solid var(--ink);box-shadow:inset 0 0 0 2px #3b3446;overflow:hidden;transition:background 1.4s,filter 1.4s}
+.scene{position:absolute;inset:0;padding:16px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;animation:fade .9s ease both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.part{font-family:'Pixelify Sans';font-size:11px;letter-spacing:.14em;color:var(--muted)}
+.title{font-family:'Pixelify Sans';font-weight:600;font-size:14px;letter-spacing:.12em;color:var(--gold);text-shadow:2px 2px 0 var(--ink)}
+.narr{background:rgba(22,18,15,.8);border:3px solid var(--ink);padding:9px 12px;line-height:1.08;animation:fade .6s both}
+.inner{color:#e9dfc6;font-style:normal;padding:2px 4px;line-height:1.08;animation:fade .6s both;text-shadow:2px 2px 0 rgba(0,0,0,.6)}
+.inner::before{content:'› ';color:var(--gold)}
+.btn{font-family:'VT323';font-size:22px;background:var(--gold);color:var(--ink);border:3px solid var(--ink);box-shadow:4px 4px 0 rgba(0,0,0,.5);padding:7px 12px;cursor:pointer;align-self:flex-start;animation:fade .5s both}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 rgba(0,0,0,.5)}
+.btn.ghost{background:var(--sky)}
+.btn.gray{background:#cfcac2}
+.btn[disabled]{opacity:.45;cursor:default}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.spacer{flex:1;min-height:6px}
+.tap{position:absolute;right:14px;bottom:12px;font-size:16px;color:var(--muted);animation:blink 1.2s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.big{font-family:'Pixelify Sans';font-size:20px;color:var(--gold);text-align:center;text-shadow:2px 2px 0 var(--ink);line-height:1.25;animation:fade .7s both}
+.note{font-size:17px;color:var(--muted);text-align:center;animation:fade .6s both}
+.clock{font-family:'Pixelify Sans';font-size:52px;color:var(--gold);text-shadow:3px 3px 0 var(--ink);text-align:center}
+.chat{display:flex;flex-direction:column;gap:6px}
+.b{max-width:82%;padding:6px 9px;border:2px solid var(--ink);line-height:1.05;font-size:20px;animation:fade .4s both}
+.b.o{background:var(--paper);color:var(--ink);align-self:flex-start}
+.b.m{background:var(--sky);color:var(--ink);align-self:flex-end}
+.b.s{font-size:17px}
+.typer{background:var(--paper);color:var(--ink);border:3px solid var(--ink);padding:9px;min-height:44px}
+.cur{display:inline-block;width:10px;height:19px;background:var(--ink);vertical-align:-3px;animation:blink 1s steps(2) infinite}
+.phone{align-self:center;width:180px;background:#1b1b22;border:3px solid var(--ink);padding:12px 10px;text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center}
+.phone .who{font-family:'Pixelify Sans';font-size:14px;color:#fff}
+.ring{animation:ring .22s linear infinite alternate}
+@keyframes ring{from{transform:rotate(-3deg)}to{transform:rotate(3deg)}}
+.px{image-rendering:pixelated}
+/* kar */
+.snow{position:absolute;inset:0;pointer-events:none;z-index:0}
+.snow i{position:absolute;top:-6px;width:4px;height:4px;background:#fff;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(640px)}}
+.scene > *{position:relative;z-index:1}
+.board{font-family:'Pixelify Sans';background:#0c0c0c;border:3px solid var(--ink);padding:8px 10px;color:#ffcf4a;font-size:14px;letter-spacing:.05em;display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px}
+.board .x{color:#ff5a5a;animation:blink 1s steps(2) infinite}
+/* adam asmaca */
+.hm{display:flex;gap:14px;align-items:center}
+.gal{width:80px;height:100px;flex:0 0 auto}
+.word{font-family:'Pixelify Sans';font-size:30px;letter-spacing:10px}
+.keys{display:grid;grid-template-columns:repeat(9,1fr);gap:3px}
+.keys button{font-family:'VT323';font-size:19px;background:var(--sky);border:2px solid var(--ink);padding:3px 0;cursor:pointer}
+.keys button:disabled{opacity:.3}
+/* müzik */
+.player{background:#1b1822;border:3px solid var(--ink);padding:12px;display:flex;flex-direction:column;gap:8px}
+.bar{height:10px;background:#3a3446;border:2px solid var(--ink)}
+.bar i{display:block;height:100%;width:0;background:var(--gold);transition:width 6s linear}
+.eq{display:flex;gap:3px;align-items:flex-end;height:26px}
+.eq span{width:6px;background:var(--gold);animation:eq .6s ease-in-out infinite alternate}
+@keyframes eq{from{height:4px}to{height:26px}}
+/* görüntülü */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:6px;height:330px}
+.frame{position:relative;border:3px solid var(--ink);overflow:hidden;display:flex;align-items:flex-end;justify-content:center}
+.frame .lab{position:absolute;top:6px;left:6px;font-family:'Pixelify Sans';font-size:11px;background:rgba(0,0,0,.6);padding:2px 5px;color:#fff;z-index:3}
+.frame img{height:86%;position:relative;z-index:2;transition:filter 1s}
+.frame.ist{background:linear-gradient(#3b4a5e,#6d7c8e)}
+.frame.hel{background:linear-gradient(#1c2a44,#8aa4c2)}
+.rain{position:absolute;inset:0;z-index:1}
+.rain i{position:absolute;top:-20px;width:2px;height:14px;background:rgba(200,220,255,.7);animation:rain linear infinite}
+@keyframes rain{to{transform:translate(-30px,360px)}}
+.frame.dim img{filter:brightness(.35) saturate(.4)}
+.store{position:absolute;bottom:0;right:0;width:60%;height:38%;background:#c9c2b3;border-top:3px solid var(--ink);z-index:1}
+.store::before{content:'MARKET';position:absolute;top:6px;left:8px;font-family:'Pixelify Sans';font-size:10px;color:#a33}
+.stop{position:absolute;bottom:0;left:6px;width:10px;height:62%;background:#222;z-index:1}
+.stop::before{content:'';position:absolute;top:-12px;left:-12px;width:34px;height:18px;background:#e2b23a;border:2px solid var(--ink)}
+/* pencere */
+.wins{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+.win{height:150px;border:4px solid #0a0a0a;background:#101624;cursor:pointer;position:relative;transition:background 1s,box-shadow 1s}
+.win::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:4px;background:#0a0a0a}
+.win.on{background:#f4c46b;box-shadow:0 0 40px rgba(244,196,107,.55)}
+.win small{position:absolute;bottom:-26px;left:0;right:0;text-align:center;font-size:16px;color:var(--muted)}
+/* gürültü */
+.noise{position:relative;height:320px;border:3px dashed #3a3446}
+.th{position:absolute;font-family:'VT323';font-size:20px;background:#2a2533;color:#f2ead7;border:2px solid var(--ink);padding:3px 7px;cursor:pointer;animation:pop .25s steps(3) both;white-space:nowrap}
+@keyframes pop{from{transform:scale(.4)}to{transform:scale(1)}}
+/* hikâye */
+.story{height:250px;border:3px solid var(--ink);background:linear-gradient(135deg,#e9c9a0,#b98b6a,#7d5b6f);filter:blur(0);position:relative;overflow:hidden}
+.story::before{content:'';position:absolute;inset:0;backdrop-filter:blur(10px);background:radial-gradient(circle at 50% 40%,rgba(255,240,220,.6),transparent 60%)}
+.story .bar2{position:absolute;top:6px;left:6px;right:6px;height:4px;background:rgba(255,255,255,.4)}
+.story .bar2 i{display:block;height:100%;width:0;background:#fff;animation:sb 6s linear forwards}
+@keyframes sb{to{width:100%}}
+.opt{display:flex;flex-direction:column;gap:8px;position:relative}
+.opt .btn{align-self:stretch;text-align:left}
+.ptr{position:absolute;width:22px;height:22px;transition:all 1.2s cubic-bezier(.4,0,.2,1);z-index:5;pointer-events:none}
+/* takvim */
+.cal{align-self:center;width:160px;background:var(--paper);color:var(--ink);border:3px solid var(--ink);text-align:center}
+.cal b{display:block;background:#a33;color:#fff;font-family:'Pixelify Sans';font-size:14px;padding:4px}
+.cal span{display:block;font-family:'Pixelify Sans';font-size:44px;padding:8px}
+.silence{font-family:'Pixelify Sans';font-size:15px;color:var(--muted);text-align:center}
+.count{font-family:'Pixelify Sans';color:#ff8a94}
+/* aynı kare */
+.together{align-self:center;width:94%;border:3px solid var(--ink);background:linear-gradient(#2b2340,#6b4e63 70%,#3a2a2a);display:flex;justify-content:center;padding-top:30px;height:290px;position:relative;overflow:hidden}
+.together img{height:100%;filter:brightness(.25) blur(2px);transition:filter 3s}
+.together.on img{filter:none}
+.final{font-family:'Pixelify Sans';font-size:18px;line-height:1.35;text-align:center;color:#f2ead7;text-shadow:2px 2px 0 var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><span>BÖLÜM 3</span><button id="restart">Baştan</button></div>
+  <div class="stage" id="stage"></div>
+</div>
+<script>
+const IMG = {sen:'sen.png', yusuf:'yusuf.png', birlikte:'kafe1.png'};
+const stage = document.getElementById('stage');
+const $ = s => stage.querySelector(s);
+const wait = ms => new Promise(r => setTimeout(r, ms));
+let i = 0, token = 0;
+function bg(a, b, sat = 1){ stage.style.background = `linear-gradient(${a}, ${b})`; stage.style.filter = `saturate(${sat})`; }
+function scene(part, title, html = ''){ token++; stage.innerHTML = `<div class="scene"><div class="part">${part}</div><div class="title">${title}</div>${html}</div>`; return stage.firstElementChild; }
+const alive = t => t === token;
+function add(sc, html){ if(!sc || !sc.isConnected) return document.createElement('div'); sc.insertAdjacentHTML('beforeend', html); sc.scrollTop = sc.scrollHeight; return sc.lastElementChild; }
+// dokunarak ilerleyen satırlar
+function lines(sc, arr, cls = 'inner'){
+  return new Promise(res => {
+    let k = 0; const t = token;
+    const tip = document.createElement('div'); tip.className = 'tap'; tip.textContent = 'dokun ›'; stage.appendChild(tip);
+    const step = () => { if(!alive(t)) return; if(k >= arr.length){ stage.removeEventListener('click', step); tip.remove(); res(); return; } add(sc, `<div class="${cls}">${arr[k++]}</div>`); };
+    step();
+    setTimeout(() => stage.addEventListener('click', step), 50);
+  });
+}
+function nextBtn(sc, label = 'Devam'){ const b = add(sc, `<button class="btn ghost">${label}</button>`); b.onclick = e => { e.stopPropagation(); next(); }; }
+function next(){ i = Math.min(i + 1, S.length - 1); go(); }
+const S = [], N = [];
+const P1 = 'BİRİNCİ KISIM · O ZAMANLAR', P2 = 'İKİNCİ KISIM · SOĞUMA', P3 = 'ÜÇÜNCÜ KISIM · HİKÂYE';
+
+/* yardımcı: dokundukça mesajlar */
+function talk(sc, arr){
+  return new Promise(res => {
+    let k = 0; const t = token;
+    const tip = document.createElement('div'); tip.className = 'tap'; tip.textContent = 'dokun ›'; stage.appendChild(tip);
+    const cls = {o:'b o', m:'b m', i:'inner', n:'narr', big:'big', note:'note', s:'silence'};
+    const step = () => { if(!alive(t)) return; if(k >= arr.length){ stage.removeEventListener('click', step); tip.remove(); res(); return; }
+      const [w, x] = arr[k++]; add(sc, `<div class="${cls[w]}">${x}</div>`); };
+    step(); setTimeout(() => stage.addEventListener('click', step), 50);
+  });
+}
+const time = (sc, t) => add(sc, `<div class="silence">${t}</div>`);
+
+/* 1 Kar */
+N.push('1. Kar'); S.push(async () => {
+  bg('#1d2a44', '#4a5d80');
+  const sc = scene(P1, 'HOLLANDA · KIŞ', `<div class="board"><span>AMS</span><span>→ HELSİNKİ</span><span class="x">İPTAL</span><span>AMS</span><span>→ OSLO</span><span class="x">İPTAL</span><span>AMS</span><span>→ BERLİN</span><span class="x">İPTAL</span></div>`);
+  const sn = document.createElement('div'); sn.className = 'snow';
+  sn.innerHTML = Array.from({length:70}, () => `<i style="left:${Math.random()*100}%;animation-duration:${3+Math.random()*4}s;animation-delay:${-Math.random()*6}s"></i>`).join('');
+  sc.prepend(sn);
+  await lines(sc, ['Sen Yusuf\'sun.', 'Havalimanındasın. Kar sabahtan beri durmadı.', 'Ekranda bütün uçuşlar kırmızı yanıyor.', 'Yeni uçuş yarın. Belki yarın.', 'Önünde koca bir gün var ve yapacak hiçbir şey yok.']);
+  const b = add(sc, `<button class="btn">Telefonda bir oyun aç</button>`); b.onclick = e => { e.stopPropagation(); next(); };
+});
+
+
+/* 2 Adam asmaca */
+N.push('2. Adam asmaca'); S.push(async () => {
+  bg('#2b2340', '#5b4a6e');
+  const sc = scene(P1, 'ADAM ASMACA · ÇEVRİMİÇİ', `
+    <div class="narr">Rastgele biriyle eşleştin. Kelimeyi birlikte bulacaksınız. Her harfte sohbet biraz ilerliyor.</div>
+    <div class="hm"><svg class="gal" viewBox="0 0 90 110"><path d="M8 105h50M20 105V8h40v14" stroke="#f6efdc" stroke-width="5" fill="none"/><g id="man" stroke="#f6efdc" stroke-width="4" fill="none"></g></svg><div class="word" id="w"></div></div>
+    <div class="keys" id="keys"></div><div class="chat" id="chat"></div>`);
+  const W = 'KAR', A = 'ABCÇDEFGHIİJKLMNOÖPRSŞTUÜVYZ'.split('');
+  $('#keys').innerHTML = A.map(l => `<button>${l}</button>`).join('');
+  const talk = [['o','Selam :)'],['m','Selam. Sen de mi sıkıldın?'],['o','Biraz. Nerelisin sen?'],['m','Hollanda\'da mahsur kaldım. Kar yüzünden uçuş iptal.'],['o','Aa, geçmiş olsun. Ben İstanbul\'dayım.'],['m','Ne iş yapıyorsun?'],['o','Hukuk bürosunda çalışıyorum. Sen?'],['m','Öğrenciyim, Helsinki\'de.'],['o','Helsinki mi? Orası soğuk değil mi?'],['m','Burası daha soğuk şu an :)']];
+  const parts = ['<circle cx="60" cy="32" r="9"/>','<path d="M60 41v28"/>','<path d="M60 50l-12 10"/>','<path d="M60 50l12 10"/>','<path d="M60 69l-10 16"/>','<path d="M60 69l10 16"/>'];
+  let got = new Set(), miss = 0, t = 0;
+  const draw = () => $('#w').textContent = W.split('').map(c => got.has(c) ? c : '_').join('');
+  draw();
+  $('#keys').onclick = async e => {
+    const b = e.target.closest('button'); if(!b) return; b.disabled = true;
+    const l = b.textContent;
+    if(W.includes(l)) got.add(l); else if(miss < parts.length) $('#man').insertAdjacentHTML('beforeend', parts[miss++]);
+    draw();
+    const n = Math.min(2, talk.length - t); for(let q = 0; q < n; q++){ const [w, m] = talk[t++]; add($('#chat'), `<div class="b ${w}">${m}</div>`); }
+    sc.scrollTop = sc.scrollHeight;
+    if(W.split('').every(c => got.has(c))){
+      $('#keys').remove(); await wait(500);
+      while(t < talk.length){ const [w, m] = talk[t++]; add($('#chat'), `<div class="b ${w}">${m}</div>`); sc.scrollTop = sc.scrollHeight; await wait(450); }
+      add(sc, `<div class="narr">Kelime: KAR. Oyun bitti. Ekranın köşesinde küçük bir buton beliriyor.</div>`);
+      const ad = add(sc, `<button class="btn">+ Arkadaş ekle</button>`);
+      ad.onclick = async ev => {
+        ev.stopPropagation(); ad.disabled = true; ad.textContent = 'Eklendi'; await wait(800);
+        await lines(sc, ['Biliyorum, şaka gibi gelecek.', 'Ama onu eklediğim an bir şey hissettim.', 'Bir şey olmayabilirdi de.']);
+        add(sc, `<div class="big">“Ama bir şey olacak gibi hissettim.”</div>`);
+        nextBtn(sc);
+      };
+    }
+  };
+});
+
+
+/* @@HAFTA */
+N.push('3. Oyunda bir hafta'); S.push(async () => {
+  bg('#2b2340', '#6b4e63');
+  const sc = scene(P1, 'OYUNDA BİR HAFTA', `<div class="narr">Ertesi gün yine girdin. O da oradaydı. Sonraki gün de.</div>`);
+  await talk(sc, [['i','Kelime bulmaktan çok konuşuyordunuz.'],['i','Oyunu açınca ilk iş onun çevrimiçi olup olmadığına bakıyordun.'],['i','Bir gün isimleri konuştunuz.'],['m','Senin adın nereden geliyor?'],['o','Bir şiir var. “Ömür Hanım.”'],['note','[bir şiir paylaştı]'],['i','Bir hafta böyle geçti.'],['i','Bu oyunda kalsın istemiyorsun. Onu gerçek hayatına taşımak istiyorsun.'],['i','Ama ya tuhaf kaçarsa?']]);
+  writeAsk(sc);
+});
+function writeAsk(sc){
+  add(sc, `<div class="typer"><span id="tt"></span><span class="cur"></span></div><div class="note" id="h">Her dokunuşta biraz yazılır.</div>`);
+  const k = add(sc, `<button class="btn ghost">Yaz</button>`);
+  const first = 'Başka bir yerden konuşsak', target = 'Başka bir yerden konuşsak mı? Numaranı alabilir miyim?';
+  let step = 0, pos = 0, busy = false; const t = token;
+  k.onclick = async e => {
+    e.stopPropagation(); if(busy) return;
+    if(step === 0){ pos += 2; $('#tt').textContent = first.slice(0, pos);
+      if(pos >= first.length){ busy = true; $('#h').textContent = 'Parmağın gönder tuşunun üstünde duruyor...'; await wait(1200); if(!alive(t)) return; $('#h').textContent = 'Vazgeçiyorsun. Siliyorsun.';
+        for(let p = pos; p >= 0; p--){ $('#tt').textContent = first.slice(0, p); await wait(40); if(!alive(t)) return; }
+        await wait(800); if(!alive(t)) return; $('#h').textContent = 'Ya oyun biterse ve onu bir daha bulamazsan?'; await wait(1500); if(!alive(t)) return; $('#h').textContent = 'Yine de dene.'; pos = 0; step = 1; busy = false; }
+    } else if(step === 1){ pos += 3; $('#tt').textContent = target.slice(0, pos); if(pos >= target.length){ step = 2; k.textContent = 'Gönder'; } }
+    else { busy = true; k.remove(); $('.typer').remove(); $('#h').remove();
+      add(sc, `<div class="b m">${target}</div>`); add(sc, `<div class="silence" id="yz">yazıyor...</div>`); await wait(2000); if(!alive(t)) return; $('#yz').remove();
+      add(sc, `<div class="b o">Hiç sormayacaksın sandım.</div>`); await wait(800); if(!alive(t)) return;
+      await talk(sc, [['i','Meğer o da bekliyormuş.']]); nextBtn(sc); }
+  };
+}
+
+/* @@ILKGECE */
+N.push('4. İlk gece'); S.push(async () => {
+  bg('#2d2440', '#6a4a62');
+  const sc = scene(P1, 'WHATSAPP · İLK GECE');
+  time(sc, '9 Ocak · 23:03');
+  await talk(sc, [['m','Selam :)'],['o','Selam selaam :))'],['m','Yani ben takılıyorum biraz böyle şeylere. Düz olamıyorum.'],['o','İnce bir davranıştı.'],['o','Bunun için teşekkür ederim.'],['o','Yarım kalmaz :):)'],['o','Ben oyunu seviyorum ya, kafa dağıtıyor.'],['m','Ara ara indirdiğim, sonradan sildiğim bir oyundu.'],['m','Ama silemedim sen gelince.'],
+    ['i','Sonra kediler.'],['o','Hayvan sever misin?'],['m','Evettt. Kedim var. Sen?'],['o','Oo benim de.'],['note','[bir fotoğraf]'],['o','Emirhan\'la tanış.'],['m','Yaaaa aşırı tatlııı. Yanakları ne öylee'],['o','Allık sürdüm hahaha'],['m','Bu da Araf.'],['o','Çok karizmatik.'],['o','Bizimki hamura benziyor. Toparlak.'],['o','Seninki bildiğin üçgen vücut.'],['i','Gece ilerliyordu.'],['m','Her an “ben yatıyorum” mesajını bekliyorum senden ama.'],['o','Yarın iş yok.'],['o','Kalabilirim biraz daha.']]);
+  await talk(sc, [['i','Az ama öz başladı her şey.']]); nextBtn(sc);
+});
+
+/* @@KUCUK */
+N.push('5. İlk günler'); S.push(async () => {
+  bg('#6e4a3a', '#d39a63');
+  const sc = scene(P1, 'İLK GÜNLER');
+  time(sc, '10 Ocak');
+  await talk(sc, [['o','Uyuyakalmışım, özür dilerim. Günaydın.'],['o','Film izleyeceğim. Dün gece yaptığımız çay muhabbetini hatırlayıp işe çay demlemekle başladım.'],['i','Küçük bir cümle. Bütün gün aklından çıkmadı.']]);
+  time(sc, '16 Ocak');
+  await talk(sc, [['o','Güzide İstanbul\'un en çarpık yerlerinden geçiyor otobüsüm. Görsen ağlarsın.'],['o','Aa sana ben ofisimin manzarasını attım mı?'],['o','Bugün eve doğru yürürken hava o kadar soğuktu ki… havadaki o buz kokusunu aldım.'],['o','İşte bence o kar kokusu bugünü hatırlatacak bana.'],['i','Kar. Her şey karla başlamıştı zaten.'],['o','Seninle bir oyun oynayalım mı?']]);
+  time(sc, '17 Ocak');
+  await talk(sc, [['o','Daha önce bu kadar uzaktan hiç arkadaşın olmuş muydu?'],['m','Bunu özleyeceğim galiba.'],['o','Hahaj ya özleyecek başka bir şey bulamadın mı?'],['o','Bundan sonra senin özleyeceğin daha çok şey paylaşayım bari. Yaşasın kötülük.'],['o','Çook güzel bir sohbetti, teşekkür ederim.']]);
+  nextBtn(sc);
+});
+
+/* @@SIIR */
+N.push('6. Öğle arası'); S.push(async () => {
+  bg('#6e4a3a', '#d39a63');
+  const sc = scene(P1, 'ÖĞLE ARASI', `<div class="narr">Helsinki. Öğle yemeği. Kulaklık takılı.</div>
+    <div class="player"><div class="row" style="justify-content:space-between;align-items:center"><span>Ömür Hanım <span style="color:var(--muted);font-size:16px">· şiir</span></span><div class="eq" id="eq" style="opacity:.2"><span></span><span style="animation-delay:.2s"></span><span style="animation-delay:.4s"></span><span style="animation-delay:.1s"></span></div></div><div class="bar"><i id="pr"></i></div></div>`);
+  const pl = add(sc, `<button class="btn">▶ Dinle</button>`);
+  pl.onclick = async e => { e.stopPropagation(); pl.remove(); $('#eq').style.opacity = 1; $('#pr').style.width = '100%';
+    await talk(sc, [['i','Adının geldiği şiir. Sana o göndermişti.'],['i','O günlerde her öğle arasında bunu dinledin.'],['i','Kimseye söylemedin. Ona bile.']]); nextBtn(sc); };
+});
+
+/* @@ILKARAMA */
+N.push('7. İlk arama'); S.push(async () => {
+  bg('#3a2a3a', '#7a5a6e');
+  const sc = scene(P1, 'İLK ARAMA');
+  time(sc, '21 Ocak');
+  await talk(sc, [['o','Meydey meydey, etkinlik için son 7 dakika!'],['o','Alet edevatları toplayınız.'],['m','Kalem kağıt ve bir kitap efenim.'],['o','Kulaklık al arıcım.'],['o','Kalem arıyorum, buradayım.']]);
+  add(sc, `<div class="phone ring" id="p"><span class="who">Ömür arıyor</span><button class="btn" id="a">Aç</button></div>`);
+  $('#a').onclick = async e => { e.stopPropagation(); $('#p').remove();
+    await talk(sc, [['i','İlk kez sesini duydun.'],['i','İki saat konuştunuz. Nasıl geçti, ikiniz de anlamadınız.'],['i','Bir ara, sen hiçbir şey demeden, gülerek şunu söyledi:'],['big','“Bak, ben uyumuyorsam sen de uyumayacaksın.”'],['i','Onun için uyanık kalmaya zaten dünden razıydın.']]);
+    nextBtn(sc); };
+});
+
+/* 6 Görüntülü */
+N.push('8. İlk görüntülü konuşma'); S.push(async () => {
+  bg('#1f2533', '#3c4658');
+  const rain = Array.from({length:40}, () => `<i style="left:${Math.random()*130}%;animation-duration:${.5+Math.random()*.5}s;animation-delay:${-Math.random()}s"></i>`).join('');
+  const snow = Array.from({length:25}, () => `<i style="left:${Math.random()*100}%;animation-duration:${3+Math.random()*3}s;animation-delay:${-Math.random()*5}s"></i>`).join('');
+  const sc = scene(P1, 'İLK GÖRÜNTÜLÜ KONUŞMA', `
+    <div class="split">
+      <div class="frame ist dim" id="fi"><span class="lab">İSTANBUL · YAĞMUR</span><div class="rain">${rain}</div><div class="stop"></div><img class="px" src="${IMG.sen}" alt=""></div>
+      <div class="frame hel" id="fh"><span class="lab">HELSİNKİ · -12°</span><div class="snow">${snow}</div><div class="store"></div><img class="px" src="${IMG.yusuf}" alt=""></div>
+    </div>`);
+  add(sc, `<div class="silence">22 Ocak</div>`);
+  await talk(sc, [['m','Arasana 2 dk müsaitsen.'],['m','Yürürken istersen.'],['i','Helsinki. Hava buz gibi. Marketin önünde bekliyorsun, telefon elinde.'],['i','Nefesin buhar oluyor. Ama içeri girmiyorsun. Ya şimdi ararsa?']]);
+  add(sc, `<div class="phone ring"><span class="who">Ömür · görüntülü arama</span><button class="btn" id="a">Aç</button></div>`);
+  $('#a').onclick = async e => {
+    e.stopPropagation(); $('.phone').remove(); $('#fi').classList.remove('dim');
+    add(sc, `<div class="big">“Beni gör artık!”</div>`);
+    await lines(sc, ['Otobüsten yeni inmiş. İstanbul\'da yağmur yağıyor.', 'İlk kez yüzünü görüyorsun.', 'İki saat konuştunuz. Soğuğu unuttun.']);
+    add(sc, `<div class="note">İkiniz, iki şehir, iki hava. Bir ekran.</div>`);
+    nextBtn(sc);
+  };
+});
+
+
+/* @@YAZILAR */
+N.push('9. O gece · yazılar'); S.push(async () => {
+  bg('#141a2a', '#2c3550');
+  const sc = scene(P1, 'O GECE · YAZILAR');
+  time(sc, '22 Ocak');
+  await talk(sc, [['o','Şimdi ben sana yazdıklarımdan atmak istiyorum, ancak benimkiler biraz durum güncellemesi, günlük gibi şeyler.'],['note','[kendi yazdıklarını paylaştı]'],['i','Sen de anlattın. Hiç kimseye anlatmadığın yerlerden.'],['o','Her şey çok güzeldi :) ve bugün olduğun kişi olmana katkı sağladı.'],['o','Dayandığın ve kendini büyütüp var ettiğin için seni tebrik ediyorum.'],['o','Ama şimdi bu kadar uzakken bir o kadar yakın hissettiğim bir şey yaşıyoruz işte. Bu her neyse.'],['o','Güzel bir şarkı bırakayım geceye de.'],['i','“Bu her neyse.” O gece adını koymadınız.'],['i','Ama ikiniz de biliyordunuz.']]);
+  nextBtn(sc);
+});
+
+/* 7 Kitap */
+N.push('10. Kitap'); S.push(async () => {
+  bg('#3a2a2a', '#7a5a46');
+  const sc = scene(P1, 'BİR AKŞAM', `<div class="silence">24 Ocak</div><div class="b o">Afiyet olsun :) Sana kitap okuyacağım birazdan :):)</div><div class="chat"><div class="b o b s">🎙 0:42</div><div class="b o b s">🎙 1:15</div><div class="b o b s">🎙 0:58</div></div>`);
+  await lines(sc, ['Kitap okuyor. Bir yandan da sana ses kaydı atıyor.', 'Sonra telefon çalıyor.']);
+  add(sc, `<div class="big">“Ben okuyorum, sen de dinle.”</div>`);
+  await lines(sc, ['Sormadı bile. Hep böyleydi.', 'Benimle yapmak istediği şeyleri böyle, sorar gibi değil, karar vermiş gibi söylerdi.', 'Ve ben zaten dünden razıydım.']);
+  const h = add(sc, `<button class="btn">Basılı tut ve dinle</button>`); let tm, sec = 0;
+  const bar = add(sc, `<div class="bar"><i style="transition:none" id="lb"></i></div>`);
+  const stop = () => clearInterval(tm);
+  h.onpointerdown = e => { e.stopPropagation(); tm = setInterval(async () => { sec++; $('#lb').style.width = Math.min(100, sec * 4) + '%'; if(sec === 25){ stop(); h.remove(); bar.remove(); await lines(sc, ['Ne okuduğunu tam hatırlamıyorsun.', 'Sesini hatırlıyorsun.']); nextBtn(sc); } }, 100); };
+  h.onpointerup = h.onpointerleave = stop; h.onclick = e => e.stopPropagation();
+});
+
+
+/* @@RUTIN */
+N.push('11. Gece yarısı'); S.push(async () => {
+  bg('#1f1a33', '#4a3e60');
+  const sc = scene(P1, 'GECE YARISI');
+  time(sc, '24 Ocak · 23:22');
+  await talk(sc, [['o','Sen uyursan uyurum.'],['o','Uyumayacak mısın sen?'],['o','Seni de rutinlerime kattım.'],['s','00:04'],['o','Seninle geçirdiğim tüm vakitleri öncesinde uyuyordum.'],['o','Uyuduğum, uyandığım, yediğim, gezdiğim, ibadet ettiğim, bir şeyler okuduğum, boş vakit için bile ayırdığım saat gün bellidir.'],['o','Bu beni altüst etti başta, evet. Bütün dengelerim şaştı.'],['o','Ama seni de hayatıma bir şekilde dahil etmek hoşuma gitti.'],['o','Sana en değer verdiğim şeyi veriyorum.'],['big','Vaktini.'],['i','Bunu o gece tam anlamamıştın.'],['i','Şimdi anlıyorsun.']]);
+  nextBtn(sc);
+});
+
+/* @@UYUMA */
+N.push('12. Uyu / uyuma'); S.push(async () => {
+  bg('#2a2140', '#5b4a6e');
+  const sc = scene(P1, 'UYU / UYUMA');
+  await talk(sc, [['s','27 Ocak'],['o','Aklım sende kalıyor, uyusana.'],['s','28 Ocak'],['o','Uyuma'],['o','Uyumaaaa'],['o','Uyursan ölürsün'],['s','1 Şubat · 00:18'],['o','Yusuf'],['o','Allah aşkına yat uyu'],['o','Seni dövmek istiyorum'],['s','1 Şubat · 23:24'],['o','Müzik dinleyelim Yusuf'],['o','Oyun oynayalım Yusuf'],['s','4 Şubat'],['o','Fosur fosur uyuyup gece benden geç yatmamı bekleyen hain Yusuff'],['i','Uyumak bile ikinizin arasında bir oyundu.']]);
+  nextBtn(sc);
+});
+
+/* @@SABAHLAR */
+N.push('13. Sabahlar'); S.push(async () => {
+  bg('#5a3d55', '#e7a86b');
+  const sc = scene(P1, 'SABAHLAR · 06:45', `<div class="clock">06:45</div>`);
+  await talk(sc, [['i','Her sabah, o işe giderken. Otobüste.'],['big','“Günaydın İstanbul!”'],['i','Bir saat. Beş dakika gibi.'],['i','Bir sabah ona “Benle konuştuğuna şükret” dedin. Çok güldü.'],['s','21 Ocak'],['o','Sabahınız hayrolsun Yusuf beeyy'],['s','26 Ocak'],['o','Günaydın, sesini duymak isterim ancak sabahın bu saatinde kıyamam açıkçası…'],['s','2 Şubat'],['o','Günaydınlar efenim, üç kez uzun uzun aradım açmadın. İnşallah alarmına uyanabilirsin.'],['s','17:00'],['i','Dönüş yolunda yine bir saat.'],['s','21:30'],['o','Ben olmasam şu an ne yapıyor olurdun?'],['i','Cevabı o zaman tam bilmiyordun.'],['i','Hayat bir başkaydı o zamanlar.']]);
+  nextBtn(sc);
+});
+
+/* @@OSABAH */
+N.push('14. O sabah'); S.push(async () => {
+  bg('#2a2a44', '#c98a6a');
+  const sc = scene(P1, 'O SABAH', `<div class="wins"><div class="win" id="w1"><small>Otobüs camı · İstanbul</small></div><div class="win" id="w2"><small>Oda penceresi · Helsinki</small></div></div><div style="height:22px"></div>`);
+  await talk(sc, [['i','Sıradan bir sabah araması gibi başladı.'],['i','Ama o sabah konu başka yerlere gitti.']]);
+  add(sc, `<div class="note">İki pencereye de dokun.</div>`);
+  let on = 0; const lit = async e => { e.stopPropagation(); if(e.currentTarget.classList.contains('on')) return; e.currentTarget.classList.add('on'); if(++on === 2){
+    await wait(900); add(sc, `<div class="big">O sabah ikimiz de en derin yerimizi anlattık.</div>`);
+    await talk(sc, [['i','Ne konuştuğunuzu burada yazmıyoruz. O biliyor, sen biliyorsun.']]); nextBtn(sc); } };
+  $('#w1').onclick = lit; $('#w2').onclick = lit;
+});
+
+/* @@YAKIN */
+N.push('15. En yakın'); S.push(async () => {
+  bg('#6b3f4f', '#e09a7a');
+  const sc = scene(P1, 'EN YAKIN');
+  await talk(sc, [['s','29 Ocak'],['o','Sonucunu düşünmeden, acaba ne olur demeden ilk defa bu kadar yakın hissediyorum birini kendime.'],['o','Aynı şeylere gülmeye ve hislenmeye devam.'],['s','2 Şubat'],['o','Adımın Ömür olduğu kadar emin olabilirsin ki benden sana zarar gelmez :) Güzel şeyler düşün.'],['s','3 Şubat'],['o','Bak şurası seni götürdüğüm kitapçı.'],['o','İyi ki varsın :)'],['i','En yüksek yer burasıydı.'],['i','Oradan aşağıya nasıl indiğini sonra anlayacaktın.']]);
+  nextBtn(sc, 'İkinci kısma geç');
+});
+
+/* 9 Gürültü */
+N.push('16. Kafadaki gürültü'); S.push(async () => {
+  bg('#2a2433', '#3c3448');
+  const sc = scene(P2, 'BİR AY SONRA · GECE', `<div class="narr">Tanışalı daha bir ay olmuş. Yataktasın. Uyuyamıyorsun.</div><div class="noise" id="nz"></div><div class="note" id="h">Düşünceleri kapatmak için üstlerine dokun.</div>`);
+  const T = ['para','ev','öğrenciyim','yetmez','evlenmeliyiz','nasıl?','iş bulmalıyım','ya beklemezse?','kira','düğün','yeterli miyim?','aileler','zaman yok','çabuk','para lazım'];
+  const nz = $('#nz'); let closed = 0, spawned = 0, msg = false;
+  const spawn = () => { if(msg) return; const d = document.createElement('div'); d.className = 'th'; d.textContent = T[spawned++ % T.length];
+    d.style.left = (Math.random() * 62) + '%'; d.style.top = (Math.random() * 85) + '%';
+    d.onclick = e => { e.stopPropagation(); d.remove(); closed++; spawn(); spawn(); if(closed === 8) showMsg(); };
+    nz.appendChild(d); };
+  for(let q = 0; q < 4; q++) spawn();
+  const auto = setInterval(() => { if(nz.isConnected && !msg) spawn(); else clearInterval(auto); }, 1400);
+  const showMsg = async () => { msg = true; $('#h').textContent = 'Telefon titriyor.'; await wait(800);
+    add(sc, `<div class="chat"><div class="b o">Akışına bırak Yusuf.</div><div class="b o">Bak ikimize de zarar veriyorsun.</div></div>`);
+    await wait(1500); nz.querySelectorAll('.th').forEach(t => t.style.opacity = .3);
+    await lines(sc, ['Bir anlığına sustular.', 'Sonra yeniden başladılar.', 'Haklıydı. Ama ben bırakamadım.']);
+    nextBtn(sc); };
+});
+
+
+/* @@KURUNTU */
+N.push('17. Kuruntular'); S.push(async () => {
+  bg('#252431', '#3a3946', .6);
+  const sc = scene(P2, 'KURUNTULAR');
+  await talk(sc, [['i','Bir şey yokken bir şey arıyordun. Bir sessizlikten, bir kısa cevaptan.'],['s','29 Ocak'],['o','Senin kafa karışıklığın güzel gelmiyor.'],['o','Senden bunları duymak biraz etkiledi, üzdü yani.'],['s','3 Şubat'],['i','Bir aramayı kapattı diye yine bir şey kurdun.'],['o','Konuşmak istemesem yazarım ben sana. Sohbetimizden böyle bir çıkarım yapman üzdü.'],['o','Seninle sabah akşam, zamanı fark etmez, geçirdiğim her andan keyif alıyorum ben.'],['s','7 Şubat'],['o','Sürekli seni rahatlatmaya çalışıyorum.'],['s','8 Şubat'],['o','Canımı sıkmıyorsun ki, kendi canını sıkıyorsun.'],['i','Haklıydı.']]);
+  nextBtn(sc);
+});
+
+/* @@HIKAYE */
+N.push('18. Hikâye'); S.push(async () => {
+  bg('#2a2433', '#433a52', .8);
+  const sc = scene(P2, 'BİR HİKÂYE', `<div class="story"><div class="bar2"><i></i></div></div>`);
+  time(sc, '7 Şubat');
+  await talk(sc, [['i','Onun paylaştığı bir hikâye. Hiç dikkat etmemiştin, paylaştığını bile bilmiyordun.'],['i','Çok güzel çıkmış.'],['i','Sadece bunu söylemek istiyorsun.']]);
+  add(sc, `<div class="typer"><span id="tt"></span><span class="cur"></span></div>`);
+  const k = add(sc, `<button class="btn ghost">Yaz</button>`);
+  const want = 'Çok güzel gözüküyorsun.', extra = 'Çok güzel gözüküyorsun ayrıca ama şaşırdım. Benimle konuşurken de yapıyor muydun?'; let pos = 0; const t = token;
+  k.onclick = async e => { e.stopPropagation();
+    if(pos < want.length){ pos += 2; $('#tt').textContent = want.slice(0, pos); if(pos >= want.length) k.textContent = 'Gönder'; return; }
+    k.remove();
+    for(let p = want.length; p <= extra.length; p++){ $('#tt').textContent = extra.slice(0, p); await wait(45); if(!alive(t)) return; }
+    await wait(500); if(!alive(t)) return; $('.typer').remove(); add(sc, `<div class="b m">${extra}</div>`);
+    await wait(1200); if(!alive(t)) return;
+    await talk(sc, [['i','Durmak istedin. Parmakların durmadı.'],['i','Hata o “ama”daydı.'],['s','Ertesi sabah'],['m','Bu normal mi?'],['o','Bilmem, bunlar senin duyguların ya. Sen söyle, normal mi :)'],['m','Şimdi hikâyene baktım tekrardan.'],['m','Normal evet.'],['o','Alemsin.'],['i','Güldünüz. Ama o “ama” orada kaldı.']]);
+    nextBtn(sc); };
+});
+
+/* 12 Söylemek istediğin */
+N.push('19. Söylemek istediğin'); S.push(async () => {
+  bg('#2d2b3a', '#4d4a5c', .5);
+  const sc = scene(P2, 'BİR TARTIŞMA', `<div class="chat" id="ch"><div class="b o">Yusuf, yeter.</div><div class="b o">Neden her şeyi bu kadar büyütüyorsun?</div></div>`);
+  await lines(sc, ['Ona ne kadar önemsediğini anlatmak istiyorsun.', 'Senin için sevmek, bir şeylerden vazgeçmek demek.', 'Tek bir cümle yeter diye düşünüyorsun.']);
+  add(sc, `<div class="typer"><span id="tt"></span><span class="cur"></span></div>`);
+  const k = add(sc, `<button class="btn ghost">Yaz</button>`);
+  const want = 'Seni çok seviyorum.', sent = 'Senin için sabah erken kalkıp seni arıyorum.'; let pos = 0;
+  k.onclick = async e => { e.stopPropagation();
+    if(pos < want.length){ pos++; $('#tt').textContent = want.slice(0, pos); if(pos === want.length) k.textContent = 'Gönder'; return; }
+    k.remove(); $('.typer').remove(); add($('#ch'), `<div class="b m">${sent}</div>`); await wait(1500);
+    add($('#ch'), `<div class="b o">Ben sana yap demedim ki.</div>`); await wait(1200);
+    await lines(sc, ['Söylemek istediğin “seni çok seviyorum”du.', 'Giden bu oldu.', 'O günden sonra bir daha hiç sabah aramadı. Bir kere bile.'], 'narr');
+    nextBtn(sc); };
+});
+
+
+/* 13 Sabah, ikinci kez */
+N.push('20. Sabah, ikinci kez'); S.push(async () => {
+  bg('#262a33', '#4a505c', .3);
+  const sc = scene(P2, 'BİR GÜN, SONRA', `<div class="clock" id="c">06:45</div><div class="phone" id="p"><span class="who">Telefon sessiz</span></div><div class="note" id="d"></div>`);
+  const t = token;
+  for(let m = 46; m <= 70; m++){ await wait(150); if(!alive(t)) return; const h = 6 + Math.floor(m / 60), mm = m % 60; $('#c').textContent = '0' + h + ':' + String(mm).padStart(2, '0'); }
+  $('#p').innerHTML = '<span class="who">Aramadı</span><button class="btn" id="a">Sen ara</button>';
+  $('#a').onclick = async e => { e.stopPropagation(); $('#p').innerHTML = '<span class="who">Aranıyor...</span>'; await wait(2600);
+    $('#p').innerHTML = '<span class="who">Bağlandı · 00:01</span>';
+    add(sc, `<div class="big" style="color:#d9d4cc">“Alo.”</div>`); await wait(1200);
+    await lines(sc, ['Ne “Günaydın İstanbul” vardı, ne o heyecan.', 'Oyunun başındaki sabahı hatırlıyor musun?', 'Aynı saat. Aynı otobüs. Başka bir ses.']);
+    nextBtn(sc); };
+});
+
+
+/* @@BEKLENTI (söylemek istediğinden sonra) */
+N.push('21. Beklenti'); S.push(async () => {
+  bg('#262a33', '#4a505c', .3);
+  const sc = scene(P2, 'BEKLENTİ');
+  time(sc, '11 Şubat · 23:50');
+  await talk(sc, [['o','Ben aramam Yusuf. Sonra beklentiye sokmuş oluyorum.'],['i','Sabah aramaları o gece bitti.'],['i','Sebebi sendin. Bunu biliyorsun.']]);
+  nextBtn(sc);
+});
+
+/* @@ONUNTARAFI */
+N.push('22. Onun tarafı'); S.push(async () => {
+  bg('#2b2f3a', '#7c7f8c', .5);
+  const sc = scene(P2, 'ONUN TARAFI', `<div class="clock" style="font-size:40px">05:55</div>`);
+  await talk(sc, [['i','Ertesi sabah. O yine otobüste.'],['i','Sabahın o saatinde yine seninle konuşuyordu.'],['i','Akşamın en yorgun anında yine seninle.'],['i','Seni kendinin önüne koymuştu.'],['i','Sen hep daha fazlasını istedin.'],['i','Ve o, sana yetemediğini düşündü.'],['big','Oysa yeten oydu. Göremeyen sendin.']]);
+  nextBtn(sc);
+});
+
+/* 14 Sessizlik */
+N.push('23. Aylar'); S.push(async () => {
+  bg('#1d1f26', '#2e313b', .15);
+  const sc = scene(P2, 'AYLAR GEÇTİ', `<div class="cal"><b id="mo">HAZİRAN</b><span id="dy">1</span></div>`);
+  const t = token, M = ['HAZİRAN','TEMMUZ','AĞUSTOS','EYLÜL','EKİM'];
+  for(let q = 0; q < 25; q++){ await wait(110); if(!alive(t)) return; $('#mo').textContent = M[Math.floor(q / 5)]; $('#dy').textContent = 1 + Math.floor(Math.random() * 28); }
+  await lines(sc, ['Aylar böyle geçti.', 'Ben konuşmazsam o konuşmuyordu.', 'Eskiden pat diye sorular sorardı. Artık hiç soru yoktu.', 'Uzun sessizlikler. Gülme yok.']);
+  add(sc, `<div class="silence">· · · <span id="sl">00:00</span> · · ·</div>`);
+  for(let s = 1; s <= 12; s++){ await wait(250); if(!alive(t)) return; $('#sl').textContent = '00:' + String(s * 3).padStart(2, '0'); }
+  await lines(sc, ['Bir gün sordun. Sonra bir daha sordun.']);
+  const ch = add(sc, `<div class="chat"></div>`);
+  add(ch, `<div class="b m">Beni seviyor muydun?</div>`); await wait(1400);
+  add(ch, `<div class="b o">Yusuf, seni sevmiyorum.</div>`); await wait(1000);
+  const ask = add(sc, `<button class="btn ghost">Bir daha sor</button>`), cnt = add(sc, `<div class="note"><span class="count" id="n">1</span>. kez soruyorsun</div>`);
+  let n = 1; const rep = ['Seni sevmiyorum dedim.','Çocuk musun Yusuf?','Yeter artık.','Konuşmak istemiyorum.','...'];
+  ask.onclick = async e => { e.stopPropagation(); n++; $('#n').textContent = n; add(ch, `<div class="b m s">Ama neden?</div>`);
+    if(n <= rep.length + 1) add(ch, `<div class="b o s">${rep[Math.min(n - 2, rep.length - 1)]}</div>`);
+    sc.scrollTop = sc.scrollHeight;
+    if(n === 7){ ask.remove(); for(let q = 8; q <= 50; q++){ await wait(40); $('#n').textContent = q; }
+      await lines(sc, ['Elli kez sordum.', 'Sülük gibi yapıştım. Bunu şimdi görüyorum.']);
+      add(ch, `<div class="b m">Hayatının dışında biriymişim gibi hissettiriyor bu.</div>`); await wait(1800);
+      add(ch, `<div class="b o">İyi anlamışsın.</div>`); await wait(1500);
+      nextBtn(sc, 'Üçüncü kısma geç'); } };
+});
+
+
+/* 15 Kabul */
+N.push('24. Kabul'); S.push(async () => {
+  bg('#2a2433', '#4a3e5a', .7);
+  const sc = scene(P3, 'KABUL');
+  await lines(sc, [
+    'Şimdi, buraya kadar oynadın.',
+    'Beni oynadın. Benim gözümden baktın.',
+    'Haklıydın. Akışına bırak dediğinde haklıydın.',
+    'Bir ayda bütün bir hayatı kurmaya çalıştım. Seni de yordum, kendimi de.',
+    'Kuruntularımla, açıklamalarımla, kıskançlığımla üstüne geldim.',
+    'Bir şey daha itiraf edeyim: bu oyunlar da birer bahaneydi.',
+    'Seninle konuşmak için. Hep bahane aradım. Bunu biliyorum, sen de biliyorsun.',
+    'Bu sonuncusu.'], 'narr');
+  nextBtn(sc);
+});
+
+
+/* 16 Aynı kare */
+N.push('25. Aynı kare'); S.push(async () => {
+  bg('#2b2340', '#6b4e63', .9);
+  const sc = scene(P3, 'AYNI KARE', `<div class="together" id="tg"><img class="px" src="${IMG.birlikte}" alt=""></div>`);
+  await lines(sc, ['Bütün bu zamanda hiç aynı yerde olmadık.', 'Hep iki ayrı ekranda, iki ayrı şehirdeydik.']);
+  $('#tg').classList.add('on'); await wait(2600);
+  await lines(sc, ['Belki bir gün, bir kafede, iki kahve.', 'Olabilirdi. Olmadı.', 'Ama böyle hayal etmek de güzeldi.']);
+  nextBtn(sc);
+});
+
+
+/* 18 Son */
+N.push('26. Son'); S.push(async () => {
+  bg('#1d2a44', '#4a5d80', 1);
+  const sc = scene(P3, 'BİR HİKÂYE');
+  const sn = document.createElement('div'); sn.className = 'snow';
+  sn.innerHTML = Array.from({length:50}, () => `<i style="left:${Math.random()*100}%;animation-duration:${4+Math.random()*4}s;animation-delay:${-Math.random()*6}s"></i>`).join('');
+  sc.prepend(sn);
+  await lines(sc, ['Bu hikâye bir kar gününde başladı.', 'Kar yine yağacak.', 'Bir akşam bana “Ben olmasam şu an ne yapıyor olurdun?” diye sormuştun.', 'O zaman tam bilmiyordum. Şimdi biliyorum:', 'Seninle o vakitleri geçirmek ne kadar güzelmiş.']);
+  await wait(500);
+  add(sc, `<div class="final">Bu hikâye bitti mi, bilmiyorum.<br><br>Ama bil ki o vakitler benim için çok güzeldi.</div>`);
+  await wait(1800);
+  add(sc, `<div class="spacer"></div><div class="big">Günaydın İstanbul.</div><div class="note">— Son —</div>`);
+});
+
+
+function go(){ S[i](); }
+document.getElementById('restart').onclick = () => { i = 0; go(); };
+go();
+</script>
+</body>
+</html>
