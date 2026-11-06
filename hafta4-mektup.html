@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Hafta 4 · Mektup</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#000;color:#f4ead6;font-family:'Cormorant Garamond',Georgia,serif;overflow:hidden}
+.frames{position:fixed;inset:0}
+.frames img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.6s ease;animation:drift 24s ease-in-out infinite alternate}
+.frames img.on{opacity:1}
+@keyframes drift{from{transform:scale(1.02) translate(0,0)}to{transform:scale(1.1) translate(-1.5%,-1%)}}
+.shade{position:fixed;inset:0;pointer-events:none;background:linear-gradient(rgba(0,0,0,.55),transparent 22%,transparent 60%,rgba(0,0,0,.8))}
+.top{position:fixed;top:0;left:0;right:0;padding:22px 20px;text-align:center;transition:opacity .8s}
+.top small{letter-spacing:.35em;font-size:12px;opacity:.65;text-transform:uppercase}
+.top h1{margin:8px auto 0;font-weight:400;font-style:italic;font-size:clamp(21px,5.8vw,30px);max-width:520px;line-height:1.2}
+.top p{margin:6px auto 0;font-size:16px;opacity:.7;max-width:460px}
+.bottom{position:fixed;left:0;right:0;bottom:0;padding:14px 18px calc(18px + env(safe-area-inset-bottom));transition:opacity .8s}
+.row{display:flex;gap:8px;max-width:620px;margin:0 auto}
+textarea,input{flex:1;min-width:0;font:inherit;font-size:20px;font-style:italic;color:#f4ead6;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.28);border-radius:22px;padding:11px 18px;outline:none;resize:none;backdrop-filter:blur(6px)}
+textarea::placeholder,input::placeholder{color:rgba(244,234,214,.5)}
+.go{font:inherit;font-size:18px;font-style:italic;color:#140d07;background:#f4ead6;border:0;border-radius:22px;padding:0 18px;cursor:pointer}
+.status{text-align:center;font-size:14px;opacity:.65;margin-top:8px;min-height:18px}
+.dots{display:flex;gap:7px;justify-content:center;margin-top:6px}
+.dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25)}
+.dots i.d{background:#f4ead6}
+.hide{opacity:0;pointer-events:none}
+.pulse{animation:pl 1.4s ease-in-out infinite}
+@keyframes pl{50%{opacity:.25}}
+</style>
+</head>
+<body>
+<div class="frames" id="frames"></div>
+<div class="shade"></div>
+<div class="top" id="top"><small id="num"></small><h1 id="q"></h1><p id="sub"></p></div>
+<div class="bottom" id="bottom">
+  <div class="row"><textarea id="in" rows="1"></textarea><button class="go" id="go">Devam</button></div>
+  <div class="status" id="status"></div>
+  <div class="dots" id="dots"></div>
+</div>
+<script>
+const GORSEL_URL = 'https://script.google.com/macros/s/AKfycbyTQ3N32zxgKziUw_1dUZ32SnKoljeh4BuylZkXaMbprtLig78l5JsKwSuLh8H27I-N/exec';   // Apps Script /exec adresi buraya
+const Q = [
+ {n:'I · Kağıt', q:'Önündeki kağıt nasıl görünüyor?', sub:'Rengi, dokusu, büyüklüğü, üstünde çizgi var mı?', ph:'Rengi, dokusu...'},
+ {n:'II · Kalem', q:'Neyle yazıyorsun? Mürekkebin rengi ne?', sub:'Yazarken akıcı mı? Elin titriyor mu, sağlam mı?', ph:'Kalem, mürekkep...'},
+ {n:'III · Mektup', q:'On yıl sonraki kendine ne yazıyorsun?', sub:'Bir cümle yeter. Tonu nasıl, yazmak kolay mı?', ph:'Sevgili ben...'},
+ {n:'IV · Mum', q:'Masadaki mum nasıl?', sub:'Rengi, alevi, odaya yeteri kadar ışık veriyor mu?', ph:'Mumun rengi, alevi...'},
+ {n:'V · Zarf ve mühür', q:'Mektubu nasıl bir zarfa koyup mühürlüyorsun?', sub:'Zarfın rengi, dokusu. Mührün üstünde bir sembol ya da harf var mı?', ph:'Zarf, mühür...'},
+ {n:'VI · Yolculuk', q:'Mektubu geleceğe nasıl gönderiyorsun?', sub:'Birine mi veriyorsun, gömüyor musun, saklıyor musun, uçuruyor musun?', ph:'Gönderiyorum...'},
+];
+const $ = id => document.getElementById(id);
+const seed = Math.floor(Math.random()*1e6);
+let qi = -1, answers = [], kod = '', busy = false, queued = null, lastSent = '';
+/* görsel kareleri: yenisi gelince yumuşakça üstüne biner */
+function showImg(src){ const im = new Image(); im.onload = () => { const f = $('frames'); f.appendChild(im); requestAnimationFrame(() => im.classList.add('on'));
+  [...f.children].slice(0, -2).forEach(x => x.remove()); }; im.src = src; }
+async function render(list){
+  const key = JSON.stringify(list); if(key === lastSent) return;
+  if(busy){ queued = list; return; }
+  busy = true; lastSent = key; $('status').textContent = 'oluşuyor'; $('status').classList.add('pulse');
+  try{
+    if(!GORSEL_URL) throw 'adres yok';
+    const r = await fetch(GORSEL_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({kod, seed, cevaplar:list})});
+    const j = await r.json();
+    if(j.img){ showImg(j.img); $('status').textContent = ''; }
+    else $('status').textContent = j.hata === 'kod' ? 'Kod yanlış.' : 'Görsel gelmedi, tekrar dene.';
+  }catch(e){ $('status').textContent = GORSEL_URL ? 'Bağlantı yok.' : 'Görsel adresi henüz bağlanmadı.'; }
+  $('status').classList.remove('pulse'); busy = false;
+  if(queued){ const n = queued; queued = null; render(n); }
+}
+/* yazarken: durduğun an görsel güncellenir */
+let tm; $('in').addEventListener('input', () => { if(qi < 0) return; clearTimeout(tm); const v = $('in').value.trim(); if(v.length < 3) return;
+  tm = setTimeout(() => render([...answers, v]), 900); });
+function showQ(){ const q = Q[qi]; $('num').textContent = q.n; $('q').textContent = q.q; $('sub').textContent = q.sub; $('in').value = ''; $('in').placeholder = q.ph;
+  $('dots').innerHTML = Q.map((_, i) => `<i class="${i < qi ? 'd' : ''}"></i>`).join(''); $('go').textContent = qi === Q.length - 1 ? 'Gönder' : 'Devam'; }
+function next(){
+  clearTimeout(tm);
+  const v = $('in').value.trim(); if(!v) return;
+  if(qi < 0){ kod = v; qi = 0; $('in').type = 'text'; showQ(); return; }
+  answers.push(v); render([...answers]); qi++;
+  if(qi < Q.length) showQ();
+  else { $('bottom').classList.add('hide'); $('num').textContent = 'mektup yolda'; $('q').textContent = 'On yıl sonra seni bulacak.'; $('sub').textContent = ''; }
+}
+$('go').onclick = next;
+$('in').addEventListener('keydown', e => { if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); next(); } });
+$('num').textContent = 'Hafta 4'; $('q').textContent = 'Karanlık, sessiz bir oda.'; $('sub').textContent = 'Yazdığın her şey burada görünür olacak. Başlamak için oyun kodunu yaz.';
+$('in').placeholder = 'Oyun kodu';
+</script>
+</body>
+</html>
