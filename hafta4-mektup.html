@@ -135,36 +135,33 @@ const Q = [
 ];
 const $ = id => document.getElementById(id);
 const seed = Math.floor(Math.random()*1e6);
-let qi = -1, answers = [], kod = '', busy = false, queued = null, lastSent = '';
+let qi = -1, answers = [], kod = '', onceki = null, busy = false;
 /* görsel kareleri: yenisi gelince yumuşakça üstüne biner */
-function showImg(src){ const im = new Image(); im.onload = () => { const f = $('frames'); f.appendChild(im); requestAnimationFrame(() => im.classList.add('on'));
-  [...f.children].slice(0, -2).forEach(x => x.remove()); }; im.src = src; }
-async function render(list){
-  const key = JSON.stringify(list); if(key === lastSent) return;
-  if(busy){ queued = list; return; }
-  busy = true; lastSent = key; $('status').textContent = 'oluşuyor'; $('status').classList.add('pulse');
-  try{
-    if(!GORSEL_URL) throw 'adres yok';
-    const r = await fetch(GORSEL_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({kod, seed, cevaplar:list})});
-    const j = await r.json();
-    if(j.img){ showImg(j.img); $('status').textContent = ''; }
-    else $('status').textContent = j.hata === 'kod' ? 'Kod yanlış.' : 'Görsel gelmedi, tekrar dene.';
-  }catch(e){ $('status').textContent = GORSEL_URL ? 'Bağlantı yok.' : 'Görsel adresi henüz bağlanmadı.'; }
-  $('status').classList.remove('pulse'); busy = false;
-  if(queued){ const n = queued; queued = null; render(n); }
+function showImg(src){ return new Promise(res => { const im = new Image(); im.onload = () => { const f = $('frames'); f.appendChild(im); requestAnimationFrame(() => im.classList.add('on'));
+  [...f.children].slice(0, -2).forEach(x => x.remove()); res(); }; im.onerror = res; im.src = src; }); }
+async function render(adim, cevap){
+  $('status').textContent = 'oda şekilleniyor...'; $('status').classList.add('pulse');
+  for(let deneme = 0; deneme < 2; deneme++){
+    try{
+      const r = await fetch(GORSEL_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({kod, seed, adim, cevap, onceki})});
+      const j = await r.json();
+      if(j.img){ onceki = j.img; await showImg(j.img); $('status').classList.remove('pulse'); $('status').textContent = ''; return true; }
+      if(j.hata === 'kod'){ $('status').textContent = 'Şifre sunucuda tutmadı.'; break; }
+    }catch(e){}
+  }
+  $('status').classList.remove('pulse'); $('status').textContent = 'Bu sefer görsel gelmedi, devam edebilirsin.'; return false;
 }
-/* yazarken: durduğun an görsel güncellenir */
-let tm; $('in').addEventListener('input', () => { if(qi < 0) return; clearTimeout(tm); const v = $('in').value.trim(); if(v.length < 3) return;
-  tm = setTimeout(() => render([...answers, v]), 900); });
 function showQ(){ const q = Q[qi]; $('num').textContent = q.n; $('q').textContent = q.q; $('sub').textContent = q.sub; $('in').value = ''; $('in').placeholder = q.ph;
-  $('dots').innerHTML = Q.map((_, i) => `<i class="${i < qi ? 'd' : ''}"></i>`).join(''); $('go').textContent = qi === Q.length - 1 ? 'Gönder' : 'Devam'; }
-function next(){
-  clearTimeout(tm);
+  $('dots').innerHTML = Q.map((_, i) => `<i class="${i < qi ? 'd' : ''}"></i>`).join(''); $('go').textContent = qi === Q.length - 1 ? 'Gönder' : 'Devam'; $('in').disabled = false; $('go').disabled = false; }
+async function next(){
+  if(qi < 0 || busy) return;
   const v = $('in').value.trim(); if(!v) return;
-  if(qi < 0) return;
-  answers.push(v); render([...answers]); qi++;
-  if(qi < Q.length) showQ();
-  else { $('bottom').classList.add('hide'); $('num').textContent = 'mektup yolda'; $('q').textContent = 'On yıl sonra seni bulacak.'; $('sub').textContent = ''; }
+  busy = true; $('in').disabled = true; $('go').disabled = true;
+  answers.push(v); $('top').classList.add('hide');
+  await render(qi, v);
+  qi++; busy = false;
+  if(qi < Q.length){ showQ(); $('top').classList.remove('hide'); setTimeout(() => $('in').focus(), 200); }
+  else { $('bottom').classList.add('hide'); $('num').textContent = 'mektup yolda'; $('q').textContent = 'On yıl sonra seni bulacak.'; $('sub').textContent = ''; $('top').classList.remove('hide'); }
 }
 $('go').onclick = next;
 $('in').addEventListener('keydown', e => { if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); next(); } });
