@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Hafta 4 · Mektup</title>
+<script src="config.js"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap">
 <style>
 *{box-sizing:border-box}
@@ -11,6 +12,7 @@ html,body{margin:0;height:100%;background:#000;color:#f4ead6;font-family:'Cormor
 .frames{position:fixed;inset:0}
 .frames img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.6s ease;animation:drift 24s ease-in-out infinite alternate}
 .frames img.on{opacity:1}
+.frames.son{transition:opacity 5s ease;opacity:0}
 @keyframes drift{from{transform:scale(1.02) translate(0,0)}to{transform:scale(1.1) translate(-1.5%,-1%)}}
 .shade{position:fixed;inset:0;pointer-events:none;background:linear-gradient(rgba(0,0,0,.55),transparent 22%,transparent 60%,rgba(0,0,0,.8))}
 .top{position:fixed;top:0;left:0;right:0;padding:22px 20px;text-align:center;transition:opacity .8s}
@@ -161,7 +163,23 @@ async function next(){
   await render(qi, v);
   qi++; busy = false;
   if(qi < Q.length){ showQ(); $('top').classList.remove('hide'); setTimeout(() => $('in').focus(), 200); }
-  else { $('bottom').classList.add('hide'); $('num').textContent = 'mektup yolda'; $('q').textContent = 'On yıl sonra seni bulacak.'; $('sub').textContent = ''; $('top').classList.remove('hide'); }
+  else bitir();
+}
+const KEYS = ['kagit','kalem','mektup','mum','zarf','yolculuk'];
+async function kaydet(){
+  const diger = {}; KEYS.forEach((k, i) => diger[k] = answers[i] || '');
+  diger.sonGorsel = onceki || '';
+  const ozet = Q.map((q, i) => q.q + '\n' + (answers[i] || '-')).join('\n\n');
+  try{ if(window.SCRIPT_URL) await fetch(window.SCRIPT_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({unvan:'Hafta 4 · Mektup', diger, ozet})}); }catch(e){}
+}
+async function bitir(){
+  $('bottom').classList.add('hide'); $('top').classList.add('hide');
+  kaydet();
+  await new Promise(r => setTimeout(r, 6000));
+  $('frames').classList.add('son');
+  await new Promise(r => setTimeout(r, 5200));
+  $('num').textContent = 'mektup yolda'; $('q').textContent = 'On yıl sonra seni bulacak.'; $('sub').textContent = 'Oda yeniden karardı. Mektubun Yusuf\'a da ulaştı.';
+  $('top').classList.remove('hide');
 }
 $('go').onclick = next;
 $('in').addEventListener('keydown', e => { if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); next(); } });
